@@ -23,7 +23,8 @@ a {
 }
 
 #nav a:hover {
-	background-color: #ddd;
+	background-color: #292929;
+	font-weight: bold;
 }
 
 #menu {
