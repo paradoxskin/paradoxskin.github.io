@@ -29,6 +29,11 @@ a {
 	color: #70a8ca;
 }
 
+#nav li span:hover {
+	background-color: #292929;
+	font-weight: bold;
+}
+
 #nav a:hover {
 	background-color: #292929;
 	font-weight: bold;
