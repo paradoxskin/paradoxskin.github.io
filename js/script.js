@@ -3,11 +3,17 @@ function p8clickTag(data){
 	cart.src=data.id
 }
 function checkgame(){
-	var tmp=jQuery.get("https://paradoxskin.github.io/game");
-	var tmpt=tmp.responseText.split('\n');
-	for(var i=0;i<tmpt.length();i++){
-		var tmpls=i.split("_")
-		gamesName[i]=tmpls[0];
-		gamesCart[i]=tmpls[1].slice(0,tmpls[1].length-5);
+	var xmlhttp=new XMLHttpRequest();
+	xmlhttp.onreadystatechange=function(){
+		if(xmlhttp.readyState==4 && xmlhttp.status==200){
+			var tmpt=xmlhttp.responseText.split("\n");
+			for(var i=0;i<tmpt.length-1;i++){ // last line is empty
+				var tmpls=tmpt[i].split("_");
+				gamesName[i]=tmpls[0];
+				gamesCart[i]=tmpls[1].slice(0,tmpls[1].length-5);
+			}
+		}
 	}
+	xmlhttp.open("GET","https://paradoxskin.github.io/game",true);
+	xmlhttp.send();
 }
