@@ -2,7 +2,7 @@ function p8clickTag(event){
 	let cart=document.getElementById("cart");
 	let gamelink=document.querySelector(".gamelink");
 	cart.src="//paradoxskin.github.io/carts/"+gamesCart[this.id];
-	gamelink.href="//paradoxskin.github.io/games"+gamesName[this.id]+gamesCart[this.id]+".html";
+	gamelink.href="//paradoxskin.github.io/games/"+gamesName[this.id]+"_"+gamesCart[this.id]+".html";
 }
 function checkgame(){
 	var xmlhttp=new XMLHttpRequest();
