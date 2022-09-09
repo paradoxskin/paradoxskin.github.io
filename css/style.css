@@ -186,10 +186,14 @@ h4 {
 		filter: invert(1);
 	}
 }
-#carts img{
+img#cart{
 	padding-right: 10px;
 	padding-left: 10px;
+	margin-bottom: 200px;
 }
-#gamespace iframe{
-	padding-left: 10px;
+.tv{
+	padding-left: 30px;
+	border: none;
+	height: 580px;
+	width: 680px;
 }
