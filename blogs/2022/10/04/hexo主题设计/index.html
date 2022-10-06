@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html id="all">
+
+<head>
+	<meta charset="utf-8">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="/pic/favicon.ico">
+	<title>Paradoxless | Blogs</title>
+	
+<link rel="stylesheet" href="/css/main.css">
+
+	
+<link rel="stylesheet" href="/css/font.css">
+
+	
+<link rel="stylesheet" href="/lib/highlight/rainbow.min.css">
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+	
+<script src="/lib/highlight/highlight.min.js"></script>
+
+	
+<script src="/lib/highlight/highlightjs-line-numbers.js"></script>
+
+	
+<script src="/lib/jquery.js"></script>
+
+	
+<script src="/lib/jquery.pjax.js"></script>
+
+	
+<script src="/js/main.js"></script>
+
+<body id="lybody">
+	<div id="head">
+	<a id="pLogo" href="/"><img alt="P" src="/pic/logo.svg"></a>
+	<div id="urlText">aradoxskin.</div>
+	<a id="githubLogo" href="https://github.com/paradoxskin" target="_blank"><img alt="github" src="/pic/github.svg"></a>
+	<div id="urlText">.io</div>
+	<div id="sucklessText">- simple is best</div>
+	<div id="clear"></div>
+</div>
+
+	<hr id="hidden">
+	<script>
+	if(localStorage.getItem('bgs')==null){
+		localStorage['bgs']='comp'
+
+			localStorage.setItem('bgs[num]','21');
+
+			localStorage.setItem('bgs[pic1]','/pic/wp/01.jpg');
+
+			localStorage.setItem('bgs[pic2]','/pic/wp/02.jpg');
+
+			localStorage.setItem('bgs[pic3]','/pic/wp/03.jpg');
+
+			localStorage.setItem('bgs[pic4]','/pic/wp/04.jpg');
+
+			localStorage.setItem('bgs[pic5]','/pic/wp/05.jpg');
+
+			localStorage.setItem('bgs[pic6]','/pic/wp/06.jpg');
+
+			localStorage.setItem('bgs[pic7]','/pic/wp/07.jpg');
+
+			localStorage.setItem('bgs[pic8]','/pic/wp/08.jpg');
+
+			localStorage.setItem('bgs[pic9]','/pic/wp/09.jpg');
+
+			localStorage.setItem('bgs[pic10]','/pic/wp/10.jpg');
+
+			localStorage.setItem('bgs[pic11]','/pic/wp/11.jpg');
+
+			localStorage.setItem('bgs[pic12]','/pic/wp/12.jpg');
+
+			localStorage.setItem('bgs[pic13]','/pic/wp/13.png');
+
+			localStorage.setItem('bgs[pic14]','/pic/wp/14.png');
+
+			localStorage.setItem('bgs[pic15]','/pic/wp/15.png');
+
+			localStorage.setItem('bgs[pic16]','/pic/wp/16.jpg');
+
+			localStorage.setItem('bgs[pic17]','/pic/wp/17.jpg');
+
+			localStorage.setItem('bgs[pic18]','/pic/wp/18.jpg');
+
+			localStorage.setItem('bgs[pic19]','/pic/wp/19.jpg');
+
+			localStorage.setItem('bgs[pic20]','/pic/wp/20.jpg');
+
+			localStorage.setItem('bgs[pic21]','/pic/wp/21.jpg');
+
+		localStorage.setItem('now','#')
+	}
+</script>
+
+<div id="nav">
+	<ul>
+		<li><button id="cgBg" onclick="randomSwitch()">O</button><button id="clBg" onclick="noBg()">_</button></li>
+
+		<iframe id="music-player" frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=7669623816&auto=0&height=90"></iframe>
+
+		<button id="nav-hide" onclick="hideMenu()">◤</button>
+
+		<span id="clear"></span>
+	</ul>
+</div>
+<button id="nav-show" onclick="showMenu()">◢</button>
+
+<span id="pup">
+	<div id="menu">
+	
+	
+		
+			<b><a href="/" class="menu-item-link" id="in">Home</a></b>
+		
+	
+		
+			<b><a data-pjax="#main" href="/blogs" class="menu-item-link-selected" id="in">Blogs</a></b>
+		
+	
+		
+			<b><a href="/archives" class="menu-item-link" id="in">Archives</a></b>
+		
+	
+		
+			<b><a href="/about" class="menu-item-link" id="in">who@mi</a></b>
+		
+	
+		
+			<b><a href="/links" class="menu-item-link" id="in">Links</a></b>
+		
+	
+	<div id="outlink">
+	
+		<a href="https://www.lexaloffle.com/pico-8.php" class="menu-item-link" id="out" target="_blank">pico-8</a>
+	
+		<a href="https://suckless.org/" class="menu-item-link" id="out" target="_blank">suckless</a>
+	
+	</div>
+</div>
+
+	<div id="main">
+		<div id="post">
+
+    <h1 id="hexo主题设计"><a href="#hexo主题设计" class="headerlink" title="hexo主题设计"></a>hexo主题设计</h1><p>终于把博客页面写的差不多了，只剩下一些琐碎的东西要写了，下面就简单的总结一下这次折腾吧</p>
+<p>下面是博客主题大概的样子。</p>
+<span id="more"></span>
+
+<p><img src="/img/image-20221006224943370.png" alt="image-20221006224943370"></p>
+<p>这个主题是用ejs模板语言和css写的，ejs是新学的，感觉很方便，重复的内容不需要每个网页都复制粘贴了，css是懒得学其他渲染工具了，一般使用styl做的，其他还有sass，这些都是前端的东西，我以后应该不会走前端就不去掌握了，事实证明css只是稍微麻烦了一点而已</p>
+<p>为什么不直接用现有的主题呢，其实别人做的主题很完美，动画什么的都有，只是因为接触hexo之前自己只用三件套写过一个博客，想把那个页面继续用下去就干脆直接新写一个主题了</p>
+<p>上面的菜单栏其实之前写那个博客时候在<a target="_blank" rel="noopener" href="https://suckless.org/">suckless</a>直接copy过去的，这个网站有很多极简风格的软件，manjaro上用的就是dwm窗口管理器，</p>
+<p><img src="/img/image-20221006231013268.png" alt="image-20221006231013268"></p>
+<p>simple is best</p>
+<p>开发者工具真的很方便调试css，很多地方都是用f12改到满意然后修改css文件，也能看到别人是怎么实现那种效果的</p>
+<p>下面我来介绍一下这个主题吧！</p>
+<h2 id="标题"><a href="#标题" class="headerlink" title="标题"></a>标题</h2><p><img src="/img/image-20221006231824935.png" alt="image-20221006231824935"></p>
+<p>点这个p就会回到主页上，点github图标就会前往我的git页面</p>
+<h2 id="菜单栏"><a href="#菜单栏" class="headerlink" title="菜单栏"></a>菜单栏</h2><p><img src="/img/image-20221006231917615.png" alt="image-20221006231917615"></p>
+<ul>
+<li>  Home是主页，暂时没想好放什么东西</li>
+<li>  Blogs，不用解释，博客</li>
+<li>  Archives，归档，刚刚开始是不想写这个页面的，后来发现如果博客一多这个功能还是挺重要的</li>
+<li>  who@mi，自我介绍吧，还没写，真难想啊</li>
+<li>  Links，链接，放些其他平台的账户和友链什么的，友链只有acm队友的页面</li>
+</ul>
+<h2 id="外链"><a href="#外链" class="headerlink" title="外链"></a>外链</h2><p><img src="/img/image-20221006232320439.png" alt="image-20221006232320439"></p>
+<ul>
+<li><p>  pico-8，喜欢的游戏引擎官网，128x128的屏幕上运行复古的游戏，感觉唯一的缺点是不支持vim键位，typora也是，如果支持vim键位，那将是绝杀~</p>
+</li>
+<li><p>  suckless，毕竟菜单栏都是借鉴来的，就放在外链上吧，他们的风格我真的很喜欢，software that sucks less</p>
+</li>
+</ul>
+<h2 id="按钮"><a href="#按钮" class="headerlink" title="按钮"></a>按钮</h2><p><img src="/img/image-20221006232722840.png" alt="image-20221006232722840"></p>
+<p>点一下就会出现更多奇怪的按钮</p>
+<p><img src="/img/image-20221006232926912.png" alt="image-20221006232926912"></p>
+<ul>
+<li><p>  红O，更换背景，</p>
+</li>
+<li><p>  _，返璞归真，获得一个很素的背景，也就是前一个博客的页面</p>
+</li>
+</ul>
+<p><img src="/img/image-20221006233115482.png" alt="image-20221006233115482"></p>
+<ul>
+<li><p>music，MUSIC！</p>
+<p>  这东西就是网易云歌单的外链播放器，本来这个小窗口是放不下它的，然后我用clip-path改小的，研究clip-path是真的折磨</p>
+</li>
+</ul>
+<h2 id="博客"><a href="#博客" class="headerlink" title="博客"></a>博客</h2><p><img src="/img/image-20221006233415902.png"></p>
+<p>放的是所有博客，按发布时间排序，每页7篇，preview造型灵感来源于那种圆孔笔记本的纸张,<del>还有下面那块板,灵感来源于板</del></p>
+<ul>
+<li>  下一页</li>
+</ul>
+<p><img src="/img/image-20221006233515558.png"></p>
+<ul>
+<li>  上一页</li>
+</ul>
+<p><img src="/img/image-20221006233559646.png"></p>
+<ul>
+<li>  详细页面</li>
+</ul>
+<p><img src="/img/image-20221006233635747.png"></p>
+<ul>
+<li>  标签</li>
+</ul>
+<p><img src="/img/image-20221006233707863.png"></p>
+<ul>
+<li>  展开索引书签</li>
+</ul>
+<p><img src="/img/image-20221006233754619.png"></p>
+<p>​    </p>
+<h2 id="吐槽"><a href="#吐槽" class="headerlink" title="吐槽"></a>吐槽</h2><p>这个博客放图片我真的要吐了，因为我这个图片放在很多父类里，然后让居中成为了一件很麻烦的试去，为了居中所以我把所有图片的宽度都固定了，然后调节位置让他居中，这就导致那些很小的照片被拉的很长，就像上面那些，感觉以后少放些小图片</p>
+<h2 id="last"><a href="#last" class="headerlink" title="last"></a>last</h2><p>大概就这样了，这次开发下来收货不少，学了个pjax的局部刷新，大受震撼，还有些细枝末节的东西，搞这东西花了我不少时间，让我对前端有了更大的认识</p>
+<p>还剩个动画懒得研究了，这学期时间可能有点紧，一边是ACM训练，另一边是后端项目还要学习</p>
+<p>想早点买到vaio pro13啊…</p>
+
+
+	<b><span id="post-date">2022/10/04</span></b>
+	<div id="tags">
+		<ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag"># hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9D%82%E8%B0%88/" rel="tag"># 杂谈</a></li></ul>
+	</div>
+
+	<div id="clear"></div>
+</div>
+
+<div id="cart">
+	<button id="cart-hide" onclick="cartCg()">◀</button>
+</div>
+<script>
+	showAIndex();
+</script>
+
+	</div>
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+	</script>
+</span>
+	<hr id="hidden">
+	
+
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+		initBg();
+		$(document).pjax('a','#pup',{fragment:'#pup'});
+	</script>
+</body>
+</html>

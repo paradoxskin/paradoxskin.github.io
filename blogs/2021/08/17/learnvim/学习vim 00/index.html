@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html id="all">
+
+<head>
+	<meta charset="utf-8">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="/pic/favicon.ico">
+	<title>Paradoxless | Blogs</title>
+	
+<link rel="stylesheet" href="/css/main.css">
+
+	
+<link rel="stylesheet" href="/css/font.css">
+
+	
+<link rel="stylesheet" href="/lib/highlight/rainbow.min.css">
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+	
+<script src="/lib/highlight/highlight.min.js"></script>
+
+	
+<script src="/lib/highlight/highlightjs-line-numbers.js"></script>
+
+	
+<script src="/lib/jquery.js"></script>
+
+	
+<script src="/lib/jquery.pjax.js"></script>
+
+	
+<script src="/js/main.js"></script>
+
+<body id="lybody">
+	<div id="head">
+	<a id="pLogo" href="/"><img alt="P" src="/pic/logo.svg"></a>
+	<div id="urlText">aradoxskin.</div>
+	<a id="githubLogo" href="https://github.com/paradoxskin" target="_blank"><img alt="github" src="/pic/github.svg"></a>
+	<div id="urlText">.io</div>
+	<div id="sucklessText">- simple is best</div>
+	<div id="clear"></div>
+</div>
+
+	<hr id="hidden">
+	<script>
+	if(localStorage.getItem('bgs')==null){
+		localStorage['bgs']='comp'
+
+			localStorage.setItem('bgs[num]','21');
+
+			localStorage.setItem('bgs[pic1]','/pic/wp/01.jpg');
+
+			localStorage.setItem('bgs[pic2]','/pic/wp/02.jpg');
+
+			localStorage.setItem('bgs[pic3]','/pic/wp/03.jpg');
+
+			localStorage.setItem('bgs[pic4]','/pic/wp/04.jpg');
+
+			localStorage.setItem('bgs[pic5]','/pic/wp/05.jpg');
+
+			localStorage.setItem('bgs[pic6]','/pic/wp/06.jpg');
+
+			localStorage.setItem('bgs[pic7]','/pic/wp/07.jpg');
+
+			localStorage.setItem('bgs[pic8]','/pic/wp/08.jpg');
+
+			localStorage.setItem('bgs[pic9]','/pic/wp/09.jpg');
+
+			localStorage.setItem('bgs[pic10]','/pic/wp/10.jpg');
+
+			localStorage.setItem('bgs[pic11]','/pic/wp/11.jpg');
+
+			localStorage.setItem('bgs[pic12]','/pic/wp/12.jpg');
+
+			localStorage.setItem('bgs[pic13]','/pic/wp/13.png');
+
+			localStorage.setItem('bgs[pic14]','/pic/wp/14.png');
+
+			localStorage.setItem('bgs[pic15]','/pic/wp/15.png');
+
+			localStorage.setItem('bgs[pic16]','/pic/wp/16.jpg');
+
+			localStorage.setItem('bgs[pic17]','/pic/wp/17.jpg');
+
+			localStorage.setItem('bgs[pic18]','/pic/wp/18.jpg');
+
+			localStorage.setItem('bgs[pic19]','/pic/wp/19.jpg');
+
+			localStorage.setItem('bgs[pic20]','/pic/wp/20.jpg');
+
+			localStorage.setItem('bgs[pic21]','/pic/wp/21.jpg');
+
+		localStorage.setItem('now','#')
+	}
+</script>
+
+<div id="nav">
+	<ul>
+		<li><button id="cgBg" onclick="randomSwitch()">O</button><button id="clBg" onclick="noBg()">_</button></li>
+
+		<iframe id="music-player" frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=7669623816&auto=0&height=90"></iframe>
+
+		<button id="nav-hide" onclick="hideMenu()">◤</button>
+
+		<span id="clear"></span>
+	</ul>
+</div>
+<button id="nav-show" onclick="showMenu()">◢</button>
+
+<span id="pup">
+	<div id="menu">
+	
+	
+		
+			<b><a href="/" class="menu-item-link" id="in">Home</a></b>
+		
+	
+		
+			<b><a data-pjax="#main" href="/blogs" class="menu-item-link-selected" id="in">Blogs</a></b>
+		
+	
+		
+			<b><a href="/archives" class="menu-item-link" id="in">Archives</a></b>
+		
+	
+		
+			<b><a href="/about" class="menu-item-link" id="in">who@mi</a></b>
+		
+	
+		
+			<b><a href="/links" class="menu-item-link" id="in">Links</a></b>
+		
+	
+	<div id="outlink">
+	
+		<a href="https://www.lexaloffle.com/pico-8.php" class="menu-item-link" id="out" target="_blank">pico-8</a>
+	
+		<a href="https://suckless.org/" class="menu-item-link" id="out" target="_blank">suckless</a>
+	
+	</div>
+</div>
+
+	<div id="main">
+		<div id="post">
+
+    <h1 id="第零章-先读这个"><a href="#第零章-先读这个" class="headerlink" title="第零章 先读这个"></a>第零章 先读这个</h1><h2 id="为什么会写这个VIM指南"><a href="#为什么会写这个VIM指南" class="headerlink" title="为什么会写这个VIM指南"></a>为什么会写这个VIM指南</h2><p>  有很多地方可以学VIM: vimtutor是一个很好的起步地方，help指令有全部你需要的参考。</p>
+<p>  尽管如此，普通用户需要的东西比vimtutor教的要多一些，也不用help指令那么多，那么全面。为了弥补前两者之间的巨大差距，这篇指南试图通过标记出VIM主要功能，来让读者尽可能在少的时间里<span id="more"></span>学习VIM最有用的部分。</p>
+<p>  你可能不需要百分之百的VIM功能，你可能只需要知道他们的百分之二十就可以成为一个强大的Vimmer。这个指南会给你展示哪些VIM功能是最有用的。</p>
+<p>  这是一篇有我个人观点的指南，它包涵了我在使用VIM时经常用到的技术。所有章节都是根据我认为 最符合初学者学习VIM逻辑的顺序 排列的。</p>
+<p>  这篇指南包含大量的示范样例。在我们学习一项新技能时，例子是不可或缺的，有大量的例子会让我们更有效的巩固这些概念。</p>
+<p>  你们中的一些人可能会疑惑为什么你们需要学习Vimscript，在我用VIM的第一年，当我知道怎么使用VIM的时候就非常的满意。但是随着时间流逝，我开始需要Vimscript来满足我一些特别的编写时候的需求。当你掌握了VIM，你就会慢慢地需要Vimscript。所以为什么不从现在开始起步呢？Vimscript是一个很小巧的语言，你可以在第四章学会它的基础用法。</p>
+<p>  就算没有Vimscript，你也可以用VIM走很远，但学会了它，它会让你更进一步。</p>
+<p>  这篇指南适用于所有的初学者和进阶Vimmer。这篇指南从广泛和简单的概念起步，到具体和高级的概念。如果你已经是一个进阶的用户了，我还是建议你从头读到尾，因为你会学到一些新东西的！</p>
+<h2 id="如何从不同的编辑器过渡到VIM"><a href="#如何从不同的编辑器过渡到VIM" class="headerlink" title="如何从不同的编辑器过渡到VIM"></a>如何从不同的编辑器过渡到VIM</h2><p>  学习VIm尽管是一个很难的过程，但同样是让人满意的体验，这里有两个学习VIM的主要途径：</p>
+<p>  1.走出舒适圈<br>  2.慢慢习惯</p>
+<p>  走出舒适圈意思是让你停止使用你在用的编译器/IDE，从现在开始专心使用VIM。这个方式的缺点是在你的近一两周的生产力上会有严重的损失。如果你的本职就是一个程序员，这个方法可能不太实际。这也是为什么我相信对于大多数人来说，慢慢习惯使用它是过渡到VIM上的最好途径。</p>
+<p>  为了逐渐习惯使用VIM，在前两周，每天花一个小时使用VIM，其他时间你可以使用其他编辑器。很多现代的编辑者会用VIM插件。在我初学的时候，我用过vscode上最热门的VIM插件，每天用上一小时。后来我渐渐增加使用的时间，直到最后全天使用。不过还是请你记住，这些插件只是模拟了VIM功能的一小部分，要体验VIM的全部功能，你需要真正的VIM本体。</p>
+<p>  有两个关键的时刻让我开始使用VIM，一个是我意识到VIM有类似语法的结构(第四章)，还有一个是fzf.vim插件(第三章)。</p>
+<p>  对于第一点，当我弄懂了那些VIM用户在谈论什么的时候，我意识到了VIM有类似语法的结构。我不需要学习几百个独特的命令，我只需要学习一小部分命令我就可以用非常直观的方式来链接很多东西。</p>
+<p>  对于第二点我，我最常用地IDE功能就算能快速地运行一个模糊文件搜索。当我学会如何在VIM中实现这一点时，我的码速得到了质的飞跃，一发不可收拾。</p>
+<p>  每个人编程的方式是不一样的。仔细想想自己的编程习惯，你会发现你最喜欢的编辑器/IDE有那么一两个功能是你一直使用的。可能是模糊搜索，跳转到定义或者是快速编译。无论他们是什么，快速找到他们，然后学着在VIM中实现他们(很可能VIM能实现他们)，你的码速就会得到飞速提升。</p>
+<p>  一旦你可以在VIM上有百分之五十的原有码速，你就可以开始尝试只用VIM了。</p>
+<h2 id="如何阅读这份指南"><a href="#如何阅读这份指南" class="headerlink" title="如何阅读这份指南"></a>如何阅读这份指南</h2><p>  这是一份实用的指南。要成为一个优秀的vimmer，你需要锻炼你的肌肉记忆，而不是头脑知识。</p>
+<p>  你不可能通过阅读骑自行车的指南来学会骑自行车，而是需要上手去学会真正骑自行车。</p>
+<p>  你需要输入本指南中的每一个命令。不仅如此，你还需要重复输入它们，尝试不同的组合。回顾刚刚学的东西，help指令和搜索引擎是你最好的朋友。你的目标不是了解一个指令的前世今生，而是能够自然、习惯地运行它们。</p>
+<p>  我尽可能把这篇指南地风格塑造成线性的，但是这个指南中的一些概念不得不以无序的方式呈现。举个例子，第一章中，我提到了替代指令(:s)，尽管要到第十二章它才会被正式提到。为了解决这个问题，每当提前遇到了没有涉及的新概念时，我会提供一个快速的操作说明，虽然缺少了一些细节的解释。所以请容忍一下我这么做吧 :)</p>
+<h2 id="更多帮助"><a href="#更多帮助" class="headerlink" title="更多帮助"></a>更多帮助</h2><p>  这里是一个关于help指令的额外小贴士:假如你想学到更多关于<code>Ctrl-P</code>指令在插入模式的作用，你很有可能像<code>:h CTRL-P</code>这样输入指令，然后你会得到普通模式下的<code>CTRL-P</code>的帮助，当然这不是你想要的。在这种情况下需要键入<code>:h i_CTRL-P</code>，添加这个前缀代表它是插入模式的。要注意你要找的指令是在哪一个模式下执行的。</p>
+<h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><p>  大多数命令和代码类的语句都在一个代码方框里 (<code>like this</code>)</p>
+<p>  字符串被一对双引号包围 (“like this”)</p>
+<p>  VIM命令可以被缩写。比如，<code>:join</code>可以被缩写成<code>:j</code>。整个指南中，我将会混用缩写形式和全称语句。对于那些不经常使用的指令，我会用全称。相反，对于常用的指令，我会用缩写。对这种”区别对待”，我表示深深的歉意。一般来说，每当你发现一个新的指令时，总会在<code>:help</code>上看他的缩写。</p>
+<h2 id="VIMRC"><a href="#VIMRC" class="headerlink" title="VIMRC"></a>VIMRC</h2><p>  在本指南的很多地方，我会提到vimrc。如果你是个新手，vimrc就像一个配置文件。</p>
+<p>  vimrc在二十一章前是不会被正式涉及的。为了清楚起见，我会在这里简要的展示如何设置它。</p>
+<p>  我估计你想要设置行号(<code>set number</code>)，如果你没有一个vimrc，那么创建一个，它通常被放在根目录下的<code>.vimrc</code>文件。取决于你的系统环境，在macOS，位置在<code>~/.vimrc</code>，在windows，他在安装目录下名为<code>vimrc</code>的文件。为了找到在你的系统vimrc放在哪个位置，使用指令<code>:h vimrc</code>来找到它。</p>
+<p>  在这个文件里，增加一行<code>set number</code>，用<code>:w</code>保存它，然后重新应用它(<code>source %</code>)。你现在应该看见左边一栏显示行号了。</p>
+<p>  如果你不想做永久的改变，你可以经常运行<code>set</code>在你的命令行，通过运行<code>:set number</code>。这个方法的缺点就是每当你关闭VIM时，这个选项就会消失。</p>
+<p>  因为我们正在学习VIM，而不是VI，你必须在vimrc里设置为不兼容模式。在你的vimrc里添加一行<code>set nocompatible</code>。否则很多vim独特的功能会被禁用。</p>
+<p>  一般来说，当指南里的片段提到vimrc的选项时，只需要添加那个选项进vimrc，保存，重应用，就行了。</p>
+<h2 id="未来，错误，问题"><a href="#未来，错误，问题" class="headerlink" title="未来，错误，问题"></a>未来，错误，问题</h2><p>  期待未来有更多的更新，如果你找到了什么错误或者有什么问题，请随时联系我。</p>
+<p>  我同样计划了更多文章在未来发出，所以请持续关注。</p>
+<h2 id="我想要更多VIM技巧"><a href="#我想要更多VIM技巧" class="headerlink" title="我想要更多VIM技巧"></a>我想要更多VIM技巧</h2><p>  <a target="_blank" rel="noopener" href="https://twitter.com/learnvim">点我</a></p>
+<h2 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h2><p>  感谢Bram Moleenar创造了VIM，感谢我的妻子让我坚持写完这个指南，感谢所有的learn-vim project的支持者，感谢VIM社区，感谢所有所有所有的其他没有被提到的人。</p>
+<p>  谢谢你们，你们都让文本编辑变得不那么枯燥无味 :)</p>
+
+
+	<b><span id="post-date">2021/08/17</span></b>
+	<div id="tags">
+		<ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/vim/" rel="tag"># vim</a></li></ul>
+	</div>
+
+	<div id="clear"></div>
+</div>
+
+<div id="cart">
+	<button id="cart-hide" onclick="cartCg()">◀</button>
+</div>
+<script>
+	showAIndex();
+</script>
+
+	</div>
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+	</script>
+</span>
+	<hr id="hidden">
+	
+
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+		initBg();
+		$(document).pjax('a','#pup',{fragment:'#pup'});
+	</script>
+</body>
+</html>

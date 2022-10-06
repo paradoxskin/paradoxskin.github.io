@@ -1,0 +1,12 @@
+@font-face{
+	font-family:"P8";
+	src:url("/font/pico-8.ttf");
+	font-weight:normal;
+	font-style:normal;
+}
+@font-face{
+	font-family:"scp";
+	src:url("/font/SourceCodePro.ttf");
+	font-weight:normal;
+	font-style:normal;
+}
