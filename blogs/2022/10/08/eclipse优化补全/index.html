@@ -21,7 +21,7 @@
 
 
 <link rel="shortcut icon" href="/pic/favicon.ico">
-	<title>Paradoxless | Archives</title>
+	<title>Paradoxless | Blogs</title>
 	
 <link rel="stylesheet" href="/css/main.css">
 
@@ -132,11 +132,11 @@
 		
 	
 		
-			<b><a href="/blogs" class="menu-item-link" id="in">Blogs</a></b>
+			<b><a data-pjax="#main" href="/blogs" class="menu-item-link-selected" id="in">Blogs</a></b>
 		
 	
 		
-			<b><a data-pjax="#main" href="/archives" class="menu-item-link-selected" id="in">Archives</a></b>
+			<b><a href="/archives" class="menu-item-link" id="in">Archives</a></b>
 		
 	
 		
@@ -157,92 +157,30 @@
 </div>
 
 	<div id="main">
-		
+		<div id="post">
+
+    <h1 id="eclipse优化补全"><a href="#eclipse优化补全" class="headerlink" title="eclipse优化补全"></a>eclipse优化补全</h1><p>eclipse都是默认开启自动激活，键入<code>.</code>之后弹出补全框，这让装了vim插件的我非常头疼，因为在有补全框的状态下按一下<code>esc</code>是关闭补全框，所以<span id="more"></span>从<code>insert</code>模式切换成<code>normal</code>模式要按两次<code>esc</code>键，血压飙升</p>
+<p>试过关闭补全，但是还要痛苦，如果关闭补全我为什么不直接去用纯vim呢…</p>
+<p>尝试着百度了一下，只有开启关闭补全的，没有我这方面需求的</p>
+<p>结果在<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/23259054/how-to-change-the-controlspace-autocomplete-shortcut-keys-in-eclipse-for-androi"><code>stackOverflow</code></a>找到了，补全的名字是<code>content assist</code>，设置这个名字的快捷键即可<img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-typora/image-20221008144420364.png" alt="image-20221008144420364"></p>
+<p>然后再关闭自动激活就可以了</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-typora/image-20221008144509590.png" alt="image-20221008144509590"></p>
 
 
-
-
-		<b><div id="year">* 2022 *</div></b>
-
-	<div id="archive-post">
-		<a href="/blogs/2022/10/08/搭建图床/">
-			10-08     <span>typora + python + 阿里云oss 搭建图床指北</span>
-		</a>
+	<b><span id="post-date">2022/10/08</span></b>
+	<div id="tags">
+		<ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/eclipse/" rel="tag"># eclipse</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9D%82%E8%B0%88/" rel="tag"># 杂谈</a></li></ul>
 	</div>
 
+	<div id="clear"></div>
+</div>
 
-	<div id="archive-post">
-		<a href="/blogs/2022/10/08/eclipse优化补全/">
-			10-08     <span>eclipse优化补全</span>
-		</a>
-	</div>
-
-
-	<div id="archive-post">
-		<a href="/blogs/2022/10/04/hexo主题设计/">
-			10-04     <span>hexo主题设计</span>
-		</a>
-	</div>
-
-
-	<div id="archive-post">
-		<a href="/blogs/2022/10/01/观察hexo/">
-			10-01     <span>HEXO的观察</span>
-		</a>
-	</div>
-
-
-	<div id="archive-post">
-		<a href="/blogs/2022/10/01/javaweb/ch01/">
-			10-01     <span>java web 01</span>
-		</a>
-	</div>
-
-
-	<div id="archive-post">
-		<a href="/blogs/2022/09/12/about_typora/">
-			09-12     <span>关于typora的234</span>
-		</a>
-	</div>
-
-
-	<div id="archive-post">
-		<a href="/blogs/2022/09/10/learnvim/popup/">
-			09-10     <span>vim popup window 初学</span>
-		</a>
-	</div>
-
-
-
-		<b><div id="year">* 2021 *</div></b>
-
-	<div id="archive-post">
-		<a href="/blogs/2021/10/04/learnvim/学习vim 03/">
-			10-04     <span>学习vim 第3章</span>
-		</a>
-	</div>
-
-
-	<div id="archive-post">
-		<a href="/blogs/2021/09/15/learnvim/学习vim 02/">
-			09-15     <span>学习vim 第2章</span>
-		</a>
-	</div>
-
-
-	<div id="archive-post">
-		<a href="/blogs/2021/09/10/learnvim/学习vim 01/">
-			09-10     <span>学习vim 第1章</span>
-		</a>
-	</div>
-
-
-	<div id="archive-post">
-		<a href="/blogs/2021/08/17/learnvim/学习vim 00/">
-			08-17     <span>学习vim 第0章</span>
-		</a>
-	</div>
-
+<div id="cart">
+	<button id="cart-hide" onclick="cartCg()">◀</button>
+</div>
+<script>
+	showAIndex();
+</script>
 
 	</div>
 	<script>
