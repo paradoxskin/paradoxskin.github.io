@@ -21,7 +21,7 @@
 
 
 <link rel="shortcut icon" href="/pic/favicon.ico">
-	<title>Paradoxless | Archives</title>
+	<title>Paradoxless | Blogs</title>
 	
 <link rel="stylesheet" href="/css/main.css">
 
@@ -132,11 +132,11 @@
 		
 	
 		
-			<b><a href="/blogs" class="menu-item-link" id="in">Blogs</a></b>
+			<b><a data-pjax="#main" href="/blogs" class="menu-item-link-selected" id="in">Blogs</a></b>
 		
 	
 		
-			<b><a data-pjax="#main" href="/archives" class="menu-item-link-selected" id="in">Archives</a></b>
+			<b><a href="/archives" class="menu-item-link" id="in">Archives</a></b>
 		
 	
 		
@@ -157,106 +157,39 @@
 </div>
 
 	<div id="main">
-		
+		<div id="post">
+
+    <h1 id="Enumeration"><a href="#Enumeration" class="headerlink" title="Enumeration"></a>Enumeration</h1><blockquote>
+<p>   用惯了cpp的STL，感觉java的数据结构非常麻烦，不仅前面还写一堆东西，还有各种方法名，所以简单的记一下，这次碰到的enumeration</p>
+</blockquote>
+<span id="more"></span>
+
+<p><code>import java.util.Enumeration</code></p>
+<p>它其实不是一个数据结构，只是一个接口，这个接口只有两个方法，</p>
+<p>一个是查看容器中是否还剩东西 <code>hasMoreElements()</code></p>
+<p>一个是取出下一个东西 <code>nextElement()</code></p>
+<pre><code class="java">java.util.Enumeration&lt;String&gt; enum = xxx;
+while(enum.hasMoreElements())&#123;
+    String x = enum.nextElement();
+    xxxx;
+&#125;
+</code></pre>
 
 
-
-
-		<b><div id="year">* 2022 *</div></b>
-
-	<div id="archive-post">
-		<a href="/blogs/2022/10/17/enumeration/">
-			10-17     <span>Enumeration使用</span>
-		</a>
+	<b><span id="post-date">2022/10/17</span></b>
+	<div id="tags">
+		<ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag"># java</a></li></ul>
 	</div>
 
+	<div id="clear"></div>
+</div>
 
-	<div id="archive-post">
-		<a href="/blogs/2022/10/10/第一次隔离/">
-			10-10     <span>记第一次隔离</span>
-		</a>
-	</div>
-
-
-	<div id="archive-post">
-		<a href="/blogs/2022/10/08/搭建图床/">
-			10-08     <span>typora + python + 阿里云oss 搭建图床指北</span>
-		</a>
-	</div>
-
-
-	<div id="archive-post">
-		<a href="/blogs/2022/10/08/eclipse优化补全/">
-			10-08     <span>eclipse优化补全</span>
-		</a>
-	</div>
-
-
-	<div id="archive-post">
-		<a href="/blogs/2022/10/04/hexo主题设计/">
-			10-04     <span>hexo主题设计</span>
-		</a>
-	</div>
-
-
-	<div id="archive-post">
-		<a href="/blogs/2022/10/01/观察hexo/">
-			10-01     <span>HEXO的观察</span>
-		</a>
-	</div>
-
-
-	<div id="archive-post">
-		<a href="/blogs/2022/10/01/javaweb/ch01/">
-			10-01     <span>java web 01</span>
-		</a>
-	</div>
-
-
-	<div id="archive-post">
-		<a href="/blogs/2022/09/12/about_typora/">
-			09-12     <span>关于typora的234</span>
-		</a>
-	</div>
-
-
-	<div id="archive-post">
-		<a href="/blogs/2022/09/10/learnvim/popup/">
-			09-10     <span>vim popup window 初学</span>
-		</a>
-	</div>
-
-
-
-		<b><div id="year">* 2021 *</div></b>
-
-	<div id="archive-post">
-		<a href="/blogs/2021/10/04/learnvim/学习vim 03/">
-			10-04     <span>学习vim 第3章</span>
-		</a>
-	</div>
-
-
-	<div id="archive-post">
-		<a href="/blogs/2021/09/15/learnvim/学习vim 02/">
-			09-15     <span>学习vim 第2章</span>
-		</a>
-	</div>
-
-
-	<div id="archive-post">
-		<a href="/blogs/2021/09/10/learnvim/学习vim 01/">
-			09-10     <span>学习vim 第1章</span>
-		</a>
-	</div>
-
-
-	<div id="archive-post">
-		<a href="/blogs/2021/08/17/learnvim/学习vim 00/">
-			08-17     <span>学习vim 第0章</span>
-		</a>
-	</div>
-
+<div id="cart">
+	<button id="cart-hide" onclick="cartCg()">◀</button>
+</div>
+<script>
+	showAIndex();
+</script>
 
 	</div>
 	<script>
