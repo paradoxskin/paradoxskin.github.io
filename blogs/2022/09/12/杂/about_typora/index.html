@@ -18,8 +18,10 @@
 
 
 
+
+
 <link rel="shortcut icon" href="/pic/favicon.ico">
-	<title>Paradoxless | </title>
+	<title>Paradoxless | Blogs</title>
 	
 <link rel="stylesheet" href="/css/main.css">
 
@@ -130,7 +132,7 @@
 		
 	
 		
-			<b><a href="/blogs" class="menu-item-link" id="in">Blogs</a></b>
+			<b><a data-pjax="#main" href="/blogs" class="menu-item-link-selected" id="in">Blogs</a></b>
 		
 	
 		
@@ -155,32 +157,34 @@
 </div>
 
 	<div id="main">
-		<b><div id="tagTitle"># 杂谈</div></b>
+		<div id="post">
 
-	<div id="archive-post">
-		<a href="/blogs/2022/10/27/pythonsExec/">
-			<span>python exec在局部域中失效的问题</span>
-		</a>
+    <p>想在manjaro上装一个typora,网上搜索到了中科大的arch库里有typora,下载了之后发现<span id="more"></span>是试用版，也就是下载了官方的最新版,我还以为linux上的库都是开源的软件,中科大为了方便自己上传了什么破解高仿版,原来只是上传了官方的版本,然后就卸载掉了.</p>
+<p>既然官方库里没有而中科大库里有,说明可能yay里有这个库,于是打开了archwiki搜索了下typora,结果发现原来真有这个,点开源文件发现没有什么源码,只有一个makefile文件,可能这就是闭源软件的生态吧,然后我在评论区发现了一条评论</p>
+<p><img src="/img/image-20220914141736699.png"></p>
+<p>以为这个<a target="_blank" rel="noopener" href="https://aur.archlinux.org/packages/typora-free">typora-free</a>就是我在找的东西，然而我还是太天真了</p>
+<p><img src="/img/image-20220914141905625.png"></p>
+<p>真是不当人啊！</p>
+<p>好在有好心人提供了留档文件地址</p>
+<p><img src="/img/image-20220914141955855.png" alt="image-20220914141955855"></p>
+<p>这就是最后一个免费的版本了，泪目。</p>
+<p>然后我又在google搜索了一下这个版本，发现其实官方还是留了扇<a target="_blank" rel="noopener" href="https://typora.io/windows/dev_release.html">后门</a>的，虽然这个网页从表网站(官网)是点不进去就是了…</p>
+
+
+	<b><span id="post-date">2022/09/12</span></b>
+	<div id="tags">
+		<ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9D%82%E8%B0%88/" rel="tag"># 杂谈</a></li></ul>
 	</div>
 
-	<div id="archive-post">
-		<a href="/blogs/2022/10/08/eclipse优化补全/">
-			<span>eclipse优化补全</span>
-		</a>
-	</div>
+	<div id="clear"></div>
+</div>
 
-	<div id="archive-post">
-		<a href="/blogs/2022/10/04/hexo主题设计/">
-			<span>hexo主题设计</span>
-		</a>
-	</div>
-
-	<div id="archive-post">
-		<a href="/blogs/2022/09/12/杂/about_typora/">
-			<span>关于typora的234</span>
-		</a>
-	</div>
-
+<div id="cart">
+	<button id="cart-hide" onclick="cartCg()">◀</button>
+</div>
+<script>
+	showAIndex();
+</script>
 
 	</div>
 	<script>
