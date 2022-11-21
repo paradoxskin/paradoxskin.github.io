@@ -381,3 +381,42 @@
 a.gonxt,a.gopre{
 	font-family: p8;
 }
+
+#homepage{
+}
+#whoami{
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+#whoami blockquote p{
+	margin-left: 0px;
+	color: #a1bbe0;
+	font-size: 11px;
+}
+#whoami blockquote{
+	margin-top:80px;
+	background: #ffef00;
+	border-radius: 35px;
+	padding: 16px;
+}
+#whoami ul{
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+#whoami blockquote h1{
+	font-size: 25px;
+	color: #6aaedf;
+}
+#whoami blockquote h1 p{
+	font-size: 25px;
+	color: #6aaedf;
+}
+#whoami #pc8{
+	font-family: p8;
+}
+#whoami img{
+	padding-top: 30px;
+	padding-bottom: 100px;
+}

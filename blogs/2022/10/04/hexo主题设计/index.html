@@ -59,10 +59,10 @@
 
 	<hr id="hidden">
 	<script>
-	if(localStorage.getItem('bgs')==null){
+	//if(localStorage.getItem('bgs')==null){
 		localStorage['bgs']='comp'
 
-			localStorage.setItem('bgs[num]','21');
+			localStorage.setItem('bgs[num]','25');
 
 			localStorage.setItem('bgs[pic1]','/pic/wp/01.jpg');
 
@@ -104,10 +104,20 @@
 
 			localStorage.setItem('bgs[pic20]','/pic/wp/20.jpg');
 
-			localStorage.setItem('bgs[pic21]','/pic/wp/21.jpg');
+			localStorage.setItem('bgs[pic21]','/pic/wp/21.png');
 
-		localStorage.setItem('now','#')
-	}
+			localStorage.setItem('bgs[pic22]','/pic/wp/22.jpg');
+
+			localStorage.setItem('bgs[pic23]','/pic/wp/23.png');
+
+			localStorage.setItem('bgs[pic24]','/pic/wp/24.jpg');
+
+			localStorage.setItem('bgs[pic25]','/pic/wp/25.jpg');
+
+		if(localStorage.getItem('now')==null){
+			localStorage.setItem('now','pic3');
+		}
+	//}
 </script>
 
 <div id="nav">
