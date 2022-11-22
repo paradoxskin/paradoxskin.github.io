@@ -326,6 +326,23 @@
 	border-radius: 5px;
 	width:700px;
 }
+
+#post table2{
+	background: #eed8dd82;
+	padding-left: 33px;
+}
+#post th{
+	text-align: left;
+}
+#post blockquote{
+	border-left-color: #a75cda54;
+	border-left-style: outset;
+	border-width: 5px;
+	margin-left: 7px;
+	padding-left: 8px;
+	color: #3f3a3a7a;
+	font-style: italic;
+}
 #cart{
 	position: fixed;
 	top: 98px;
