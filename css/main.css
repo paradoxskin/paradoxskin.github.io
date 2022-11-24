@@ -399,7 +399,8 @@ a.gonxt,a.gopre{
 	font-family: p8;
 }
 
-#homepage{
+#homepage h1{
+	text-align: center;
 }
 #whoami{
 	margin-left: auto;
