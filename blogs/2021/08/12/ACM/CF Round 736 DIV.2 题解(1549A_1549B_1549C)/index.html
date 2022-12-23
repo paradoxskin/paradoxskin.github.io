@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html id="all">
+
+<head>
+	<meta charset="utf-8">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="/pic/favicon.ico">
+	<title>Paradoxless | Blogs</title>
+	
+<link rel="stylesheet" href="/css/main.css">
+
+	
+<link rel="stylesheet" href="/css/font.css">
+
+	
+<link rel="stylesheet" href="/lib/highlight/rainbow.min.css">
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+	
+<script src="/lib/highlight/highlight.min.js"></script>
+
+	
+<script src="/lib/highlight/highlightjs-line-numbers.js"></script>
+
+	
+<script src="/lib/jquery.js"></script>
+
+	
+<script src="/lib/jquery.pjax.js"></script>
+
+	
+<script src="/js/main.js"></script>
+
+<body id="lybody">
+	<div id="head">
+	<a id="pLogo" href="/"><img alt="P" src="/pic/logo.svg"></a>
+	<div id="urlText">aradoxskin.</div>
+	<a id="githubLogo" href="https://github.com/paradoxskin" target="_blank"><img alt="github" src="/pic/github.svg"></a>
+	<div id="urlText">.io</div>
+	<div id="sucklessText">- simple is best</div>
+	<div id="clear"></div>
+</div>
+
+	<hr id="hidden">
+	<script>
+	//if(localStorage.getItem('bgs')==null){
+		localStorage['bgs']='comp'
+
+			localStorage.setItem('bgs[num]','25');
+
+			localStorage.setItem('bgs[pic1]','/pic/wp/01.jpg');
+
+			localStorage.setItem('bgs[pic2]','/pic/wp/02.jpg');
+
+			localStorage.setItem('bgs[pic3]','/pic/wp/03.jpg');
+
+			localStorage.setItem('bgs[pic4]','/pic/wp/04.jpg');
+
+			localStorage.setItem('bgs[pic5]','/pic/wp/05.jpg');
+
+			localStorage.setItem('bgs[pic6]','/pic/wp/06.jpg');
+
+			localStorage.setItem('bgs[pic7]','/pic/wp/07.jpg');
+
+			localStorage.setItem('bgs[pic8]','/pic/wp/08.jpg');
+
+			localStorage.setItem('bgs[pic9]','/pic/wp/09.jpg');
+
+			localStorage.setItem('bgs[pic10]','/pic/wp/10.jpg');
+
+			localStorage.setItem('bgs[pic11]','/pic/wp/11.jpg');
+
+			localStorage.setItem('bgs[pic12]','/pic/wp/12.jpg');
+
+			localStorage.setItem('bgs[pic13]','/pic/wp/13.png');
+
+			localStorage.setItem('bgs[pic14]','/pic/wp/14.png');
+
+			localStorage.setItem('bgs[pic15]','/pic/wp/15.png');
+
+			localStorage.setItem('bgs[pic16]','/pic/wp/16.jpg');
+
+			localStorage.setItem('bgs[pic17]','/pic/wp/17.jpg');
+
+			localStorage.setItem('bgs[pic18]','/pic/wp/18.jpg');
+
+			localStorage.setItem('bgs[pic19]','/pic/wp/19.jpg');
+
+			localStorage.setItem('bgs[pic20]','/pic/wp/20.jpg');
+
+			localStorage.setItem('bgs[pic21]','/pic/wp/21.png');
+
+			localStorage.setItem('bgs[pic22]','/pic/wp/22.jpg');
+
+			localStorage.setItem('bgs[pic23]','/pic/wp/23.png');
+
+			localStorage.setItem('bgs[pic24]','/pic/wp/24.jpg');
+
+			localStorage.setItem('bgs[pic25]','/pic/wp/25.jpg');
+
+		if(localStorage.getItem('now')==null){
+			localStorage.setItem('now','pic3');
+		}
+	//}
+</script>
+
+<div id="nav">
+	<ul>
+		<li><button id="cgBg" onclick="randomSwitch()">O</button><button id="clBg" onclick="noBg()">_</button></li>
+
+		<iframe id="music-player" frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=7669623816&auto=0&height=90"></iframe>
+
+		<button id="nav-hide" onclick="hideMenu()">◤</button>
+
+		<span id="clear"></span>
+	</ul>
+</div>
+<button id="nav-show" onclick="showMenu()">◢</button>
+
+<span id="pup">
+	<div id="menu">
+	
+	
+		
+			<b><a href="/" class="menu-item-link" id="in">Home</a></b>
+		
+	
+		
+			<b><a data-pjax="#main" href="/blogs" class="menu-item-link-selected" id="in">Blogs</a></b>
+		
+	
+		
+			<b><a href="/archives" class="menu-item-link" id="in">Archives</a></b>
+		
+	
+		
+			<b><a href="/about" class="menu-item-link" id="in">who@mi</a></b>
+		
+	
+		
+			<b><a href="/links" class="menu-item-link" id="in">Links</a></b>
+		
+	
+	<div id="outlink">
+	
+		<a href="https://www.lexaloffle.com/pico-8.php" class="menu-item-link" id="out" target="_blank">pico-8</a>
+	
+		<a href="https://suckless.org/" class="menu-item-link" id="out" target="_blank">suckless</a>
+	
+	</div>
+</div>
+
+	<div id="main">
+		<div id="post">
+
+    <p>好奇今天的杭电多校第三题怎么做的，之前做过一道差不多的小数据二分题，按那个思路超时了。</p>
+<blockquote>
+<p>好像是Prim最小生成树？</p>
+</blockquote>
+<hr>
+<h1 id="CF-Round-736-DIV-2-题解-1549A-1549B-1549C"><a href="#CF-Round-736-DIV-2-题解-1549A-1549B-1549C" class="headerlink" title="CF Round 736 DIV.2 题解(1549A/1549B/1549C)"></a>CF Round 736 DIV.2 题解(1549A/1549B/1549C)</h1><h2 id="题目列表"><a href="#题目列表" class="headerlink" title="题目列表"></a>题目列表</h2><p>1.<a href="#a">A</a><br>2.<a href="#b">B</a><br>3.<a href="#c">C</a></p>
+<hr>
+<blockquote>
+<p>这几篇题解都是我从自己的CSDN里搬来的，不然显得我没打过ACM www<span id="more"></span></p>
+</blockquote>
+<h3 id="1-A"><a href="#1-A" class="headerlink" title="1.A"></a><span id='a'>1.A</span></h3><p><a target="_blank" rel="noopener" href="https://codeforces.com/contest/1549/problem/A">原题链接</a></p>
+<h4 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h4><p>给一个质数P，求a和b满足$P\ mod\ a == P\ mod\ b$。</p>
+<h4 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h4><p>水题，总所周知，大于2的质数全是奇数，所以直接输出2和P-1。</p>
+<h4 id="AC代码"><a href="#AC代码" class="headerlink" title="AC代码"></a>AC代码</h4><pre><code class="cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+int main()&#123;
+    int t;
+    scanf(&quot;%d&quot;,&amp;t);
+    int a,b,p;
+    while(t--)&#123;
+        scanf(&quot;%d&quot;,&amp;p);
+        printf(&quot;%d %d\n&quot;,2,p-1);
+    &#125;
+    return 0;
+&#125;
+</code></pre>
+<hr>
+<h3 id="2-B"><a href="#2-B" class="headerlink" title="2.B"></a><span id='b'>2.B</span></h3><p><a target="_blank" rel="noopener" href="https://codeforces.com/contest/1549/problem/B">原题链接</a></p>
+<h4 id="题目大意-1"><a href="#题目大意-1" class="headerlink" title="题目大意"></a>题目大意</h4><p>国际象棋的兵的走位，给出我方和对面的位置，求我方士兵能到达对面的最大个数。</p>
+<h4 id="解题思路-1"><a href="#解题思路-1" class="headerlink" title="解题思路"></a>解题思路</h4><p>如果前面是0直接进，其他情况大概优先左边再往右，其实没啥思路，直接暴力就过了…</p>
+<h4 id="AC代码-1"><a href="#AC代码-1" class="headerlink" title="AC代码"></a>AC代码</h4><pre><code class="python">t=int(input())
+for lkasjflkasfj in range(t):
+    n=int(input())
+    a=[&#39;X&#39;]+list(input())+[&#39;X&#39;]
+    m=&#39;X&#39;+input()+&#39;X&#39;
+    ans=0
+    for i in range(1,n+1):
+        if m[i]==&#39;1&#39;:
+            if a[i]==&#39;0&#39;:
+                ans+=1
+            elif a[i-1]==&#39;1&#39;:
+                ans+=1
+                a[i-1]=&#39;2&#39;
+            elif a[i+1]==&#39;1&#39;:
+                ans+=1
+                a[i+1]=&#39;2&#39;
+    print(ans)
+</code></pre>
+<hr>
+<h3 id="3-C"><a href="#3-C" class="headerlink" title="3.C"></a><span id='c'>3.C</span></h3><p><a target="_blank" rel="noopener" href="https://codeforces.com/contest/1549/problem/C">原题链接</a></p>
+<h4 id="题目大意-2"><a href="#题目大意-2" class="headerlink" title="题目大意"></a>题目大意</h4><p>给一个初始的图，然后对于一个结点，如果他的所有相邻结点都比他大，那他就会被消灭掉，求最终还剩几个点。有三种操作，一个是删除一条边，一个是增加一个边，还有一个是查询答案。</p>
+<h4 id="解题思路-2"><a href="#解题思路-2" class="headerlink" title="解题思路"></a>解题思路</h4><p>因为所有点都是唯一的，所以对于每个联通的关系，总会有最小的结点被消灭，一直持续这个过程，最终状态就都是分离的，因此对于关系网中如果一个结点比所有和他相连的结点大，那最后那个结点会存活，而其他相连结点全部会被消灭掉，按照这个思路就可以模拟。不知道为什么，第一反应就是并查集，对每条边，每次把小结点的根变成大结点，然后不出所料的T了3次。最后换了一个思路，因为并查集是没有办法维护的，每次查询都要重新来对边合并，遍历一遍，时间成本是非常大的，所以应该找一个能维护的算法，最后决定用拓扑排序。让我们把每条边都变成从大的结点指向小的结点，记录每个点的入度，如果一个结点的入度为0那他最后就会存活，只要统计入度为0的点的个数就行了，而且维护起来相当方便👍</p>
+<h4 id="AC代码-2"><a href="#AC代码-2" class="headerlink" title="AC代码"></a>AC代码</h4><pre><code class="cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+const int maxn=2e5+10;
+int a[maxn];
+int main()&#123;
+    int n,m;
+    int i,j,k,tmp;
+    int u,v;
+    int q;
+    scanf(&quot;%d%d&quot;,&amp;n,&amp;m);
+    int ans=0;
+    for(i=0;i&lt;m;i++)&#123;
+        scanf(&quot;%d%d&quot;,&amp;u,&amp;v);
+        u=min(u,v);
+        a[u]++;
+    &#125;
+    scanf(&quot;%d&quot;,&amp;q);
+    int op;
+    for(i=1;i&lt;=n;i++)&#123;
+        if(a[i]==0)
+            ans++;
+    &#125;
+    while(q--)&#123;
+        scanf(&quot;%d&quot;,&amp;op);
+        if(op==3)&#123;
+            printf(&quot;%d\n&quot;,ans);
+        &#125;
+        else if(op==1)&#123;
+            scanf(&quot;%d%d&quot;,&amp;u,&amp;v);
+            tmp=max(u,v);
+            u=min(u,v);
+            v=tmp;
+            a[u]++;
+            if(a[u]==1)
+                ans--;
+        &#125;
+        else if(op==2)&#123;
+            scanf(&quot;%d%d&quot;,&amp;u,&amp;v);
+            tmp=max(u,v);
+            u=min(u,v);
+            v=tmp;
+            a[u]--;
+            if(a[u]==0)
+                ans++;
+        &#125;
+    &#125;
+    return 0;
+&#125;
+</code></pre>
+
+
+	<b><span id="post-date">2021/08/12</span></b>
+	<div id="tags">
+		<ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/ACM/" rel="tag"># ACM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%A2%98%E8%A7%A3/" rel="tag"># 题解</a></li></ul>
+	</div>
+
+	<div id="clear"></div>
+</div>
+
+<div id="cart">
+	<button id="cart-hide" onclick="cartCg()">◀</button>
+</div>
+<script>
+	showAIndex();
+</script>
+
+	</div>
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+	</script>
+</span>
+	<hr id="hidden">
+	
+
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+		initBg();
+		$(document).pjax('a','#pup',{fragment:'#pup'});
+	</script>
+</body>
+</html>
