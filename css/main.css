@@ -312,6 +312,17 @@
 	margin-top:0px;
 	font-size: 40px;
 }
+#post h2::before{
+	content: "# ";
+	color: #60a4e0;
+	font-size: 28px;
+	font-family: p8;
+}
+#post h3::before{
+	content: "# ";
+	color: #60a4e0;
+	font-size: 17px;
+}
 #post-date{
 	margin-top: 115px;
 	color: #96d18a;
