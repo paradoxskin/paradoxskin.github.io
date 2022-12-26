@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html id="all">
+
+<head>
+	<meta charset="utf-8">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="/pic/favicon.ico">
+	<title>Paradoxless | Blogs</title>
+	
+<link rel="stylesheet" href="/css/main.css">
+
+	
+<link rel="stylesheet" href="/css/font.css">
+
+	
+<link rel="stylesheet" href="/lib/highlight/rainbow.min.css">
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+	
+<script src="/lib/highlight/highlight.min.js"></script>
+
+	
+<script src="/lib/highlight/highlightjs-line-numbers.js"></script>
+
+	
+<script src="/lib/jquery.js"></script>
+
+	
+<script src="/lib/jquery.pjax.js"></script>
+
+	
+<script src="/js/main.js"></script>
+
+<body id="lybody">
+	<div id="head">
+	<a id="pLogo" href="/"><img alt="P" src="/pic/logo.svg"></a>
+	<div id="urlText">aradoxskin.</div>
+	<a id="githubLogo" href="https://github.com/paradoxskin" target="_blank"><img alt="github" src="/pic/github.svg"></a>
+	<div id="urlText">.io</div>
+	<div id="sucklessText">- simple is best</div>
+	<div id="clear"></div>
+</div>
+
+	<hr id="hidden">
+	<script>
+	//if(localStorage.getItem('bgs')==null){
+		localStorage['bgs']='comp'
+
+			localStorage.setItem('bgs[num]','25');
+
+			localStorage.setItem('bgs[pic1]','/pic/wp/01.jpg');
+
+			localStorage.setItem('bgs[pic2]','/pic/wp/02.jpg');
+
+			localStorage.setItem('bgs[pic3]','/pic/wp/03.jpg');
+
+			localStorage.setItem('bgs[pic4]','/pic/wp/04.jpg');
+
+			localStorage.setItem('bgs[pic5]','/pic/wp/05.jpg');
+
+			localStorage.setItem('bgs[pic6]','/pic/wp/06.jpg');
+
+			localStorage.setItem('bgs[pic7]','/pic/wp/07.jpg');
+
+			localStorage.setItem('bgs[pic8]','/pic/wp/08.jpg');
+
+			localStorage.setItem('bgs[pic9]','/pic/wp/09.jpg');
+
+			localStorage.setItem('bgs[pic10]','/pic/wp/10.jpg');
+
+			localStorage.setItem('bgs[pic11]','/pic/wp/11.jpg');
+
+			localStorage.setItem('bgs[pic12]','/pic/wp/12.jpg');
+
+			localStorage.setItem('bgs[pic13]','/pic/wp/13.png');
+
+			localStorage.setItem('bgs[pic14]','/pic/wp/14.png');
+
+			localStorage.setItem('bgs[pic15]','/pic/wp/15.png');
+
+			localStorage.setItem('bgs[pic16]','/pic/wp/16.jpg');
+
+			localStorage.setItem('bgs[pic17]','/pic/wp/17.jpg');
+
+			localStorage.setItem('bgs[pic18]','/pic/wp/18.jpg');
+
+			localStorage.setItem('bgs[pic19]','/pic/wp/19.jpg');
+
+			localStorage.setItem('bgs[pic20]','/pic/wp/20.jpg');
+
+			localStorage.setItem('bgs[pic21]','/pic/wp/21.png');
+
+			localStorage.setItem('bgs[pic22]','/pic/wp/22.jpg');
+
+			localStorage.setItem('bgs[pic23]','/pic/wp/23.png');
+
+			localStorage.setItem('bgs[pic24]','/pic/wp/24.jpg');
+
+			localStorage.setItem('bgs[pic25]','/pic/wp/25.jpg');
+
+		if(localStorage.getItem('now')==null){
+			localStorage.setItem('now','pic3');
+		}
+	//}
+</script>
+
+<div id="nav">
+	<ul>
+		<li><button id="cgBg" onclick="randomSwitch()">O</button><button id="clBg" onclick="noBg()">_</button></li>
+
+		<iframe id="music-player" frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=7669623816&auto=0&height=90"></iframe>
+
+		<button id="nav-hide" onclick="hideMenu()">◤</button>
+
+		<span id="clear"></span>
+	</ul>
+</div>
+<button id="nav-show" onclick="showMenu()">◢</button>
+
+<span id="pup">
+	<div id="menu">
+	
+	
+		
+			<b><a href="/" class="menu-item-link" id="in">Home</a></b>
+		
+	
+		
+			<b><a data-pjax="#main" href="/blogs" class="menu-item-link-selected" id="in">Blogs</a></b>
+		
+	
+		
+			<b><a href="/archives" class="menu-item-link" id="in">Archives</a></b>
+		
+	
+		
+			<b><a href="/about" class="menu-item-link" id="in">who@mi</a></b>
+		
+	
+		
+			<b><a href="/links" class="menu-item-link" id="in">Links</a></b>
+		
+	
+	<div id="outlink">
+	
+		<a href="https://www.lexaloffle.com/pico-8.php" class="menu-item-link" id="out" target="_blank">pico-8</a>
+	
+		<a href="https://suckless.org/" class="menu-item-link" id="out" target="_blank">suckless</a>
+	
+	</div>
+</div>
+
+	<div id="main">
+		<div id="post">
+
+    <h1 id="git-学习笔记2"><a href="#git-学习笔记2" class="headerlink" title="git 学习笔记2"></a>git 学习笔记2</h1><h2 id="开始使用Git"><a href="#开始使用Git" class="headerlink" title="开始使用Git"></a>开始使用Git</h2><h3 id="新增、初始Repository"><a href="#新增、初始Repository" class="headerlink" title="新增、初始Repository"></a>新增、初始Repository</h3><span id="more"></span>
+
+<ul>
+<li>从头开始</li>
+</ul>
+<pre><code class="shell">$ cd /tmp
+$ mkdir git-practice
+$ cd git-practice
+$ git init
+</code></pre>
+<p>   上面三条指令都是系统自带的指令，只有最后一条是属于git的，实际上它的作用就是在当前目录创建一个<code>.git</code>文件夹，这个文件夹就是git的精髓了，后面再讲这个文件夹里面的内容</p>
+<ul>
+<li><p>从已存在的目录开始</p>
+<p>直接输入 <code>git init</code> 即可</p>
+</li>
+<li><p>如果不想让当前目录再被git控制</p>
+<p>git的本质就是靠.git文件夹，你只需要删除.git文件夹即可</p>
+</li>
+<li><p>/tmp文件夹是什么</p>
+<p>看作者的话应该是macOS系统下临时文件夹，每次重启都会被清空，没用过mac,没想到mac还能这么随便。linux的/tmp好像是用来缓存的，看了下里面还有一些文件夹，应该不会每次重启自动清理，不过linux想实现那种功能倒也只是在autostart里一行rm的事</p>
+</li>
+</ul>
+<h3 id="把文件交给Git管控"><a href="#把文件交给Git管控" class="headerlink" title="把文件交给Git管控"></a>把文件交给Git管控</h3><ul>
+<li><p>创建文件后交给Git</p>
+<pre><code class="shell">$ git status
+On branch main
+
+No commits yet
+
+nothing to commit (create/copy files and use &quot;git add&quot; to track)
+</code></pre>
+<p>因为当前文件夹除了.git文件夹之外什么都没有，所以提示我们<code>nothing to commit</code><br>顺带提一下，上面的输出我是用输出流重定向到文件里复制过来的，第一次我重定向到仓库的文件夹里，发现status提示我新增了一个文件，这说明流重定向到文件时是先创建文件再输入输出，和我预想的不一样</p>
+<p>让我们继续，照着书上在当前文件夹创建一个helloworld，<code>echo &quot;hello, git&quot; &gt; welcome.html</code><br>然后我们再来看<code>git status</code></p>
+<pre><code class="shell">$ git status
+On branch main
+
+No commits yet
+
+Untracked files:
+  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+    welcome.html
+
+nothing added to commit but untracked files present (use &quot;git add&quot; to track)
+</code></pre>
+<p>现在的情况和之前就有所不同的，这个文件当前处于的状态是<code>Untracked files</code></p>
+</li>
+<li><p>把文件交给Git</p>
+<pre><code class="shell">$ git add welcome.html
+</code></pre>
+<p>这条命令并不会有输出，但是它把<code>welcome.html</code>交给了Git，把<code>Untracked</code>变成<code>tracked</code>状态</p>
+<p>让我们再来看看status</p>
+<pre><code class="shell">$ git status
+On branch main
+
+No commits yet
+
+Changes to be committed:
+  (use &quot;git rm --cached &lt;file&gt;...&quot; to unstage)
+    new file:   welcome.html
+</code></pre>
+<p>我们发现我们的<code>welcome.html</code>从<code>Untracked</code>变成了<code>new file</code>，这样我们的文件就被安置到暂存区了，可以被我们存储到存储库中去</p>
+<p>你一定会觉得每次只add一个文件很低效，别着急，有快的</p>
+<pre><code class="shell">$ git add *.html
+</code></pre>
+<p>这样就能把所有后缀为html的文件都添加到暂存区，如果想要一口气把全部文件都加入到暂存区，可以直接使用<code>--add</code>参数</p>
+<pre><code class="shell">$ git add --all
+</code></pre>
+</li>
+<li><p>修改已经被git add的文件后怎么办？</p>
+<pre><code class="shell">$ touch abc.txt
+$ git add abc.txt
+$ echo 1&gt;abc.txt
+$ git status
+On branch main
+
+No commits yet
+
+Changes to be committed:
+  (use &quot;git rm --cached &lt;file&gt;...&quot; to unstage)
+    new file:   abc.txt
+
+Changes not staged for commit:
+  (use &quot;git add &lt;file&gt;...&quot; to update what will be committed)
+  (use &quot;git restore &lt;file&gt;...&quot; to discard changes in working directory)
+    modified:   abc.txt
+</code></pre>
+<p>我们发现有两个<code>abc.txt</code>，其实只有一个<code>abc.txt</code>，第二行里确实把<code>abc.txt</code>放到了暂存区里，但是在第三行我们修改了这个文件，对Git来说，此时暂存区是修改前的<code>abc.txt</code>，而修改后的文件没有加入暂存区，如果你确实修改是你想要的，可以再<code>git add abc.txt</code>来存入暂存区</p>
+</li>
+<li><p><code>--all</code>和<code>.</code>参数有什么不一样<br>你可能知道 <code>git add .</code> 也可以把所有文件加入暂存区，但其实这句话不完全正确</p>
+<ul>
+<li><p>Git版本</p>
+<p>  在旧版本的Git(1.x)中，<code>git add .</code> 和 <code>--all</code> 的区别在于前者不会处理删除文件的行为</p>
+<ul>
+<li>旧版本</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>使用参数</th>
+<th>新增文件</th>
+<th>改动文件</th>
+<th>删除文件</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>–all</td>
+<td>O</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr>
+<td>.</td>
+<td>O</td>
+<td>O</td>
+<td>X</td>
+</tr>
+</tbody></table>
+<ul>
+<li>新版本</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>使用参数</th>
+<th>新增文件</th>
+<th>改动文件</th>
+<th>删除文件</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>–all</td>
+<td>O</td>
+<td>O</td>
+<td>O</td>
+</tr>
+<tr>
+<td>.</td>
+<td>O</td>
+<td>O</td>
+<td>O</td>
+</tr>
+</tbody></table>
+<p>  也就是说，Git 2.x 之后两个就一样了</p>
+</li>
+<li><p>执行命令时的目录位置</p>
+<p>  <code>git add .</code> <strong>只会把当前目录的所有子目录改动都加入暂存区，但不会把父文件夹以及同项目中其他位置的文件加入暂存区</strong>，  而<code>git add --all</code>就会把<strong>整个项目的所有变动</strong>都加入暂存区，即使当前没有处于项目的根目录</p>
+</li>
+</ul>
+</li>
+<li><p>把暂存区的内容提交到存储库里存档</p>
+<p><code>git add</code> 只是将更改加入暂存区，顾名思义只是暂存，如果要把暂存给保存下来，就要commit了，使用 <code>git commit -m &quot;xxx&quot;</code></p>
+<pre><code class="shell">$ git commit -m &quot;init commit&quot;
+[main (root-commit) 8c2de2b] init commit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 welcome.html
+</code></pre>
+<p><code>-m</code> 后面是提交说明，要说明这次做了什么事情，英文中文都行，要做到简单易懂</p>
+<ul>
+<li><p>commit了啥</p>
+<p>  Git每次commit只会处理暂存区里的内容，如果你有文件没有<code>git add</code> 他是不会处理那些文件的</p>
+</li>
+<li><p>输入的信息</p>
+<p>  每次commit必须输入信息</p>
+<ul>
+<li>不要用过于情绪化的字眼</li>
+<li>简单明了</li>
+<li>不要用类似bug fixed的描述，每人知道你修复了什么bug,除非有bug提前被标记了</li>
+</ul>
+</li>
+<li><p>什么都没有改变不能提交吗？</p>
+<p>  可以通过<code>git commit --allow-empty -m &quot;XXX&quot;</code> 提交空的commit，这个操作没有什么意义，但是方便练习后面的合并</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="工作区，暂存区，存储库"><a href="#工作区，暂存区，存储库" class="headerlink" title="工作区，暂存区，存储库"></a>工作区，暂存区，存储库</h3><p>通过上面的内容已经知道使用git的过程种会遇到这三个区域了，这三个区域的关系和联系就这么简单</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/202212261501.png" alt="202212261501"></p>
+<center><b>工作区，暂存区，存储库</b></center>
+
+<ul>
+<li><p>通过上面的图，你会发现从工作区可以直接到存储库，通过 <code>git commit -a -m &quot;xxx&quot;</code> 就可以直接将所有<strong>已跟踪</strong>的文件的修改直接提交到存储库里，但是<strong>注意，新添加的文件(Untracked files)是没法被提交的</strong></p>
+</li>
+<li><p>为什么一定要用二段式那么麻烦呢？</p>
+<p>  先add再commit，这样的二段式可能会让你觉得有点烦琐，但这样做是有一定的好处的，当你完成一个文件的修改时，可以先把它<code>git add</code> 进暂存区，等暂存区的文件到一定的数量时再 <code>git commit</code> ，这样就方便记录下这些文件的作用。如果你想要每完成一个文件就 <code>commit</code> 会导致commit太琐碎，让其他人查看代码的时候会觉得很麻烦</p>
+</li>
+<li><p>什么时候可以commit？</p>
+<ul>
+<li>完成一个任务</li>
+<li>下班的时候</li>
+<li>想Commit的时候</li>
+<li>没有标准答案，取决于coder的心情（？</li>
+</ul>
+</li>
+</ul>
+<h3 id="查看记录"><a href="#查看记录" class="headerlink" title="查看记录"></a>查看记录</h3><p>使用 <code>git log</code> 就可以查看之前的commit了</p>
+<pre><code class="bash">$ git log
+commit ed0fe3b7753ba49d0923d85100786bdba693ef1d (HEAD -&gt; master)
+Author: lol &lt;233@qq.com&gt;
+Date:   Mon Dec 26 23:26:59 2022 +0800
+
+    add c.vim
+
+commit aaa37137a002593fc26ffe1a5366ed4a54db2c67
+Author: lol &lt;233@qq.com&gt;
+Date:   Mon Dec 26 22:47:35 2022 +0800
+
+    b
+
+commit 2bcd045a50439781c124e33ce9b7caea0bf5c8c3
+Author: lol &lt;233@qq.com&gt;
+Date:   Mon Dec 26 22:47:16 2022 +0800
+
+    add a.vim
+</code></pre>
+<p>越新的commit在越上面，通过输出的信息，大致可以知道三个信息</p>
+<ul>
+<li>Commit的作者是谁</li>
+<li>在什么时候Commit的</li>
+<li>这次Commit大概做了什么事情</li>
+</ul>
+<p>那堆乱码其实是通过SHA-1(Secure Hash Algorithm 1)计算来的，计算方式在后面会讲，它的作用类似于每个commit的身份证，因为碰撞率很低</p>
+<p>如果在<code>git log</code> 后面加上参数，可以看到不同的结果 <code>git log --online --graph</code></p>
+<pre><code class="bash">$ git log --oneline
+ed0fe3b (HEAD -&gt; master) add c.vim
+aaa3713 b
+2bcd045 add a.vim
+$ git log --graph
+* commit ed0fe3b7753ba49d0923d85100786bdba693ef1d (HEAD -&gt; master)
+| Author: lol &lt;233@qq.com&gt;
+| Date:   Mon Dec 26 23:26:59 2022 +0800
+|
+|     add c.vim
+|
+* commit aaa37137a002593fc26ffe1a5366ed4a54db2c67
+| Author: lol &lt;233@qq.com&gt;
+| Date:   Mon Dec 26 22:47:35 2022 +0800
+|
+|     b
+|
+* commit 2bcd045a50439781c124e33ce9b7caea0bf5c8c3
+  Author: lol &lt;233@qq.com&gt;
+  Date:   Mon Dec 26 22:47:16 2022 +0800
+
+      add a.vim
+$ git log --oneline --graph
+* ed0fe3b (HEAD -&gt; master) add c.vim
+* aaa3713 b
+* 2bcd045 add a.vim
+</code></pre>
+<p>和在命令行里查看提交历史比起来，在图形界面里看提交历史其实更方便一点，但功能都是相似的</p>
+<p><strong>Git查询历史记录时的常见问题</strong></p>
+<ul>
+<li><p>想要查找某人的commit</p>
+<p>  <code>git log --author=&quot;xxx&quot;</code></p>
+</li>
+<li><p>想要通过commit信息中的关键字检索</p>
+<p>  <code>git log --grep=&quot;xxx&quot;</code></p>
+</li>
+<li><p>想在Commit文件里面找到Ruby</p>
+<p>  <code>git log -S &quot;Ruby&quot;</code></p>
+</li>
+<li><p>想要查找某一段时间段内的Commit</p>
+<p>  今天早上9点-12点</p>
+<p>  <code>git log --since=&quot;9am&quot; --until=&quot;12am&quot;</code></p>
+<p>  从2017年1月以后的每个早上9点-12点</p>
+<p>  <code>git log --since=&quot;9am&quot; --until=&quot;12am&quot; --after=&quot;2017-01&quot;</code></p>
+</li>
+</ul>
+<h3 id="在Git中删除文件或者变更文件名"><a href="#在Git中删除文件或者变更文件名" class="headerlink" title="在Git中删除文件或者变更文件名"></a>在Git中删除文件或者变更文件名</h3><p>在Git中，无论是删除文件还是变更文件名的本质都是一样的，都是“改动”</p>
+<p><strong>删除文件</strong></p>
+<p>我们可以直接手动删除，然后我们看一下<code>git status</code></p>
+<pre><code class="bash">$ rm a.vim
+$ git status
+On branch master
+Changes not staged for commit:
+  (use &quot;git add/rm &lt;file&gt;...&quot; to update what will be committed)
+  (use &quot;git restore &lt;file&gt;...&quot; to discard changes in working directory)
+        deleted:    a.vim
+
+no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)
+</code></pre>
+<p>可以看到a.vim的状态是deleted，如果你想要删除就可以<code>git add a.vim</code></p>
+<pre><code class="bash">$ git add a.vim
+$ git status
+On branch master
+Changes to be committed:
+  (use &quot;git restore --staged &lt;file&gt;...&quot; to unstage)
+        deleted:    a.vim
+</code></pre>
+<p>现在这个改动被添加到暂存区了，只需要commit就行了</p>
+<p>你也可以让Git帮你删除 <code>git rm a.vim</code></p>
+<pre><code class="bash">$ git rm a.vim
+rm &#39;a.vim&#39;
+[paradox@windows git]$ git status
+On branch master
+Changes to be committed:
+  (use &quot;git restore --staged &lt;file&gt;...&quot; to unstage)
+        deleted:    a.vim
+</code></pre>
+<p>相当于帮你做好了删除和 <code>git add</code> 这两步，后面还是需要 <code>commit</code> 的</p>
+<p>无论是 <code>rm</code> 还是 <code>git rm</code> 都会真的把这个文件从工作目录中删除，如果你不算真的想把这个文件删除，只是不想让Git再跟踪这个文件了，可以使用 <code>git rm a.vim --cached</code></p>
+<pre><code class="bash">$ git rm a.vim --cached
+rm &#39;a.vim&#39;
+$ git status
+On branch master
+Changes to be committed:
+  (use &quot;git restore --staged &lt;file&gt;...&quot; to unstage)
+        deleted:    a.vim
+
+Untracked files:
+  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+        a.vim
+
+$ ls
+a.vim  c.vim
+</code></pre>
+<p>我们可以看到，只是从Git上删除了a.vim，但是它还是存在在我们的工作区里</p>
+<p><strong>变更文件名</strong></p>
+<pre><code class="bash">$ mv c.vim d.vim #把c.vim改名成d.vim
+$ git status
+On branch master
+Changes not staged for commit:
+  (use &quot;git add/rm &lt;file&gt;...&quot; to update what will be committed)
+  (use &quot;git restore &lt;file&gt;...&quot; to discard changes in working directory)
+        deleted:    c.vim
+
+Untracked files:
+  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+        d.vim
+
+no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)
+</code></pre>
+<p>我们可以看到，git把这步操作看成两步，删除了c.vim再添加了一个d.vim</p>
+<p>然后我们来 <code>git add</code> 一下</p>
+<pre><code class="bash">$ git add d.vim
+$ git status
+On branch master
+Changes to be committed:
+  (use &quot;git restore --staged &lt;file&gt;...&quot; to unstage)
+        new file:   d.vim
+
+Changes not staged for commit:
+  (use &quot;git add/rm &lt;file&gt;...&quot; to update what will be committed)
+  (use &quot;git restore &lt;file&gt;...&quot; to discard changes in working directory)
+        deleted:    c.vim
+
+$ git add c.vim
+$ git status
+On branch master
+Changes to be committed:
+  (use &quot;git restore --staged &lt;file&gt;...&quot; to unstage)
+        renamed:    c.vim -&gt; d.vim
+</code></pre>
+<p>发现把d.vim和c.vim都 <code>git add</code> 了，git就识别出是 <code>renamed</code> 了，这是因为文件的内容没有改变，git判断出这只是单纯的改名</p>
+<p>如果我们再往d.vim里添加一些内容</p>
+<pre><code class="bash">$ echo 6 &gt; d.vim
+$ git add d.vim
+$ git status
+On branch master
+Changes to be committed:
+  (use &quot;git restore --staged &lt;file&gt;...&quot; to unstage)
+        deleted:    c.vim
+        new file:   d.vim
+</code></pre>
+<p>git并没有识别成 renamed 再加上 modified</p>
+<p>你也可以让git帮你改名 <code>git mv c.vim d.vim</code></p>
+<pre><code class="bash">$ git mv c.vim d.vim
+$ git status
+On branch master
+Changes to be committed:
+  (use &quot;git restore --staged &lt;file&gt;...&quot; to unstage)
+        renamed:    c.vim -&gt; d.vim
+</code></pre>
+<p>事实上，文件的名称并不重要，Git其实是根据<strong>文件的内容</strong>来计算SHA-1的值的，重要的是文件的内容。当更改文件名的时候，Git并不会为此做出一个新的Blob对象，只是指向原来的Blob对象，但是因为文件名变了，所以Git会为此做出一个新的Tree对象，后面会解释Git对象是干什么用的</p>
+<blockquote>
+<p>虽然书上是这么说的，但是我的本地环境下却会改变，有可能是git版本不一样了，待我探索一番，虽然这个变化没什么太大的关系</p>
+<p>经过我的一番探索，发现这个SHA-1的值还和commit的时间有关系，我们继续往后探索，看看那个计算公式是什么样的</p>
+</blockquote>
+
+
+	<b><span id="post-date">2022/12/26</span></b>
+	<div id="tags">
+		<ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag"># git</a></li></ul>
+	</div>
+
+	<div id="clear"></div>
+</div>
+
+<div id="cart">
+	<button id="cart-hide" onclick="cartCg()">◀</button>
+</div>
+<script>
+	showAIndex();
+</script>
+
+	</div>
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+	</script>
+</span>
+	<hr id="hidden">
+	
+
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+		initBg();
+		$(document).pjax('a','#pup',{fragment:'#pup'});
+	</script>
+</body>
+</html>
