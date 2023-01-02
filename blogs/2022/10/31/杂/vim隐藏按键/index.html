@@ -175,7 +175,7 @@
 	<center><b><span id="start-date">start at 2022/10/31?</span></b></center>
 	
 
-    <h1 id="vim隐藏按键-更"><a href="#vim隐藏按键-更" class="headerlink" title="vim隐藏按键(更)"></a>vim隐藏按键(更)</h1><p> <a target="_blank" rel="noopener" href="https://www.vimgolf.com/">vimgolf</a>真的有很多东西<span id="more"></span>可以学到啊，虽然自己写的vimrc用快捷键把某些键位覆盖了</p>
+    <p> <a target="_blank" rel="noopener" href="https://www.vimgolf.com/">vimgolf</a>真的有很多东西<span id="more"></span>可以学到啊，虽然自己写的vimrc用快捷键把某些键位覆盖了</p>
 <ul>
 <li><p>  <code>gJ</code>：消除与下行间的换行</p>
 </li>
@@ -222,14 +222,14 @@
 
 	<div id="clear"></div>
 </div>
-<center><a class="gobk" href="/blogs">&gt CLICK TO back &lt</a><center>
+<center><a class="gobk" href="javascript:;" onclick="Gobk()">&gt CLICK TO back &lt</a><center>
 <div id="cart">
 	<button id="cart-hide" onclick="cartCg()">◀</button>
 </div>
 <script>
-	if(document.referrer.substr(8,11)=="paradoxskin"){
+	if(history.state==null){
 		var tmpa=document.getElementsByClassName("gobk")[0];
-		tmpa.href=document.referrer;
+		tmpa.innerHTML="> CLICK TO land <";
 	}
 	showAIndex();
 </script>

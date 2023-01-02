@@ -264,14 +264,14 @@
 
 	<div id="clear"></div>
 </div>
-<center><a class="gobk" href="/blogs">&gt CLICK TO back &lt</a><center>
+<center><a class="gobk" href="javascript:;" onclick="Gobk()">&gt CLICK TO back &lt</a><center>
 <div id="cart">
 	<button id="cart-hide" onclick="cartCg()">◀</button>
 </div>
 <script>
-	if(document.referrer.substr(8,11)=="paradoxskin"){
+	if(history.state==null){
 		var tmpa=document.getElementsByClassName("gobk")[0];
-		tmpa.href=document.referrer;
+		tmpa.innerHTML="> CLICK TO land <";
 	}
 	showAIndex();
 </script>

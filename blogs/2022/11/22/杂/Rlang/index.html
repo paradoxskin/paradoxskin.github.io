@@ -175,7 +175,7 @@
 	<center><b><span id="start-date">start at 2022/11/22?</span></b></center>
 	
 
-    <h1 id="R语言复习"><a href="#R语言复习" class="headerlink" title="R语言复习"></a>R语言复习</h1><p>明天要考试了，现在来梳理一下这学期学的R语言吧<span id="more"></span></p>
+    <p>明天要考试了，现在来梳理一下这学期学的R语言吧<span id="more"></span></p>
 <h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><ul>
 <li>  <strong>整数</strong></li>
 <li>  <strong>小数</strong></li>
@@ -651,14 +651,14 @@ str_view(x,&quot;an&quot;)
 
 	<div id="clear"></div>
 </div>
-<center><a class="gobk" href="/blogs">&gt CLICK TO back &lt</a><center>
+<center><a class="gobk" href="javascript:;" onclick="Gobk()">&gt CLICK TO back &lt</a><center>
 <div id="cart">
 	<button id="cart-hide" onclick="cartCg()">◀</button>
 </div>
 <script>
-	if(document.referrer.substr(8,11)=="paradoxskin"){
+	if(history.state==null){
 		var tmpa=document.getElementsByClassName("gobk")[0];
-		tmpa.href=document.referrer;
+		tmpa.innerHTML="> CLICK TO land <";
 	}
 	showAIndex();
 </script>

@@ -169,64 +169,32 @@
 	<div id="main">
 		<div id="post">
 
-	<b><div id="start-title">HEXO的观察</div></b>
+	<b><div id="start-title">Enumeration使用</div></b>
 
 	
-	<center><b><span id="start-date">start at 2022/10/01?</span></b></center>
+	<center><b><span id="start-date">start at 2022/10/17?</span></b></center>
 	
 
-    <blockquote>
-<p>  起因是对gitpage没法用动态网页，而又想给自己的博客实现md实时渲染而烦恼，搜索到了一些博客用的框架，最后选择了轻量简单的hexo尝试效果</p>
+    <h1 id="Enumeration"><a href="#Enumeration" class="headerlink" title="Enumeration"></a>Enumeration</h1><blockquote>
+<p>   用惯了cpp的STL，感觉java的数据结构非常麻烦，不仅前面还写一堆东西，还有各种方法名，所以简单的记一下，这次碰到的enumeration</p>
 </blockquote>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>安装nodejs</p>
 <span id="more"></span>
 
-<pre><code class="shell">sudo pacman -S nodejs
-node -v
+<p><code>import java.util.Enumeration</code></p>
+<p>它其实不是一个数据结构，只是一个接口，这个接口只有两个方法，</p>
+<p>一个是查看容器中是否还剩东西 <code>hasMoreElements()</code></p>
+<p>一个是取出下一个东西 <code>nextElement()</code></p>
+<pre><code class="java">java.util.Enumeration&lt;String&gt; enum = xxx;
+while(enum.hasMoreElements())&#123;
+    String x = enum.nextElement();
+    xxxx;
+&#125;
 </code></pre>
-<p>安装npm</p>
-<pre><code class="shell">sudo pacman -S npm
-npm -v
-</code></pre>
-<p>安装hexo</p>
-<pre><code class="shell">&quot;装本体
-sudo npm install hexo-cli -g
-&quot;装部署插件
-sudo npm install hexo-deployer-git --save
-</code></pre>
-<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><pre><code class="shell">mkdir hexo
-cd hexo
-&quot;初始化博客
-hexo init
-&quot;新建博客
-hexo n &quot;你好&quot;
-</code></pre>
-<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><p><code>public</code>是静态页面</p>
-<p><code>source/_posts</code>是存放的文章</p>
-<p><code>themes</code>是博客主题</p>
-<p><code>_config.yml</code>是博客全局配置</p>
-<h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><pre><code class="shell">hexo s
-</code></pre>
-<h2 id="上传gitpage"><a href="#上传gitpage" class="headerlink" title="上传gitpage"></a>上传gitpage</h2><p>在deploy里输入</p>
-<pre><code class="shell">deploy:
-    type:git
-    repo: git@github.com:username/repo
-    branch: master
-</code></pre>
-<pre><code class="shell">&quot;清理缓存
-hexo clean
-&quot;创建静态网页到public文件夹
-hexo g
-&quot;上传gitpage
-hexo d
-</code></pre>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>gitpage不支持动态页面于是就把需要的网址转换成静态页面，本质上是用脚本转换了markdown到html，上传GitPage其实也只是创建了一个git仓库把静态网页上传，感觉实现方式有点粗鲁，但是有效</p>
-<p>还是先用一段时间，到时候自己看看有什么优雅的实现方式</p>
 
 
-	<b><span id="post-date">2022/10/01</span></b>
+	<b><span id="post-date">2022/10/17</span></b>
 	<div id="tags">
-		<ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/HEXO/" rel="tag"># HEXO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2/" rel="tag"># 博客</a></li></ul>
+		<ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/" rel="tag"># java</a></li></ul>
 	</div>
 
 	<div id="clear"></div>

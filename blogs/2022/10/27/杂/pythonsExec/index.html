@@ -169,64 +169,43 @@
 	<div id="main">
 		<div id="post">
 
-	<b><div id="start-title">HEXO的观察</div></b>
+	<b><div id="start-title">python exec在局部域中失效的问题</div></b>
 
 	
-	<center><b><span id="start-date">start at 2022/10/01?</span></b></center>
+	<center><b><span id="start-date">start at 2022/10/27?</span></b></center>
 	
 
-    <blockquote>
-<p>  起因是对gitpage没法用动态网页，而又想给自己的博客实现md实时渲染而烦恼，搜索到了一些博客用的框架，最后选择了轻量简单的hexo尝试效果</p>
+    <h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>exec是python的内置函数，功能是输入一个字符串参数，然后<span id="more"></span>执行字符串的命令，返回值永远是None</p>
+<p>例如</p>
+<pre><code class="python">exec(&quot;a=233&quot;)
+print(a)
+</code></pre>
+<p>就会输出233</p>
+<p>但是使用过程中会出现问题，在一个函数中，如果没有事先申明a的值，程序就会抛出错误<code>a is not defined</code>，如果事先申明了，他也只会打印申明的值，不会被exec改变</p>
+<p>上网查了原因</p>
+<blockquote>
+<p>  在函数里面， 传递给 <code>exec()</code> 的局部范围是拷贝实际局部变量组成的一个字典。 因此，如果 <code>exec()</code> 如果执行了修改操作，这种修改后的结果对实际局部变量值是没有影响的</p>
 </blockquote>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>安装nodejs</p>
-<span id="more"></span>
-
-<pre><code class="shell">sudo pacman -S nodejs
-node -v
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><pre><code class="python">def f():
+    exec(&quot;a=233&quot;)
+    print(locals()[&#39;a&#39;])
 </code></pre>
-<p>安装npm</p>
-<pre><code class="shell">sudo pacman -S npm
-npm -v
+<p>当你调用 <code>locals()</code> 获取局部变量时，你获得的是传递给 <code>exec()</code> 的局部变量的一个拷贝</p>
+<p>当然作为<code>locals()</code>的替代方案，你也可以使用你自己的字典传递给exec()</p>
+<pre><code class="python">def f():
+    a=1
+    loc=&#123;&#39;a&#39;:a&#125;
+    glb=&#123;&#125;
+    exec(&#39;b=a+1&#39;,glb,loc)
+    b=loc[&#39;b&#39;]
+    print(b)
 </code></pre>
-<p>安装hexo</p>
-<pre><code class="shell">&quot;装本体
-sudo npm install hexo-cli -g
-&quot;装部署插件
-sudo npm install hexo-deployer-git --save
-</code></pre>
-<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><pre><code class="shell">mkdir hexo
-cd hexo
-&quot;初始化博客
-hexo init
-&quot;新建博客
-hexo n &quot;你好&quot;
-</code></pre>
-<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><p><code>public</code>是静态页面</p>
-<p><code>source/_posts</code>是存放的文章</p>
-<p><code>themes</code>是博客主题</p>
-<p><code>_config.yml</code>是博客全局配置</p>
-<h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><pre><code class="shell">hexo s
-</code></pre>
-<h2 id="上传gitpage"><a href="#上传gitpage" class="headerlink" title="上传gitpage"></a>上传gitpage</h2><p>在deploy里输入</p>
-<pre><code class="shell">deploy:
-    type:git
-    repo: git@github.com:username/repo
-    branch: master
-</code></pre>
-<pre><code class="shell">&quot;清理缓存
-hexo clean
-&quot;创建静态网页到public文件夹
-hexo g
-&quot;上传gitpage
-hexo d
-</code></pre>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>gitpage不支持动态页面于是就把需要的网址转换成静态页面，本质上是用脚本转换了markdown到html，上传GitPage其实也只是创建了一个git仓库把静态网页上传，感觉实现方式有点粗鲁，但是有效</p>
-<p>还是先用一段时间，到时候自己看看有什么优雅的实现方式</p>
+<p>总的来说还是挺麻烦的，也没太搞懂原理，尽量少用吧</p>
 
 
-	<b><span id="post-date">2022/10/01</span></b>
+	<b><span id="post-date">2022/10/27</span></b>
 	<div id="tags">
-		<ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/HEXO/" rel="tag"># HEXO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8D%9A%E5%AE%A2/" rel="tag"># 博客</a></li></ul>
+		<ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag"># python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9D%82%E8%B0%88/" rel="tag"># 杂谈</a></li></ul>
 	</div>
 
 	<div id="clear"></div>

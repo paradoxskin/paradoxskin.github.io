@@ -172,10 +172,10 @@
 	<b><div id="start-title">git 学习笔记 2</div></b>
 
 	
-	<center><b><span id="start-date">start at 2022/12/26?</span></b></center>
+	<center><b><span id="start-date">start at 2022/12/25.</span></b></center>
 	
 
-    <h1 id="git-学习笔记2"><a href="#git-学习笔记2" class="headerlink" title="git 学习笔记2"></a>git 学习笔记2</h1><h2 id="开始使用Git"><a href="#开始使用Git" class="headerlink" title="开始使用Git"></a>开始使用Git</h2><h3 id="新增、初始Repository"><a href="#新增、初始Repository" class="headerlink" title="新增、初始Repository"></a>新增、初始Repository</h3><span id="more"></span>
+    <h2 id="开始使用Git"><a href="#开始使用Git" class="headerlink" title="开始使用Git"></a>开始使用Git</h2><h3 id="新增、初始Repository"><a href="#新增、初始Repository" class="headerlink" title="新增、初始Repository"></a>新增、初始Repository</h3><span id="more"></span>
 
 <ul>
 <li>从头开始</li>
@@ -562,14 +562,14 @@ Changes to be committed:
 
 	<div id="clear"></div>
 </div>
-<center><a class="gobk" href="/blogs">&gt CLICK TO back &lt</a><center>
+<center><a class="gobk" href="javascript:;" onclick="Gobk()">&gt CLICK TO back &lt</a><center>
 <div id="cart">
 	<button id="cart-hide" onclick="cartCg()">◀</button>
 </div>
 <script>
-	if(document.referrer.substr(8,11)=="paradoxskin"){
+	if(history.state==null){
 		var tmpa=document.getElementsByClassName("gobk")[0];
-		tmpa.href=document.referrer;
+		tmpa.innerHTML="> CLICK TO land <";
 	}
 	showAIndex();
 </script>

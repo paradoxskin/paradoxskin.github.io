@@ -172,10 +172,10 @@
 	<b><div id="start-title">git 学习笔记 1</div></b>
 
 	
-	<center><b><span id="start-date">start at 2022/12/24?</span></b></center>
+	<center><b><span id="start-date">start at 2022/12/24.</span></b></center>
 	
 
-    <h1 id="git-学习笔记-1"><a href="#git-学习笔记-1" class="headerlink" title="git 学习笔记 1"></a>git 学习笔记 1</h1><p>图书馆借的高见龙的『Git 从入门到精通 (978-7-301-30587-4) 』已经借了将近两个学期了，还没有看完，争取在这个寒假里把它给结束了，这学期之前刚好做了点笔记<span id="more"></span>，先把之前写的都发上来吧，下面的都只是配置之类的，没有正式开始展现Git的强大功能</p>
+    <p>图书馆借的高见龙的『Git 从入门到精通 (978-7-301-30587-4) 』已经借了将近两个学期了，还没有看完，争取在这个寒假里把它给结束了，这学期之前刚好做了点笔记<span id="more"></span>，先把之前写的都发上来吧，下面的都只是配置之类的，没有正式开始展现Git的强大功能</p>
 <h2 id="Git入门"><a href="#Git入门" class="headerlink" title="Git入门"></a>Git入门</h2><ul>
 <li><p>什么是git</p>
 <p>  简单地说，git是一种版本控制系统。专业地说，git是一种分布式版本的版本控制系统</p>
@@ -313,14 +313,14 @@ $ git config --global alias.ls &#39;log --graph --pretty=format:&quot;%h &lt;%an
 
 	<div id="clear"></div>
 </div>
-<center><a class="gobk" href="/blogs">&gt CLICK TO back &lt</a><center>
+<center><a class="gobk" href="javascript:;" onclick="Gobk()">&gt CLICK TO back &lt</a><center>
 <div id="cart">
 	<button id="cart-hide" onclick="cartCg()">◀</button>
 </div>
 <script>
-	if(document.referrer.substr(8,11)=="paradoxskin"){
+	if(history.state==null){
 		var tmpa=document.getElementsByClassName("gobk")[0];
-		tmpa.href=document.referrer;
+		tmpa.innerHTML="> CLICK TO land <";
 	}
 	showAIndex();
 </script>

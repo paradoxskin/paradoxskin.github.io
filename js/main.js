@@ -82,3 +82,12 @@ function cartCg(){
 		$('#cart ul')[0].style.display = 'none';
 	}
 }
+
+function Gobk(){
+	if(history.state!=null){
+		history.back(-1);
+	}
+	else{
+		location.href="/blogs";
+	}
+}
