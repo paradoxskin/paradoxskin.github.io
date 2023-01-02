@@ -115,7 +115,7 @@
 			localStorage.setItem('bgs[pic25]','/pic/wp/25.jpg');
 
 		if(localStorage.getItem('now')==null){
-			localStorage.setItem('now','pic3');
+			localStorage.setItem('now','pic22');
 		}
 	//}
 </script>
@@ -287,11 +287,15 @@ Ctrl-w O &quot;只留当前停留的窗口，其他全部关掉
 
 	<div id="clear"></div>
 </div>
-
+<center><a class="gobk" href="/blogs">&gt CLICK TO back &lt</a><center>
 <div id="cart">
 	<button id="cart-hide" onclick="cartCg()">◀</button>
 </div>
 <script>
+	if(document.referrer.substr(8,11)=="paradoxskin"){
+		var tmpa=document.getElementsByClassName("gobk")[0];
+		tmpa.href=document.referrer;
+	}
 	showAIndex();
 </script>
 
