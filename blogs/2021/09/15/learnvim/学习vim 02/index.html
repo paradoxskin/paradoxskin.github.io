@@ -169,6 +169,12 @@
 	<div id="main">
 		<div id="post">
 
+	<b><div id="start-title">学习vim 第2章</div></b>
+
+	
+	<center><b><span id="start-date">start at 2021/09/15?</span></b></center>
+	
+
     <h1 id="第二章-buffers-windows-tabs"><a href="#第二章-buffers-windows-tabs" class="headerlink" title="第二章 buffers,windows,tabs"></a>第二章 buffers,windows,tabs</h1><p>  如果你用过现在流行的编辑器，你可能对窗口和选项卡很熟悉。VIM在这两个显示要素的基础上再多了一个buffers。在这一章节里，我希望解释一下什么是buffers，窗口，选项卡，然后<span id="more"></span>说明一下他们在VIM里的运行原理。</p>
 <p>  在你开始之前，确保你在vimrc里有设置<code>set hidden</code>。如果没有，每当你换buffers的时候，要是没有保存文件，VIM会逼着你去保存(当你想要快点切换时候就不会希望VIM来阻止你)。我还没有说到vimrc，如果你没有vimrc就创建一个。它通常放在根目录，叫<code>.vimrc</code>，我的放在<code>~/.vimrc</code>。你不知道你的vimrc放在哪就用<code>:h vimrc</code>。打开它，然后加上</p>
 <pre><code class="shell">set hidden
