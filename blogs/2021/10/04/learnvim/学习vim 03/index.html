@@ -372,7 +372,7 @@ nnoremap &lt;silent&gt; &lt;Leader&gt;h/ :History/&lt;CR&gt;
 		hljs.highlightAll();
 		hljs.initLineNumbersOnLoad();
 		initBg();
-		$(document).pjax('a','#pup',{fragment:'#pup'});
+		$(document).pjax('a','#pup',{fragment:'#pup',timeout: 8000});
 	</script>
 </body>
 </html>

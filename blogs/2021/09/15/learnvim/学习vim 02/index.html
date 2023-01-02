@@ -312,7 +312,7 @@ Ctrl-w O &quot;只留当前停留的窗口，其他全部关掉
 		hljs.highlightAll();
 		hljs.initLineNumbersOnLoad();
 		initBg();
-		$(document).pjax('a','#pup',{fragment:'#pup'});
+		$(document).pjax('a','#pup',{fragment:'#pup',timeout: 8000});
 	</script>
 </body>
 </html>

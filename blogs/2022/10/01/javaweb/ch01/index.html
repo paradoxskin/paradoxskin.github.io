@@ -270,7 +270,7 @@ response.getWriter().print(&quot;Web项目的根目录绝对路径是&quot;+real
 		hljs.highlightAll();
 		hljs.initLineNumbersOnLoad();
 		initBg();
-		$(document).pjax('a','#pup',{fragment:'#pup'});
+		$(document).pjax('a','#pup',{fragment:'#pup',timeout: 8000});
 	</script>
 </body>
 </html>
