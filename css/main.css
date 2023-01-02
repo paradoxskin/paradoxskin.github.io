@@ -449,3 +449,13 @@ a.gonxt,a.gopre{
 	padding-top: 30px;
 	padding-bottom: 100px;
 }
+#start-title{
+	color: #8c4b4b;
+	font-weight: bold;
+	font-size: larger;
+	text-align: center;
+	border-bottom: 2px solid #d7d7d7;
+}
+#start-date{
+	color: #d7d7d7;
+}
