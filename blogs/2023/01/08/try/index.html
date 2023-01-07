@@ -18,8 +18,10 @@
 
 
 
+
+
 <link rel="shortcut icon" href="/pic/favicon.ico">
-	<title>Paradoxless | </title>
+	<title>Paradoxless | Blogs</title>
 	
 <link rel="stylesheet" href="/css/main.css">
 
@@ -140,7 +142,7 @@
 		
 	
 		
-			<b><a href="/blogs" class="menu-item-link" id="in">Blogs</a></b>
+			<b><a data-pjax="#main" href="/blogs" class="menu-item-link-selected" id="in">Blogs</a></b>
 		
 	
 		
@@ -165,14 +167,48 @@
 </div>
 
 	<div id="main">
-		<b><div id="tagTitle"># HEXO</div></b>
+		<div id="post">
 
-	<div id="archive-post">
-		<a href="/blogs/2022/10/01/杂/观察hexo/">
-			<span>HEXO的观察</span>
-		</a>
+	<b><div id="start-title">233</div></b>
+
+	
+	<center><b><span id="start-date">start at 2023/01/08?</span></b></center>
+	
+
+    <script src="/js/github-calendar.min.js"></script>
+<link
+   rel="stylesheet"
+   href="/css/github-calendar-responsive.css"
+/>
+
+<div class="calendar">
+    <!-- Loading stuff -->
+    Loading the data just for you.
+</div>
+<script>
+    GitHubCalendar(".calendar", "paradoxskin", { responsive: true });
+</script>
+
+
+
+	<b><span id="post-date">2023/01/08</span></b>
+	<div id="tags">
+		
 	</div>
 
+	<div id="clear"></div>
+</div>
+<center><a class="gobk" href="javascript:;" onclick="Gobk()">&gt CLICK TO back &lt</a><center>
+<div id="cart">
+	<button id="cart-hide" onclick="cartCg()">◀</button>
+</div>
+<script>
+	if(history.state==null){
+		var tmpa=document.getElementsByClassName("gobk")[0];
+		tmpa.innerHTML="> CLICK TO land <";
+	}
+	showAIndex();
+</script>
 
 	</div>
 	<script>
@@ -190,6 +226,4 @@
 		$(document).pjax('a','#pup',{fragment:'#pup',timeout: 8000});
 	</script>
 </body>
-</html>
-
 </html>
