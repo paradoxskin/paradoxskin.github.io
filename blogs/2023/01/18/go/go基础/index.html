@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html id="all">
+
+<head>
+	<meta charset="utf-8">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="/pic/favicon.ico">
+	<title>Paradoxless | Blogs</title>
+	
+<link rel="stylesheet" href="/css/main.css">
+
+	
+<link rel="stylesheet" href="/css/font.css">
+
+	
+<link rel="stylesheet" href="/lib/highlight/rainbow.min.css">
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+	
+<script src="/lib/highlight/highlight.min.js"></script>
+
+	
+<script src="/lib/highlight/highlightjs-line-numbers.js"></script>
+
+	
+<script src="/lib/jquery.js"></script>
+
+	
+<script src="/lib/jquery.pjax.js"></script>
+
+	
+<script src="/js/main.js"></script>
+
+<body id="lybody">
+	<div id="head">
+	<a id="pLogo" href="/"><img alt="P" src="/pic/logo.svg"></a>
+	<div id="urlText">aradoxskin.</div>
+	<a id="githubLogo" href="https://github.com/paradoxskin" target="_blank"><img alt="github" src="/pic/github.svg"></a>
+	<div id="urlText">.io</div>
+	<div id="sucklessText">- simple is best</div>
+	<div id="clear"></div>
+</div>
+
+	<hr id="hidden">
+	<script>
+	//if(localStorage.getItem('bgs')==null){
+		localStorage['bgs']='comp'
+
+			localStorage.setItem('bgs[num]','25');
+
+			localStorage.setItem('bgs[pic1]','/pic/wp/01.jpg');
+
+			localStorage.setItem('bgs[pic2]','/pic/wp/02.jpg');
+
+			localStorage.setItem('bgs[pic3]','/pic/wp/03.jpg');
+
+			localStorage.setItem('bgs[pic4]','/pic/wp/04.jpg');
+
+			localStorage.setItem('bgs[pic5]','/pic/wp/05.jpg');
+
+			localStorage.setItem('bgs[pic6]','/pic/wp/06.jpg');
+
+			localStorage.setItem('bgs[pic7]','/pic/wp/07.jpg');
+
+			localStorage.setItem('bgs[pic8]','/pic/wp/08.jpg');
+
+			localStorage.setItem('bgs[pic9]','/pic/wp/09.jpg');
+
+			localStorage.setItem('bgs[pic10]','/pic/wp/10.jpg');
+
+			localStorage.setItem('bgs[pic11]','/pic/wp/11.jpg');
+
+			localStorage.setItem('bgs[pic12]','/pic/wp/12.jpg');
+
+			localStorage.setItem('bgs[pic13]','/pic/wp/13.png');
+
+			localStorage.setItem('bgs[pic14]','/pic/wp/14.png');
+
+			localStorage.setItem('bgs[pic15]','/pic/wp/15.png');
+
+			localStorage.setItem('bgs[pic16]','/pic/wp/16.jpg');
+
+			localStorage.setItem('bgs[pic17]','/pic/wp/17.jpg');
+
+			localStorage.setItem('bgs[pic18]','/pic/wp/18.jpg');
+
+			localStorage.setItem('bgs[pic19]','/pic/wp/19.jpg');
+
+			localStorage.setItem('bgs[pic20]','/pic/wp/20.jpg');
+
+			localStorage.setItem('bgs[pic21]','/pic/wp/21.png');
+
+			localStorage.setItem('bgs[pic22]','/pic/wp/22.jpg');
+
+			localStorage.setItem('bgs[pic23]','/pic/wp/23.png');
+
+			localStorage.setItem('bgs[pic24]','/pic/wp/24.jpg');
+
+			localStorage.setItem('bgs[pic25]','/pic/wp/25.jpg');
+
+		if(localStorage.getItem('now')==null){
+			localStorage.setItem('now','pic22');
+		}
+	//}
+</script>
+
+<div id="nav">
+	<ul>
+		<li><button id="cgBg" onclick="randomSwitch()">O</button><button id="clBg" onclick="noBg()">_</button></li>
+
+		<iframe id="music-player" frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=7669623816&auto=0&height=90"></iframe>
+
+		<button id="nav-hide" onclick="hideMenu()">◤</button>
+
+		<span id="clear"></span>
+	</ul>
+</div>
+<button id="nav-show" onclick="showMenu()">◢</button>
+
+<span id="pup">
+	<div id="menu">
+	
+	
+		
+			<b><a href="/" class="menu-item-link" id="in">Home</a></b>
+		
+	
+		
+			<b><a data-pjax="#main" href="/blogs" class="menu-item-link-selected" id="in">Blogs</a></b>
+		
+	
+		
+			<b><a href="/archives" class="menu-item-link" id="in">Archives</a></b>
+		
+	
+		
+			<b><a href="/about" class="menu-item-link" id="in">who@mi</a></b>
+		
+	
+		
+			<b><a href="/links" class="menu-item-link" id="in">Links</a></b>
+		
+	
+	<div id="outlink">
+	
+		<a href="https://www.lexaloffle.com/pico-8.php" class="menu-item-link" id="out" target="_blank">pico-8</a>
+	
+		<a href="https://suckless.org/" class="menu-item-link" id="out" target="_blank">suckless</a>
+	
+	</div>
+</div>
+
+	<div id="main">
+		<div id="post">
+
+	<b><div id="start-title">Go 语言基础</div></b>
+
+	
+	<center><b><span id="start-date">start at 2023/01/15.</span></b></center>
+	
+
+    <blockquote>
+<p>参加了第五届字节青训营，所以就做一下 Go 的笔记，按理说我所在的外包项目要求我学 Spring，但是我有点受不了 Java，好像有种天生的抗拒，先学学 Go 吧，后端应该是相通的吧</p>
+<p>说实话，我也不知道<span id="more"></span>以后会不会走后端的路，我感觉还是运维比较适合自己，但是先探探路吧，说不准就喜欢上后端了，干几年后端再转运维也不是不行（不要这么自信啊，看看现在的互联网寒冬，显然不行！</p>
+<p>但是时间都是自己的，用来打游戏浪费时间也是咎由自取，不如拿来学学东西，要是我高中也有这样的觉悟就好了…</p>
+</blockquote>
+<blockquote>
+<p>Go，全称 Golang，是由 Google 的程序员设计，是一种静态强类型、编译型、并发型，并具有垃圾回收的功能的高级语言</p>
+<p>同时也是一门奇怪的语言，有奇怪的规定，比如说</p>
+<ol>
+<li>不能加分号</li>
+<li>左大括号不能换行</li>
+<li><code>if</code> 和 <code>for</code> 的条件不能加小括号</li>
+<li><code>&#125;</code> 和 <code>else</code> 必须同行</li>
+</ol>
+<p>注意，是不能，不是不用，<strong>如果没注意的话会被报错的</strong></p>
+<p>前面两条我都能接受，但是后面两条我是强烈不适！</p>
+<p>大概是设计 Go 语言的程序员想通过 Go 语言风靡全球来让远古时代就开始的圣战结束吧</p>
+<p>同时还内置 gofmt 工具，能自动整理代码多余的空白、变量名称对其、把对其空格转换成 Tab</p>
+</blockquote>
+<h2 id="安装-Go"><a href="#安装-Go" class="headerlink" title="安装 Go"></a>安装 Go</h2><p>我只讲在 manjaro 中配置 Go，只需要一行代码</p>
+<pre><code class="bash">$ sudo pacman -S go
+</code></pre>
+<p>安装完之后，我们还需要做两件事</p>
+<ol>
+<li>创建 go 的工作目录</li>
+<li>设置环境变量</li>
+</ol>
+<p>随意选择一个地方创建，我倾向与在 <code>~/workspace/go/</code> 这个文件夹，再在里面创建 <code>~/workspace/go/gobin/</code> 用于存放二进制文件，<code>~/workspace/go/src/</code> 用于存放源码和新建项目</p>
+<p>然后来配置环境变量，也就是 <code>$PATH</code> 在你的终端初始文件里设置下面几行</p>
+<p>其中第二行需要你查看 <code>whereis go</code> 的返回值来确定</p>
+<pre><code class="bash">export GO111MODULE=on
+export GOROOT=/usr/lib/go
+export GOPATH=~/workspace/go
+export GOBIN=~/workspace/go/gobin
+export GOPROXY=https://goproxy.cn
+export PATH=$PATH:$GOROOT/bin:$GOBIN
+</code></pre>
+<p>然后在 vim 下 <code>:CocInstall coc-go</code> 等待安装完你就拥有 Go 的 lsp 补全支持了（好耶</p>
+<p>顺道提一嘴，<code>coc-go</code> 用的服务端是官方的 <code>gopls</code>，不用的时候记得 <code>kill</code></p>
+<h2 id="Go-的语法"><a href="#Go-的语法" class="headerlink" title="Go 的语法"></a>Go 的语法</h2><p>像开头说的，Go 的语法相当的奇怪，反主流</p>
+<p>一段 Go 的入门程序会像下面这样</p>
+<pre><code class="go">package main
+
+import (
+    &quot;fmt&quot;
+)
+
+func main() &#123;
+    fmt.Print(&quot;hello, world&quot;)
+&#125;
+</code></pre>
+<p>其实我也不是很想在这里啰嗦 Go 的基础语法，就是传统高级语言那套再加上点设计师的恶趣味，你可以通过这个网站来认识 <a target="_blank" rel="noopener" href="https://tour.go-zh.org/">Go 的语法</a></p>
+<p>再提几嘴我注意到的</p>
+<p>Go 的函数申明和调用没有强制先后顺序，下面这段程序是可以正常运行的，如果你有一定的 C 语言基础就一定会以为下面这段程序会报错吧，但它能顺利的通过编译并且运行！</p>
+<pre><code class="go">package main
+
+import (
+    &quot;fmt&quot;
+)
+
+func main() &#123;
+    fmt.Print(a())
+&#125;
+
+func a()int &#123;
+    return 6
+&#125;
+</code></pre>
+<p><code>math/rand</code> 随机数需要自己手动添加种子，否则随机出来的都是同一个数字</p>
+<pre><code class="go">package main
+
+import (
+    &quot;fmt&quot;
+    &quot;math/rand&quot;
+    &quot;time&quot;
+)
+
+func main() &#123;
+    rand.Seed(time.Now().Unix())
+    fmt.Print(rand.Intn(233))
+&#125;
+</code></pre>
+<p><code>for</code> 和 <code>range</code> 的用法，不禁让人想起 <code>for i in range(x):</code></p>
+<pre><code class="go">for i := range arr&#123;
+    ...
+&#125;
+</code></pre>
+<p>defer 语句用来将函数推迟到外层函数返回后执行，defer 可以执行多条，<strong>它是一个栈</strong></p>
+<pre><code class="go">package main
+
+import &quot;fmt&quot;
+
+func main() &#123;
+    fmt.Println(&quot;counting&quot;)
+
+    for i := 0; i &lt; 10; i++ &#123;
+        defer fmt.Println(i)
+    &#125;
+
+    fmt.Println(&quot;done&quot;)
+&#125;
+</code></pre>
+<p>这段程序会输出是从 9 到 0，而不是从 0 到 9</p>
+<p>另外 Go 的指针的用处很局限，只能传实参和节省内存开销这几种用处罢了</p>
+<h2 id="协程"><a href="#协程" class="headerlink" title="协程"></a>协程</h2><p>协程不等于线程，看上去这两个东西好像是同一个东西，达到的效果也相同，但是由于底层的实现上有区别，协程更加轻量，可以比线程跑的更多，Go 在高并发中使用的就是协程</p>
+<p>在 Go 中，这个叫做 Goroutine，使用协程也很简单，只需要在调用函数前面加上 <code>go</code> 就行</p>
+<pre><code class="go">for i := 0; i &lt; 5; i++ &#123;
+    go fun(i)
+&#125;
+</code></pre>
+<p>这样就创建了 5 个协程，他们会像多线程一样分别自己管自己跑，不会在 <code>fun(1)</code> 结束之后才跑 <code>fun(2)</code></p>
+<blockquote>
+<p>既然协程比线程轻量，那么可以把线程优化掉吗？</p>
+<p>并不行。事实上，线程和协程表面上看起来差不多，但是本质是不一样的。通俗地讲，线程使用的是操作系统级别的资源，而协程是调用程序自身所在的线程，也叫用户级别的资源。操作系统的资源是非常宝贵的资源，是有限的，因此能开的线程就相对协程较少</p>
+<p>下图就能方便理解这两个概念了</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/threadGoroutine.png" alt="threadGoroutine"></p>
+</blockquote>
+<h2 id="信道"><a href="#信道" class="headerlink" title="信道"></a>信道</h2><p>熟悉多线程的朋友一定知道既然不是串行，那么一定需要通信，一般的语言都采取 通过内存通信，而 Go 是反过来的，采取 通信来交换内存，这样做同样能减少资源的消耗，所以 Go 语言的设计师相当注重在低配环境下运行程序啊（？</p>
+<p>在 Go 语言中，信道（channel，也可以叫通道）就充当了 goroutine 之间连接工具的角色</p>
+<p>和 goroutine 一样，信道的创建也是非常简单，创建一个信道只需 <code>make(chan 数据类型)</code> 即可</p>
+<pre><code class="go">ch := make(chan int)
+</code></pre>
+<p>信道主要的操作有两种：发送、接收。同时还有一个关闭操作，关闭之后就不能向信道中发送数据，接收方会接收到信道为空为止</p>
+<pre><code class="go">// 发送 x 到信道中
+ch &lt;- x
+// 接收信道中的值
+x = &lt;-ch
+// 接收信道，但是丢弃结果
+&lt;-ch
+// 不使用信道了，关闭信道，由发送方 close
+close(ch)
+</code></pre>
+<p>一般情况下，信道是没有缓存的，这就导致了如果信道里有东西，那么发送的那一方就无法王信道中发送，处于一个阻塞的状态，整个程序就停在那里，等待信道有空间为止才会继续</p>
+<p>像下面的图片那样，供过于求，goroutine2 无法将数据放进去，于是就停在那里了</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/channel2023116.png" alt="channel2023116"></p>
+<p>这非常影响程序的效率，为了防止这种现象的发生，信道也可以设置上缓存，设置缓存的方法是 <code>make(chan int, 容量)</code></p>
+<pre><code class="go">ch := make(chan int, 5)
+</code></pre>
+<p>这样 channel 就有足够的空间让 goroutine 可以先把数据放在 channel 的缓存中，继续手头的工作生产数据，<del>真的是很资本家呢！</del></p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/channel20231162242.png" alt="channel20231162242"></p>
+<blockquote>
+<p>看到这两个 Go 的东西，感觉 Go 的程序会有很多优化空间，比如说要设置多大的缓存不会产生浪费也不会产生阻塞、要跑多少个 goroutine 才能让效率最大，这对测试来说无疑是一项很大工作量，不过大多数程序员是不会那么追求效率的吧（</p>
+</blockquote>
+<h2 id="关于依赖"><a href="#关于依赖" class="headerlink" title="关于依赖"></a>关于依赖</h2><p> 依赖就是指用户在开发过程中使用的非本人编写的代码函数库，类似 python 中的 <code>import xxx</code> ，不过由于 go 是一门编译型语言，所以使用依赖都是需要源代码然后编译进程序的，所以对于一门编译型语言来说，如何管理依赖是一个重要的问题，对依赖的管理主要就是同一个依赖的不同版本问题，go 的依赖管理方案有两次迭代</p>
+<p>第一次迭代是 <code>GOPATH</code>-&gt;<code>Go Vendor</code>，利用不同项目使用依赖的副本放在项目文件夹下，解决了 <code>GOPATH</code> 所有项目都使用 <code>src</code> 目录下同一个版本的依赖导致的更新依赖后出现有些项目不兼容的问题</p>
+<p>第二次迭代是 <code>Go Vendor</code>-&gt;<code>Go Module</code>，<code>Go Vender</code> 的方案还是会有问题，当一个项目使用其他多个项目的时候，后者之间会存在依赖冲突，如果只使用当前项目文件夹中的依赖副本，还是会有问题</p>
+<p>而 <code>Go Module</code> 就解决了这个问题，<code>Go Module</code> 的方案是通过 <code>go.mod</code> 文件来管理依赖包的版本，通过 <code>go get</code> 或者 <code>go mod</code> 指令来管理依赖包，<code>go.mod</code> 文件中包含了很多重要信息，require 后面跟的就是项目需要的依赖和对应的版本号了，其中有注释<code>indirect</code> 的就是指间接依赖，就是指依赖的依赖，<code>+incompatible</code> 是指可能由于版本问题不兼容的依赖</p>
+<p>对于版本号也是有考究的，版本号的第一个数字是大版本，大版本之间可能会有些函数做出删减，会出现不兼容的问题，第二个数字是小版本，小版本之间是向下兼容的，第三个数字是补丁号，当出现依赖冲突的时候，go 会贪心地选择可以运行的最低兼容版本，比如说你要用 <code>v1.5</code> 和 <code>v1.4</code>，因为 <code>v1.5</code> 向下兼容，所以 go 就会采用 <code>v1.5</code> 版本</p>
+<p>依赖下载通常会从 github 上下载，但是众所周知，国内的网速非常感人，所以我们通常需要配置 Proxy 来下载，一般都会在配置文件里</p>
+<pre><code class="bash">export GOPROXY=https://goproxy.cn
+</code></pre>
+<p>你也可以多来几个 Proxy</p>
+<pre><code class="bash">export GOPROXY=&quot;https://proxy1.cn,https://proxy2.cn,direct&quot;
+</code></pre>
+<p>顺序是从前往后检索的，好像也可以不配置环境变量来配置<code> GOPROXY</code></p>
+<pre><code class="bash">$ go env -w GOPROXY=https://goproxy.cn,direct
+</code></pre>
+<p>使用 Go Modules 是需要告诉 go 的，<code>GO111MODULE</code> 这个环境变量可以设置成 <code>off</code> <code>on</code> <code>auto</code> ，开启之后 go 会忽略 <code>GOPATH</code> 和 <code>Go vendor</code> 的风格，只根据 <code>go.mod</code> 下载依赖</p>
+<p><strong>go get</strong></p>
+<pre><code class="bash">$ go get example.org/pkg
+</code></pre>
+<p>可以下载依赖，这样下载是默认最新版本的，也可以下载指定版本</p>
+<pre><code class="bash">$ go get example.org/pkg @v1.1.2
+</code></pre>
+<p><strong>go mod</strong></p>
+<pre><code class="bash">$ go mod init # 创建初始 go.mod 文件
+$ go mod download # 下载依赖到本地缓存
+$ go mod tidy # 优化依赖
+</code></pre>
+<blockquote>
+<p>虽然还没正式开始大量使用依赖，但是总体感觉比 java 好太多，我就是由于不理解 java 的编译过程，再加上 cli 上开发 java 的例子太少，好像是可以用 maven 来帮助构建项目目录，但我还是比较抗拒这些懒人包工具的，网上找 vim 如何写 java，大多数文章就写 java 的 lsp，主要还是会把 vim 当成 ide 使用，我就受不了那样，所以我就没学进 spring，虽然装了 IDEA，但是还是等 go 学成之后再去学 spring 框架吧，感觉后端的工作其实挺傻的（？</p>
+</blockquote>
+
+
+	<b><span id="post-date">2023/01/18</span></b>
+	<div id="tags">
+		<ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag"># go</a></li></ul>
+	</div>
+
+	<div id="clear"></div>
+</div>
+<center><a class="gobk" href="javascript:;" onclick="Gobk()">&gt CLICK TO back &lt</a><center>
+<div id="cart">
+	<button id="cart-hide" onclick="cartCg()">◀</button>
+</div>
+<script>
+	if(history.state==null){
+		var tmpa=document.getElementsByClassName("gobk")[0];
+		tmpa.innerHTML="> CLICK TO land <";
+	}
+	showAIndex();
+</script>
+
+	</div>
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+	</script>
+</span>
+	<hr id="hidden">
+	
+
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+		initBg();
+		$(document).pjax('a','#pup',{fragment:'#pup',timeout: 8000});
+	</script>
+</body>
+</html>
