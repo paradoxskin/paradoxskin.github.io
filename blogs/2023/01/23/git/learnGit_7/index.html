@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html id="all">
+
+<head>
+	<meta charset="utf-8">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="/pic/favicon.ico">
+	<title>Paradoxless | Blogs</title>
+	
+<link rel="stylesheet" href="/css/main.css">
+
+	
+<link rel="stylesheet" href="/css/font.css">
+
+	
+<link rel="stylesheet" href="/lib/highlight/rainbow.min.css">
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+	
+<script src="/lib/highlight/highlight.min.js"></script>
+
+	
+<script src="/lib/highlight/highlightjs-line-numbers.js"></script>
+
+	
+<script src="/lib/jquery.js"></script>
+
+	
+<script src="/lib/jquery.pjax.js"></script>
+
+	
+<script src="/js/main.js"></script>
+
+<body id="lybody">
+	<div id="head">
+	<a id="pLogo" href="/"><img alt="P" src="/pic/logo.svg"></a>
+	<div id="urlText">aradoxskin.</div>
+	<a id="githubLogo" href="https://github.com/paradoxskin" target="_blank"><img alt="github" src="/pic/github.svg"></a>
+	<div id="urlText">.io</div>
+	<div id="sucklessText">- simple is best</div>
+	<div id="clear"></div>
+</div>
+
+	<hr id="hidden">
+	<script>
+	//if(localStorage.getItem('bgs')==null){
+		localStorage['bgs']='comp'
+
+			localStorage.setItem('bgs[num]','25');
+
+			localStorage.setItem('bgs[pic1]','/pic/wp/01.jpg');
+
+			localStorage.setItem('bgs[pic2]','/pic/wp/02.jpg');
+
+			localStorage.setItem('bgs[pic3]','/pic/wp/03.jpg');
+
+			localStorage.setItem('bgs[pic4]','/pic/wp/04.jpg');
+
+			localStorage.setItem('bgs[pic5]','/pic/wp/05.jpg');
+
+			localStorage.setItem('bgs[pic6]','/pic/wp/06.jpg');
+
+			localStorage.setItem('bgs[pic7]','/pic/wp/07.jpg');
+
+			localStorage.setItem('bgs[pic8]','/pic/wp/08.jpg');
+
+			localStorage.setItem('bgs[pic9]','/pic/wp/09.jpg');
+
+			localStorage.setItem('bgs[pic10]','/pic/wp/10.jpg');
+
+			localStorage.setItem('bgs[pic11]','/pic/wp/11.jpg');
+
+			localStorage.setItem('bgs[pic12]','/pic/wp/12.jpg');
+
+			localStorage.setItem('bgs[pic13]','/pic/wp/13.png');
+
+			localStorage.setItem('bgs[pic14]','/pic/wp/14.png');
+
+			localStorage.setItem('bgs[pic15]','/pic/wp/15.png');
+
+			localStorage.setItem('bgs[pic16]','/pic/wp/16.jpg');
+
+			localStorage.setItem('bgs[pic17]','/pic/wp/17.jpg');
+
+			localStorage.setItem('bgs[pic18]','/pic/wp/18.jpg');
+
+			localStorage.setItem('bgs[pic19]','/pic/wp/19.jpg');
+
+			localStorage.setItem('bgs[pic20]','/pic/wp/20.jpg');
+
+			localStorage.setItem('bgs[pic21]','/pic/wp/21.png');
+
+			localStorage.setItem('bgs[pic22]','/pic/wp/22.jpg');
+
+			localStorage.setItem('bgs[pic23]','/pic/wp/23.png');
+
+			localStorage.setItem('bgs[pic24]','/pic/wp/24.jpg');
+
+			localStorage.setItem('bgs[pic25]','/pic/wp/25.jpg');
+
+		if(localStorage.getItem('now')==null){
+			localStorage.setItem('now','pic22');
+		}
+	//}
+</script>
+
+<div id="nav">
+	<ul>
+		<li><button id="cgBg" onclick="randomSwitch()">O</button><button id="clBg" onclick="noBg()">_</button></li>
+
+		<iframe id="music-player" frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=7669623816&auto=0&height=90"></iframe>
+
+		<button id="nav-hide" onclick="hideMenu()">◤</button>
+
+		<span id="clear"></span>
+	</ul>
+</div>
+<button id="nav-show" onclick="showMenu()">◢</button>
+
+<span id="pup">
+	<div id="menu">
+	
+	
+		
+			<b><a href="/" class="menu-item-link" id="in">Home</a></b>
+		
+	
+		
+			<b><a data-pjax="#main" href="/blogs" class="menu-item-link-selected" id="in">Blogs</a></b>
+		
+	
+		
+			<b><a href="/archives" class="menu-item-link" id="in">Archives</a></b>
+		
+	
+		
+			<b><a href="/about" class="menu-item-link" id="in">who@mi</a></b>
+		
+	
+		
+			<b><a href="/links" class="menu-item-link" id="in">Links</a></b>
+		
+	
+	<div id="outlink">
+	
+		<a href="https://www.lexaloffle.com/pico-8.php" class="menu-item-link" id="out" target="_blank">pico-8</a>
+	
+		<a href="https://suckless.org/" class="menu-item-link" id="out" target="_blank">suckless</a>
+	
+	</div>
+</div>
+
+	<div id="main">
+		<div id="post">
+
+	<b><div id="start-title">git 学习笔记 7</div></b>
+
+	
+	<center><b><span id="start-date">start at 2023/01/15.</span></b></center>
+	
+
+    <blockquote>
+<p>让我们开始 merge 吧！</p>
+<p>一提到 merge 就想到并查集，好像 merge 是什么<span id="more"></span>关键词，我都会用 merg 来进行合并操作</p>
+</blockquote>
+<h2 id="合并分支"><a href="#合并分支" class="headerlink" title="合并分支"></a>合并分支</h2><p>我把之前的仓库都删了，所以这次我们再来新建一个仓库吧</p>
+<pre><code class="bash">$ git reflog
+2b93f32 (HEAD -&gt; cat) HEAD@&#123;2&#125;: commit: modify a file
+4e36abe HEAD@&#123;3&#125;: commit: add b file
+e19273b (master) HEAD@&#123;4&#125;: checkout: moving from master to cat
+e19273b (master) HEAD@&#123;5&#125;: commit (initial): first commit
+</code></pre>
+<p>第一次提交我新建了一个 <code>a</code> 文件，里面的内容是 <code>1</code>，然后我在这个 commit 上贴了一张新的 cat 分支并切换过去，之后的一次提交是创建了一个 <code>b</code> 文件，最后的提交是我在 <code>a</code> 文件里加了行东西</p>
+<p>最后的逻辑图是这样</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/2023115before_merge.png" alt="2023115before_merge"></p>
+<p>现在我觉得任务做的差不多了，差不多要准备合并回来了，如果想要用 master 分支来合并 cat 分支，就要先切换回 master 分支，然后用 <code>git merge</code> 命令合并</p>
+<pre><code class="bash">$ git checkout master
+Switched to branch &#39;master&#39;
+$ git merge cat
+Updating e19273b..2b93f32
+Fast-forward
+ a | 2 ++
+ b | 1 +
+ 2 files changed, 3 insertions(+)
+ create mode 100644 b
+</code></pre>
+<p>我们来查看一下文件</p>
+<pre><code class="bash">$ ls
+a  b
+$ cat a
+1
+2
+2
+</code></pre>
+<p>我们发现目录中增加了 <code>b</code> 文件，并且 <code>a</code> 也更新了，这样就算 <code>master</code> 合并了 <code>cat</code> </p>
+<h2 id="谁合并谁"><a href="#谁合并谁" class="headerlink" title="谁合并谁"></a>谁合并谁</h2><p>master 合并 cat 和 cat 合并 master 有什么区别？</p>
+<p>因为 cat 是从 master 上分支出去的，这时候git 就会直接使用快转模式（Fast Forward）进行合并，从结果上来看是一样的：master 会直接收割 cat 的劳动成果</p>
+<p>但是如果两个没那么直属关系的 commit 合并就没那么简单了，我们来看下下面这种情况</p>
+<pre><code class="bash">$ git reflog
+4f0e8dd (HEAD -&gt; dog) HEAD@&#123;0&#125;: commit: dog.1
+47817eb (master) HEAD@&#123;1&#125;: checkout: moving from master to dog
+47817eb (master) HEAD@&#123;2&#125;: checkout: moving from cat to master
+c72bc15 (cat) HEAD@&#123;3&#125;: commit: cat.1
+47817eb (master) HEAD@&#123;4&#125;: checkout: moving from master to cat
+47817eb (master) HEAD@&#123;5&#125;: commit: commit 1
+331e83c HEAD@&#123;6&#125;: commit (initial): first commit
+</code></pre>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/branch2023123.png" alt="branch2023123"></p>
+<p>如果这时候我们让 dog 和 cat 合并，情况就没有之前那么简单了，由于我预判失误，以为作者要演示合并冲突就写了个冲突的样例，所以我们被报错了</p>
+<pre><code class="bash">$ git merge cat
+Auto-merging tmp
+CONFLICT (content): Merge conflict in tmp
+Automatic merge failed; fix conflicts and then commit the result.
+</code></pre>
+<p>我们来看一下 <code>tmp</code> 文件</p>
+<pre><code class="bash">$ cat tmp
+i am first commit
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+commit dog 1
+=======
+commit cat.1
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; cat
+commit 1
+</code></pre>
+<p>那个 <code>&lt;&lt;&lt;&lt;&lt;</code> 和 <code>=====</code> 和<code>&gt;&gt;&gt;&gt;&gt;</code> 的出现就意味着出现合并冲突，这三个符号我在之前给 <code>suckless</code> 软件打补丁的时候经常看到，那时候以为只是老软件不经用出现的小问题，就直接把三行符号全删了编译，有时候运气好能过编译，但有时候没过就能让我直接放弃这个补丁，但事实上编辑合并冲突的部分是需要仔细斟酌的，需要合并者自己做出抉择后再 commit，但是我们这就懒得抉择了，直接 commit ！</p>
+<pre><code class="bash">$ git reflog
+fdb53c0 (HEAD -&gt; dog) HEAD@&#123;0&#125;: commit (merge): Merge branch &#39;cat&#39; into dog
+4f0e8dd HEAD@&#123;1&#125;: commit: dog.1
+47817eb (master) HEAD@&#123;2&#125;: checkout: moving from master to dog
+47817eb (master) HEAD@&#123;3&#125;: checkout: moving from cat to master
+c72bc15 (cat) HEAD@&#123;4&#125;: commit: cat.1
+47817eb (master) HEAD@&#123;5&#125;: checkout: moving from master to cat
+47817eb (master) HEAD@&#123;6&#125;: commit: commit 1
+331e83c HEAD@&#123;7&#125;: commit (initial): first commit
+</code></pre>
+<p>看上去平平无奇吗，那我们来看一下 commit 对象的内容吧</p>
+<pre><code class="bash">$ git cat-file -p fdb53c0
+tree 25dabe5774036adefc460810ebf8aa136f5de2c1
+parent 4f0e8dd636b5a066ad9b47d7a3f0fabbd46b9a95
+parent c72bc1585262661e441e14cfd479b17326d6f703
+author lol &lt;233@qq.com&gt; 1674435231 +0800
+committer lol &lt;233@qq.com&gt; 1674435231 +0800
+</code></pre>
+<p>发现了吗，不同于一般的 commit 对象，不止只有一个 parent ，他同时指向了 <code>4f038d</code> 和 <code>c72bc1</code>，正如下图</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/branch20231232.png" alt="branch20231232"></p>
+<p>你可能觉得这和之前应该也没什么区别，但是我要告诉你的是有区别，之前的快转模式合并的东西，只有一个指针指向之前的 commit，如果你有兴趣可以戏子看下面这个例子，我就不画图了，事实上，git 只是试图把 commit 这条链拉直</p>
+<pre><code class="bash">$ git reflog
+4c4f0ac (HEAD -&gt; master, cat) HEAD@&#123;0&#125;: merge cat: Fast-forward
+3933769 HEAD@&#123;1&#125;: checkout: moving from cat to master
+4c4f0ac (HEAD -&gt; master, cat) HEAD@&#123;2&#125;: commit: cat
+3933769 HEAD@&#123;3&#125;: checkout: moving from master to cat
+3933769 HEAD@&#123;4&#125;: commit (initial): first commit
+$ git cat-file -p 4c4f
+tree 56b90eda9c7c3a6469586c711f381864fbb42569
+parent 393376917f02a226a54eac7857c7fee49f1bc9f7
+author lol &lt;233@qq.com&gt; 1674436181 +0800
+committer lol &lt;233@qq.com&gt; 1674436181 +0800
+
+cat
+</code></pre>
+<blockquote>
+<p>这里对 a 合并 b 和 b 合并 a 总结一下，从最后的结果来看，是有差别的，因为上面新建的 commit 贴上的是 dog 而不是 cat</p>
+<p><strong>但是</strong>事实上并没有区别，我们之前说过了，分支只是一张贴纸，把所有的分支都撕掉，本质上就是把两个 commit 合到一个 commit 对象上，合并前的两个 commit 都是平行的，并没有谁先谁后的关系（决定了 parent 谁先谁后的顺序，但是这个影响还是当作没有好了）</p>
+<p>上面快转模式的拉直就属于特殊情况了，但是如果你想要不拉直也是可以的 **<code>git merge cat --no-ff</code>**，貌似对公共分支的合并都是用 <code>--no-ff</code> 来合并，这样对公共的分支就能减少</p>
+</blockquote>
+<h2 id="合并后的分支"><a href="#合并后的分支" class="headerlink" title="合并后的分支"></a>合并后的分支</h2><p>一般一个分支在和主分支合并之后就没什么用了，这时候可以删除它了，但由于在 git 中分支的成本实在是太小了（仅需 40 字节），所以你也可以选择保留下来当一扇传送门用，但是如果是还没有被合并的分支就另当别论了。从本质上来讲，分支就是一张贴纸而已，删除分支只是把贴纸撕下来，删不删除就要看使用者自己的决定了 </p>
+<h2 id="删除未合并分支"><a href="#删除未合并分支" class="headerlink" title="删除未合并分支"></a>删除未合并分支</h2><p>如果你不小心删除了一个没有合并的分支，别怕，是可以挽救回来的，再强调一遍分支的概念，分支只是一张贴纸，删除一个分支并不会让已经提交的 commit 消失，所以想挽救回来我们只需要知道一件事情，那就是，你想在哪个 commit 上贴上那张分支的贴纸，在删除未合并分支的时候 git 会告诉你那条 commit 的 SHA-1 是多少，如果你没记住的话还是可以用 <code>git reflog</code> 来找找是哪一条 commit，贴上贴纸的方法很简单，<code>git branch new_cat theSHA1code</code>，但还是要小心，书上说 <code>git reflog</code> 默认只有三十天的保质期，但是根据 <code>.git</code> 文件夹里的 git 对象，我们其实可以自己画出一个 commit 的 DAG，实现起来应该不是特别难（有空写个脚本？</p>
+<blockquote>
+<p>PS：合并分支的本质其实是合并两个 commit，只要理解了分支的概念（只是贴在 commit 上的指针），合并分支这一个概念就不会太难理解</p>
+</blockquote>
+<h2 id="另一种合并"><a href="#另一种合并" class="headerlink" title="另一种合并"></a>另一种合并</h2><p>git 还提供另一种合并方式，叫做 <code>git rebase</code>，现在给出一个例子用于学习 rebase</p>
+<pre><code class="bash">$ git reflog
+b1ba426 (HEAD -&gt; dog) HEAD@&#123;0&#125;: commit: dog 1
+3d1a12e (master) HEAD@&#123;1&#125;: checkout: moving from master to dog
+3d1a12e (master) HEAD@&#123;2&#125;: checkout: moving from cat to master
+ba47345 (cat) HEAD@&#123;3&#125;: commit: cat 1
+3d1a12e (master) HEAD@&#123;4&#125;: checkout: moving from master to cat
+3d1a12e (master) HEAD@&#123;5&#125;: commit (initial): first commit
+</code></pre>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/rebase2023123.png" alt="rebase2023123"></p>
+<p>现在我们使用 <code>git merge cat</code> 就会得到一个 commit 指向 <code>ba4734</code> 和 <code>b1ba42</code>，而使用 <code>git rebase</code> 的结果不同于 <code>git merge</code>，字面意思，rebase 就是重新定义了那条分支的 base，在没有合并前，cat 分支的 base 是 master，想象一下，rebase 到 dog 后会发生什么</p>
+<pre><code class="bash">$ git rebase cat
+Successfully rebased and updated refs/heads/dog.
+$ git log --oneline
+1b21a4a (HEAD -&gt; dog) dog 1
+ba47345 (cat) cat 1
+3d1a12e (master) first commit
+$ git reflog
+1b21a4a (HEAD -&gt; dog) HEAD@&#123;0&#125;: rebase (finish): returning to refs/heads/dog
+1b21a4a (HEAD -&gt; dog) HEAD@&#123;1&#125;: rebase (pick): dog 1
+ba47345 (cat) HEAD@&#123;2&#125;: rebase (start): checkout cat
+b1ba426 HEAD@&#123;3&#125;: commit: dog 1
+3d1a12e (master) HEAD@&#123;4&#125;: checkout: moving from master to dog
+3d1a12e (master) HEAD@&#123;5&#125;: checkout: moving from cat to master
+ba47345 (cat) HEAD@&#123;6&#125;: commit: cat 1
+3d1a12e (master) HEAD@&#123;7&#125;: checkout: moving from master to cat
+3d1a12e (master) HEAD@&#123;8&#125;: commit (initial): first commit
+</code></pre>
+<p>观察 reflog 的最上面三行，git 先 checkout 到了 cat，然后讲 dog 中的修改应用到 cat 中，然后修改了 <code>refs/heads/dog</code>，最后的效果会是这样</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/rebase2023123then.png" alt="rebase2023123then"></p>
+<p>看上去像是 git 废弃了之前 dog 分支的 commit，把那些 commit 从 cat 分支上重新提交一遍，这样看区别还是很明显的，另一个区别就是 git 不会为合并再专门做出一个用于合并的 commit</p>
+<p>和 merge 的交叉合并比起来，rebase 更像是嫁接，这个特点在原本 commit 链很长的分支中更为明显，那之后所有嫁接过去的 commit 的 SHA-1 也会理所当然地被重新计算</p>
+<p>我们再把目光移到之前的 commit，那条 commit 现在并没有消失，只是没有分支贴在上面，但会在 git 的资源回收时被清理掉，所以如果你后悔了 rebase 操作，是有一段反悔的时间的，这时候你可以使用 <code>git reflog</code> 查找之前 commit 的 SHA-1，然后 <code>git reset SHA-1 --hard</code> 就行了，另一种方法是用 git 的特别记录点 ORIG_HEAD，它会记录合并分支这类危险操作之前的 HEAD 位置，直接 <code>git reset ORIG_HEAD --hard</code> 就能移动回去了</p>
+<h2 id="什么时候用rebase"><a href="#什么时候用rebase" class="headerlink" title="什么时候用rebase"></a>什么时候用rebase</h2><p>我们有两种合并的方法了，但我们要如何抉择什么时候用什么合并方式呢</p>
+<p>我们总结一下 rebase 的好处，它不会产生额外的 commit 来记录合并操作，但缺点是它会改变历史，而且不是非常直观，对于新手很可能会 rebase 出事故，遇到冲突不知道要如何解决的情况</p>
+<p>一般情况下，rebase 会用在还没有 push 出去但是 commit 很琐碎想整理一下的情况下，因为改动历史对于公共空间来说算是一种污染，是要避免发生的，对于已经推出去的内容，如果没有必要，不要使用 rebase</p>
+<blockquote>
+<p>感觉 rebase 这个合并方式和分支是张贴纸这个概念有点冲突，因为如果分支只是一张贴纸，那么它只会记录当前贴着的 commit 的信息，但是从 rebase 的过程来看分支还拥有一个 base 的属性，这样分支很可能不是一张贴纸，而是更有可能是一条 commit 链，不过应该只有 rebase 的时候需要这样考虑，不过在我未来的开发方式应该会更加倾向于 <code>git merge</code></p>
+<p>经过我的本地试验和网上查阅，发现<strong>分支就是张简单的贴纸</strong>，<strong>没有 base 属性</strong>，而 rebase 操作中的 base 是指两个要合并分支所在 commit 的 <strong>LCA</strong>!!!</p>
+<p>DAG 是不是能求 LCA 来着（忘光了？</p>
+</blockquote>
+<h2 id="合并冲突"><a href="#合并冲突" class="headerlink" title="合并冲突"></a>合并冲突</h2><p>之前说过合并会发生冲突，这里来具体讲一下吧</p>
+<p>git 能检测出简单的冲突，所以并不是改到同一个文件就一定会发生冲突，但是改到同一行一定会发生冲突！</p>
+<p>下面是 cat 分支的文件内容</p>
+<pre><code class="bash">$ git checkout cat
+Switched to branch &#39;cat&#39;
+$ cat tmp
+1
+2
+345
+4
+5
+</code></pre>
+<p>下面是 dog 分支的文件内容</p>
+<pre><code class="bash">$ git checkout dog
+Switched to branch &#39;dog&#39;
+$ cat tmp
+1
+2
+3333
+4
+5
+</code></pre>
+<p>这时候如果使用合并就会发生冲突</p>
+<pre><code class="bash">$ git merge cat
+Auto-merging tmp
+CONFLICT (content): Merge conflict in tmp
+Automatic merge failed; fix conflicts and then commit the result.
+$ git status
+On branch dog
+You have unmerged paths.
+  (fix conflicts and run &quot;git commit&quot;)
+  (use &quot;git merge --abort&quot; to abort the merge)
+
+Unmerged paths:
+  (use &quot;git add &lt;file&gt;...&quot; to mark resolution)
+        both modified:   tmp
+
+no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)
+</code></pre>
+<p>现在来查看一下 <code>tmp</code> 就会发现之前类似的符号</p>
+<pre><code class="bash">$ cat tmp
+1
+2
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+3333
+=======
+345
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; cat
+4
+5
+</code></pre>
+<p>符号的意思很直观明了，<code>&lt;&lt;&lt;&lt;&lt;</code> 和 <code>=====</code> 之间的是 HEAD 也就是 dog 分支的内容，另外一个则是 cat 分支的内容，现在这种情况就需要思考要怎么处理了，是要留一个还是两个都保留，如果没法做决定就把两边的人都叫来商量一下，改完之后记得 <code>git add</code> 和 <code>git commit</code></p>
+<p>值得一提的是，如果你使用 <code>git rebase</code> 合并过程中发生了冲突可能会有点不同，因为 <code>git rebase</code> 需要多次应用修改，冲突有可能是在 <code>rebase</code> 了一半的时候出现的，这时候处理完当前的冲突之后还需要继续刚刚中断的 rebase，<code>git rebase --continue</code></p>
+<h2 id="分支的存储"><a href="#分支的存储" class="headerlink" title="分支的存储"></a>分支的存储</h2><p>为什么都说 git 中开分支很便宜呢？</p>
+<p>答案是分支其实就是一个只有 40 字节的文件而已，你可以在你的 <code>.git/refs/heads/</code> 里找到你的分支们，而那些文件里存储的就是他们指向的 commit，如果你把这些文件删了，就相当于删了这些分支，除此之外还有一个重要的文件，那就是 <code>.git/HEAD</code>，它存储的是当前处于哪个分支上，当切换分支时，它会改变，<code>.git/ORIG_HEAD</code> 则是和分支文件差不多，功能之前提过就不重复了，还有一个冷知识就是你可以用 <code>@</code> 来替代 <code>HEAD</code>，<code>git reset @^</code> &lt;=&gt; <code>git reset HEAD^</code></p>
+<blockquote>
+<p>分支这一章就到这里了，学了分支之后感觉已经有点理解 git 的设计思路了</p>
+<p>下一章讲的是修改历史记录，期待能学到新东西</p>
+</blockquote>
+
+
+	<b><span id="post-date">2023/01/23</span></b>
+	<div id="tags">
+		<ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag"># git</a></li></ul>
+	</div>
+
+	<div id="clear"></div>
+</div>
+<center><a class="gobk" href="javascript:;" onclick="Gobk()">&gt CLICK TO back &lt</a><center>
+<div id="cart">
+	<button id="cart-hide" onclick="cartCg()">◀</button>
+</div>
+<script>
+	if(history.state==null){
+		var tmpa=document.getElementsByClassName("gobk")[0];
+		tmpa.innerHTML="> CLICK TO land <";
+	}
+	showAIndex();
+</script>
+
+	</div>
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+	</script>
+</span>
+	<hr id="hidden">
+	
+
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+		initBg();
+		$(document).pjax('a','#pup',{fragment:'#pup',timeout: 8000});
+	</script>
+</body>
+</html>
