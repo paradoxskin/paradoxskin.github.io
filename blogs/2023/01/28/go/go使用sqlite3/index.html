@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html id="all">
+
+<head>
+	<meta charset="utf-8">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="/pic/favicon.ico">
+	<title>Paradoxless | Blogs</title>
+	
+<link rel="stylesheet" href="/css/main.css">
+
+	
+<link rel="stylesheet" href="/css/font.css">
+
+	
+<link rel="stylesheet" href="/lib/highlight/rainbow.min.css">
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+	
+<script src="/lib/highlight/highlight.min.js"></script>
+
+	
+<script src="/lib/highlight/highlightjs-line-numbers.js"></script>
+
+	
+<script src="/lib/jquery.js"></script>
+
+	
+<script src="/lib/jquery.pjax.js"></script>
+
+	
+<script src="/js/main.js"></script>
+
+<body id="lybody">
+	<div id="head">
+	<a id="pLogo" href="/"><img alt="P" src="/pic/logo.svg"></a>
+	<div id="urlText">aradoxskin.</div>
+	<a id="githubLogo" href="https://github.com/paradoxskin" target="_blank"><img alt="github" src="/pic/github.svg"></a>
+	<div id="urlText">.io</div>
+	<div id="sucklessText">- simple is best</div>
+	<div id="clear"></div>
+</div>
+
+	<hr id="hidden">
+	<script>
+	//if(localStorage.getItem('bgs')==null){
+		localStorage['bgs']='comp'
+
+			localStorage.setItem('bgs[num]','25');
+
+			localStorage.setItem('bgs[pic1]','/pic/wp/01.jpg');
+
+			localStorage.setItem('bgs[pic2]','/pic/wp/02.jpg');
+
+			localStorage.setItem('bgs[pic3]','/pic/wp/03.jpg');
+
+			localStorage.setItem('bgs[pic4]','/pic/wp/04.jpg');
+
+			localStorage.setItem('bgs[pic5]','/pic/wp/05.jpg');
+
+			localStorage.setItem('bgs[pic6]','/pic/wp/06.jpg');
+
+			localStorage.setItem('bgs[pic7]','/pic/wp/07.jpg');
+
+			localStorage.setItem('bgs[pic8]','/pic/wp/08.jpg');
+
+			localStorage.setItem('bgs[pic9]','/pic/wp/09.jpg');
+
+			localStorage.setItem('bgs[pic10]','/pic/wp/10.jpg');
+
+			localStorage.setItem('bgs[pic11]','/pic/wp/11.jpg');
+
+			localStorage.setItem('bgs[pic12]','/pic/wp/12.jpg');
+
+			localStorage.setItem('bgs[pic13]','/pic/wp/13.png');
+
+			localStorage.setItem('bgs[pic14]','/pic/wp/14.png');
+
+			localStorage.setItem('bgs[pic15]','/pic/wp/15.png');
+
+			localStorage.setItem('bgs[pic16]','/pic/wp/16.jpg');
+
+			localStorage.setItem('bgs[pic17]','/pic/wp/17.jpg');
+
+			localStorage.setItem('bgs[pic18]','/pic/wp/18.jpg');
+
+			localStorage.setItem('bgs[pic19]','/pic/wp/19.jpg');
+
+			localStorage.setItem('bgs[pic20]','/pic/wp/20.jpg');
+
+			localStorage.setItem('bgs[pic21]','/pic/wp/21.png');
+
+			localStorage.setItem('bgs[pic22]','/pic/wp/22.jpg');
+
+			localStorage.setItem('bgs[pic23]','/pic/wp/23.png');
+
+			localStorage.setItem('bgs[pic24]','/pic/wp/24.jpg');
+
+			localStorage.setItem('bgs[pic25]','/pic/wp/25.jpg');
+
+		if(localStorage.getItem('now')==null){
+			localStorage.setItem('now','pic22');
+		}
+	//}
+</script>
+
+<div id="nav">
+	<ul>
+		<li><button id="cgBg" onclick="randomSwitch()">O</button><button id="clBg" onclick="noBg()">_</button></li>
+
+		<iframe id="music-player" frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=7669623816&auto=0&height=90"></iframe>
+
+		<button id="nav-hide" onclick="hideMenu()">◤</button>
+
+		<span id="clear"></span>
+	</ul>
+</div>
+<button id="nav-show" onclick="showMenu()">◢</button>
+
+<span id="pup">
+	<div id="menu">
+	
+	
+		
+			<b><a href="/" class="menu-item-link" id="in">Home</a></b>
+		
+	
+		
+			<b><a data-pjax="#main" href="/blogs" class="menu-item-link-selected" id="in">Blogs</a></b>
+		
+	
+		
+			<b><a href="/archives" class="menu-item-link" id="in">Archives</a></b>
+		
+	
+		
+			<b><a href="/about" class="menu-item-link" id="in">who@mi</a></b>
+		
+	
+		
+			<b><a href="/links" class="menu-item-link" id="in">Links</a></b>
+		
+	
+	<div id="outlink">
+	
+		<a href="https://www.lexaloffle.com/pico-8.php" class="menu-item-link" id="out" target="_blank">pico-8</a>
+	
+		<a href="https://suckless.org/" class="menu-item-link" id="out" target="_blank">suckless</a>
+	
+	</div>
+</div>
+
+	<div id="main">
+		<div id="post">
+
+	<b><div id="start-title">go 使用 sqlite3</div></b>
+
+	
+	<center><b><span id="start-date">start at 2023/01/28.</span></b></center>
+	
+
+    <h2 id="安装-sqlite3"><a href="#安装-sqlite3" class="headerlink" title="安装 sqlite3"></a>安装 sqlite3</h2><blockquote>
+<p>在 arch 源里，mysql 被替换成了 mariadb，没力气折腾了<span id="more"></span>，也不想污染 manjaro 的环境，所以在 windows 上装了 mysql 来远程连接，但是远程连接的速度慢的感人，因为要做管理信息系统的实践课作业，我既不想拿两台电脑去，也不想在 manjaro 上装一个偏大的数据库来耗电，最后我觉得应该试一下是最轻量的 sqlite3</p>
+</blockquote>
+<p>one line</p>
+<pre><code class="bash">$ sudo pacman -S sqlite3
+</code></pre>
+<h2 id="使用-sqlite3"><a href="#使用-sqlite3" class="headerlink" title="使用 sqlite3"></a>使用 sqlite3</h2><blockquote>
+<p>和其他关系型数据库不同的是，SQLite没有单独的服务器进程，以供客户端程序访问并提供相关的服务。SQLite作为一种嵌入式数据库，其运行环境与主程序位于同一进程空间，因此它们之间的通信完全是进程内通信，而相比于进程间通信，其效率更高。然而需要特别指出的是，该种结构在实际运行时确实存在保护性较差的问题，比如此时，应用程序出现问题导致进程崩溃，由于SQLite与其所依赖的进程位于同一进程空间，那么此时SQLite也将随之退出。但是对于独立的服务器进程，则不会有此问题，它们将在密闭性更好的环境下完成它们的工作。</p>
+</blockquote>
+<p>安装完之后，在命令行直接输入 <code>sqlite3</code> 就能进入 sqlite 的界面了，sqlite3 的命令都是用 <code>.</code> 开头，详见 <code>.help</code> ，下文并不会对命令做详细介绍，我认为没必要去记住，用的时候查一下表就行了，只要掌握几个常用的指令就行</p>
+<p><strong>创建数据库</strong></p>
+<p>在进入 sqlite 界面前可以指定一个数据库文件，如果这个文件不存在的话，进入界面之后输入 <code>.database</code> 会保存到本地，之后使用 <code>.quit</code> 退出 sqlite 界面查看</p>
+<pre><code class="bash">$ sqlite3 test1.db
+SQLite version 3.40.0 2022-11-16 12:10:08
+Enter &quot;.help&quot; for usage hints.
+sqlite&gt; .database
+main: /home/paradox/workspace/go/src/trysqlite3/test1.db r/w
+sqlite&gt; .quit
+$ ls
+test1.db
+</code></pre>
+<p>也可以在进入 sqlite 后，用 <code>.open</code> 进行等价的操作，但这时候不需要 <code>.database</code> 就能保存到本地</p>
+<pre><code class="bash">$ sqlite3
+SQLite version 3.40.0 2022-11-16 12:10:08
+Enter &quot;.help&quot; for usage hints.
+Connected to a transient in-memory database.
+Use &quot;.open FILENAME&quot; to reopen on a persistent database.
+sqlite&gt; .open test.db
+sqlite&gt; .quit
+$ ls
+test.db
+</code></pre>
+<h2 id="gorm-连接"><a href="#gorm-连接" class="headerlink" title="gorm 连接"></a>gorm 连接</h2><p><a target="_blank" rel="noopener" href="https://gorm.io/zh_CN/docs/connecting_to_the_database.html#SQLite">🔗</a> gorm 的官方文档有演示，由于 sqlite 是基于文件的，所以就不需要一堆复杂的连接参数</p>
+<pre><code class="go">package main
+import (
+    &quot;gorm.io/gorm&quot;
+    &quot;gorm.io/driver/sqlite&quot;
+)
+
+func main() &#123;
+    db, err := gorm.Open(sqlite.Open(&quot;test.db&quot;), &amp;gorm.Config&#123;&#125;)
+&#125;
+</code></pre>
+<p><strong>测试建表</strong></p>
+<p>这里使用 gorm 的 <code>AutoMigrate</code> 方法</p>
+<pre><code class="go">type File struct &#123;
+    Id int
+    Filename string
+    CreateDate time.Time
+&#125;
+
+func main() &#123;
+    db, _ := gorm.Open(sqlite.Open(&quot;test.db&quot;), &amp;gorm.Cofing&#123;&#125;)
+    db.AutoMigrate(&amp;File&#123;&#125;)
+&#125;
+</code></pre>
+<p><code>.table</code> 查看数据库中的所有表，<code>.schema</code> 查看指定表的字段</p>
+<pre><code class="bash">$ sqlite3 test.db
+SQLite version 3.40.0 2022-11-16 12:10:08
+Enter &quot;.help&quot; for usage hints.
+sqlite&gt; .tables
+files
+sqlite&gt; .schema files
+CREATE TABLE `files` (`id` integer,`filename` text,`create_date` datetime,PRIMARY KEY (`id`));
+</code></pre>
+<p>没问题，那 gorm 的其他方法应该都能用了</p>
+<p>最后来测试一下增就结束吧</p>
+<pre><code class="go">db.Create(&amp;File&#123;Filename: &quot;nice&quot;, CreateData: time.Now()&#125;)
+</code></pre>
+<p>数据库当然支持 sql 语句，我们来查看表</p>
+<pre><code class="bash">sqlite&gt; select * from files;
+1|nice|2023-01-28 21:14:31.440692473+08:00|
+</code></pre>
+<p>其中 id 是自增主键，所以能自加，可以看到非常完美，我相信 sqlite 一定非常好用</p>
+<p>之后可能会遇到坑，做好心理准备</p>
+<blockquote>
+<p>貌似后台要开一个 <code>sqlite3 test.db</code> 才能响应，不然 orm 会阻塞</p>
+<p>说实话，懒人的 orm 让我有点不舒服，下学期还是要系统性学习一下 sql 语句啊，一方面为了灵活，另一方面面试肯定还要用啊 …</p>
+</blockquote>
+
+
+	<b><span id="post-date">2023/01/28</span></b>
+	<div id="tags">
+		<ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag"># go</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag"># 后端</a></li></ul>
+	</div>
+
+	<div id="clear"></div>
+</div>
+<center><a class="gobk" href="javascript:;" onclick="Gobk()">&gt CLICK TO back &lt</a><center>
+<div id="cart">
+	<button id="cart-hide" onclick="cartCg()">◀</button>
+</div>
+<script>
+	if(history.state==null){
+		var tmpa=document.getElementsByClassName("gobk")[0];
+		tmpa.innerHTML="> CLICK TO land <";
+	}
+	showAIndex();
+</script>
+
+	</div>
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+	</script>
+</span>
+	<hr id="hidden">
+	
+
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+		initBg();
+		$(document).pjax('a','#pup',{fragment:'#pup',timeout: 8000});
+	</script>
+</body>
+</html>

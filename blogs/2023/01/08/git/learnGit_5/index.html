@@ -501,7 +501,7 @@ Total 12 (delta 0), reused 0 (delta 0), pack-reused 0
 </code></pre>
 <p>这条命令会把原本在 <code>.git/objects</code> 目录下的对象全部打包到 <code>.git/objects/pack</code> 目录下成 <code>.idx</code> 和 <code>.pack</code> 文件</p>
 <p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/image-20230108004007680.png" alt="image-20230108004007680"></p>
-<p>git 还有一个底层的命令 <code>git veryfy-pack</code> 可以用于查看打包的情况</p>
+<p>git 还有一个底层的命令 <code>git verify-pack</code> 可以用于查看打包的情况</p>
 <pre><code class="bash">$ git verify-pack -v pack-37a72782bbddf38577f096e432a1622bff6d27ea.idx
 39886fe807a8eaf236ca3a1edf5d13228b4c8639 commit 193 142 12
 7ee420da8e453e54832bb7914f03e23f6f4f8302 commit 191 138 154
