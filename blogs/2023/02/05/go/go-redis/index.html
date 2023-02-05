@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html id="all">
+
+<head>
+	<meta charset="utf-8">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="/pic/favicon.ico">
+	<title>Paradoxless | Blogs</title>
+	
+<link rel="stylesheet" href="/css/main.css">
+
+	
+<link rel="stylesheet" href="/css/font.css">
+
+	
+<link rel="stylesheet" href="/lib/highlight/rainbow.min.css">
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+	
+<script src="/lib/highlight/highlight.min.js"></script>
+
+	
+<script src="/lib/highlight/highlightjs-line-numbers.js"></script>
+
+	
+<script src="/lib/jquery.js"></script>
+
+	
+<script src="/lib/jquery.pjax.js"></script>
+
+	
+<script src="/js/main.js"></script>
+
+<body id="lybody">
+	<div id="head">
+	<a id="pLogo" href="/"><img alt="P" src="/pic/logo.svg"></a>
+	<div id="urlText">aradoxskin.</div>
+	<a id="githubLogo" href="https://github.com/paradoxskin" target="_blank"><img alt="github" src="/pic/github.svg"></a>
+	<div id="urlText">.io</div>
+	<div id="sucklessText">- simple is best</div>
+	<div id="clear"></div>
+</div>
+
+	<hr id="hidden">
+	<script>
+	//if(localStorage.getItem('bgs')==null){
+		localStorage['bgs']='comp'
+
+			localStorage.setItem('bgs[num]','25');
+
+			localStorage.setItem('bgs[pic1]','/pic/wp/01.jpg');
+
+			localStorage.setItem('bgs[pic2]','/pic/wp/02.jpg');
+
+			localStorage.setItem('bgs[pic3]','/pic/wp/03.jpg');
+
+			localStorage.setItem('bgs[pic4]','/pic/wp/04.jpg');
+
+			localStorage.setItem('bgs[pic5]','/pic/wp/05.jpg');
+
+			localStorage.setItem('bgs[pic6]','/pic/wp/06.jpg');
+
+			localStorage.setItem('bgs[pic7]','/pic/wp/07.jpg');
+
+			localStorage.setItem('bgs[pic8]','/pic/wp/08.jpg');
+
+			localStorage.setItem('bgs[pic9]','/pic/wp/09.jpg');
+
+			localStorage.setItem('bgs[pic10]','/pic/wp/10.jpg');
+
+			localStorage.setItem('bgs[pic11]','/pic/wp/11.jpg');
+
+			localStorage.setItem('bgs[pic12]','/pic/wp/12.jpg');
+
+			localStorage.setItem('bgs[pic13]','/pic/wp/13.png');
+
+			localStorage.setItem('bgs[pic14]','/pic/wp/14.png');
+
+			localStorage.setItem('bgs[pic15]','/pic/wp/15.png');
+
+			localStorage.setItem('bgs[pic16]','/pic/wp/16.jpg');
+
+			localStorage.setItem('bgs[pic17]','/pic/wp/17.jpg');
+
+			localStorage.setItem('bgs[pic18]','/pic/wp/18.jpg');
+
+			localStorage.setItem('bgs[pic19]','/pic/wp/19.jpg');
+
+			localStorage.setItem('bgs[pic20]','/pic/wp/20.jpg');
+
+			localStorage.setItem('bgs[pic21]','/pic/wp/21.png');
+
+			localStorage.setItem('bgs[pic22]','/pic/wp/22.jpg');
+
+			localStorage.setItem('bgs[pic23]','/pic/wp/23.png');
+
+			localStorage.setItem('bgs[pic24]','/pic/wp/24.jpg');
+
+			localStorage.setItem('bgs[pic25]','/pic/wp/25.jpg');
+
+		if(localStorage.getItem('now')==null){
+			localStorage.setItem('now','pic22');
+		}
+	//}
+</script>
+
+<div id="nav">
+	<ul>
+		<li><button id="cgBg" onclick="randomSwitch()">O</button><button id="clBg" onclick="noBg()">_</button></li>
+
+		<iframe id="music-player" frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=7669623816&auto=0&height=90"></iframe>
+
+		<button id="nav-hide" onclick="hideMenu()">◤</button>
+
+		<span id="clear"></span>
+	</ul>
+</div>
+<button id="nav-show" onclick="showMenu()">◢</button>
+
+<span id="pup">
+	<div id="menu">
+	
+	
+		
+			<b><a href="/" class="menu-item-link" id="in">Home</a></b>
+		
+	
+		
+			<b><a data-pjax="#main" href="/blogs" class="menu-item-link-selected" id="in">Blogs</a></b>
+		
+	
+		
+			<b><a href="/archives" class="menu-item-link" id="in">Archives</a></b>
+		
+	
+		
+			<b><a href="/about" class="menu-item-link" id="in">who@mi</a></b>
+		
+	
+		
+			<b><a href="/links" class="menu-item-link" id="in">Links</a></b>
+		
+	
+	<div id="outlink">
+	
+		<a href="https://www.lexaloffle.com/pico-8.php" class="menu-item-link" id="out" target="_blank">pico-8</a>
+	
+		<a href="https://suckless.org/" class="menu-item-link" id="out" target="_blank">suckless</a>
+	
+	</div>
+</div>
+
+	<div id="main">
+		<div id="post">
+
+	<b><div id="start-title">go-redis 的使用</div></b>
+
+	
+	<center><b><span id="start-date">start at 2023/02/02.</span></b></center>
+	
+
+    <h2 id="redis-的安装"><a href="#redis-的安装" class="headerlink" title="redis 的安装"></a>redis 的安装</h2><blockquote>
+<p>项目要用，我就简单地学一下吧，肯定是无法完全掌握的</p>
+<p>redis 是数据库因为访问量过大而导致系统瘫痪时有程序员想出的缓存策略，本质就是一块存储键值对的内存空间，有丰富的经验来决策如何处理某个键值对，能够在大流量的情况下帮数据库抗住压力</p>
+<p>（但是<span id="more"></span>这个项目真的需要抗压吗？</p>
+</blockquote>
+<pre><code class="bash">$ pacman -S redis
+</code></pre>
+<h2 id="redis-的使用"><a href="#redis-的使用" class="headerlink" title="redis 的使用"></a>redis 的使用</h2><pre><code class="bash"># 启动redis服务
+$ sudo systemctl start redis
+# 开机自启动redis服务
+$ sudo systemctl enable redis
+# 查看redis状态
+$ systemctl status redis
+# 进入cli交互模式
+$ redis-cli
+# ping一下redis服务是否启动
+&gt; ping
+PONG
+# 获取所有键名
+&gt; keys *
+# 获取键的值
+&gt; get keyname
+value
+</code></pre>
+<h2 id="go-redis"><a href="#go-redis" class="headerlink" title="go-redis"></a>go-redis</h2><blockquote>
+<p>go-redis 是一个开源依赖，用于 golang 和 redis 之间的交互</p>
+</blockquote>
+<p>下面是最简单的 string 存储</p>
+<pre><code class="go">package main
+
+import (
+    &quot;github.com/redis/go-redis/v9&quot;
+    &quot;context&quot;
+    &quot;fmt&quot;
+)
+
+var client *redis.Client
+var ctx context.Context
+
+func init() &#123;
+    ctx = context.Background()
+    client = redis.NewClient(&amp;redis.Options&#123;
+        Addr: &quot;127.0.0.1:6379&quot;,
+        Password: &quot;&quot;,
+        DB: 0,
+    &#125;)
+&#125;
+func main() &#123;
+    a, err := client.Set(ctx, &quot;name&quot;, &quot;hello&quot;, 0).Result()
+    if err != nil &#123;
+        fmt.Println(err)
+    &#125;
+    fmt.Println(a)
+&#125;
+</code></pre>
+<p>来看看 cli 交互结果</p>
+<pre><code class="bash">127.0.0.1:6379&gt; keys *
+1) &quot;name&quot;
+127.0.0.1:6379&gt; get name
+&quot;hello&quot;
+</code></pre>
+<p>完美，下面我们来看看取 string</p>
+<pre><code class="go">func main() &#123;
+    //a, err := client.Set(ctx, &quot;name&quot;, &quot;hello&quot;, 0).Result()
+    a, err := client.Get(ctx, &quot;name&quot;).Result()
+    if err != nil &#123;
+        fmt.Println(err)
+    &#125;
+    fmt.Println(a)
+&#125;
+</code></pre>
+<p>命令行输出了 <code>hello</code></p>
+<p>redis 有五大类型，分别是 String, Hash, List, Set, Sorted Set</p>
+<p>上面只说了 String，肯定没法满足大部分日常需求，另外一个常用的类型就是 Hash，与 String 不同，Hash 的 key 对应的 value 是一张 Hash 表，相当于第二维度，第二个参数是 key，第三个参数是字段，第四个参数是对应的value</p>
+<pre><code class="go">func main() &#123;
+    a, err := client.HSet(ctx, &quot;int&quot;, &quot;hello&quot;, 233).Result()
+    b, err := client.HGet(ctx, &quot;int&quot;, &quot;hello&quot;).Result()
+    if err != nil &#123;
+        fmt.Println(err)
+    &#125;
+    fmt.Println(a)
+    fmt.Println(b)
+&#125;
+</code></pre>
+<p>没错，你一定想到了这样 set 太慢了对吧，go-redis 还提供批量 <code>HMSet</code> 方法批量 set，和能获取全部元素的 <code>HGetAll</code> 方法</p>
+<pre><code class="bash">func main() &#123;
+    a, err := client.HMSet(ctx, &quot;bigDataBase&quot;, map[string]interface&#123;&#125;&#123;
+        &quot;name&quot;: &quot;hello&quot;,
+        &quot;Password&quot;: &quot;password&quot;,
+        &quot;luck&quot;: 8,
+    &#125;).Result()
+    b, err := client.HGetAll(ctx, &quot;int&quot;).Result()
+    if err != nil &#123;
+        fmt.Println(err)
+    &#125;
+    fmt.Println(a)
+    fmt.Println(b)
+&#125;
+</code></pre>
+<p>但是注意，返回的是 <code>map[string]string</code>，所以实际使用中可能还需要取出来之后转换类型</p>
+<blockquote>
+<p>我是真的不想学一堆工具，为什么要用一堆碎片一样的东西来构成项目，非常的不 suckless，如果能只完成简单的基础功能之后上线之后慢慢改东西来优化这个程序多好，非要在一开始就加大别人的学习成本，我希望的是学精，而不是学的杂和广，这样囫囵吞枣地学习一遍我觉得没有任何意义，虽然未来确实需要掌握这门技术，但是不想现阶段去掌握！</p>
+<p>可能只是我的想法比较不同，我是一个喜欢造轮子的人，有些功能可以自己实现就很不想依靠别人的轮子，知道别人轮子的原理我也想自己造造看，只能说知音难寻，开源社区确实都是和我志同道合的人，但自己确实也没学会什么真本事，让别人尊重，无奈。现在感觉后端其实就是个拧螺丝的，掌握一堆工具之后，更加熟练地拧螺丝，有趣程度可能还不如前端（？</p>
+</blockquote>
+<blockquote>
+<p>不过我承认，自己现在是把编程当作一门兴趣，但为的是以后的工作，当兴趣成为工作时，必然会让人沮丧，现在还是走一步看一步吧，无所谓，我会入钳教 😈</p>
+<p>我到底想干什么呢，可能是写游戏吧，但是直觉告诉我，现在还没到那个时间</p>
+</blockquote>
+<blockquote>
+<p>2.5 更新：</p>
+<p>其实也就那样吧，能用起来之后还是挺开心的，又不是让我去学底层实现，我只需要会用他们提供给我的函数就行了，编程就这么回事，要说难度肯定是比不上算法的，学新东西没什么难的！</p>
+</blockquote>
+
+
+	<b><span id="post-date">2023/02/05</span></b>
+	<div id="tags">
+		<ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/go/" rel="tag"># go</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%90%8E%E7%AB%AF/" rel="tag"># 后端</a></li></ul>
+	</div>
+
+	<div id="clear"></div>
+</div>
+<center><a class="gobk" href="javascript:;" onclick="Gobk()">&gt CLICK TO back &lt</a><center>
+<div id="cart">
+	<button id="cart-hide" onclick="cartCg()">◀</button>
+</div>
+<script>
+	if(history.state==null){
+		var tmpa=document.getElementsByClassName("gobk")[0];
+		tmpa.innerHTML="> CLICK TO land <";
+	}
+	showAIndex();
+</script>
+
+	</div>
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+	</script>
+</span>
+	<hr id="hidden">
+	
+
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+		initBg();
+		$(document).pjax('a','#pup',{fragment:'#pup',timeout: 8000});
+	</script>
+</body>
+</html>
