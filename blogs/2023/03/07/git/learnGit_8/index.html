@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html id="all">
+
+<head>
+	<meta charset="utf-8">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="/pic/favicon.ico">
+	<title>Paradoxless | Blogs</title>
+	
+<link rel="stylesheet" href="/css/main.css">
+
+	
+<link rel="stylesheet" href="/css/font.css">
+
+	
+<link rel="stylesheet" href="/lib/highlight/rainbow.min.css">
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+	
+<script src="/lib/highlight/highlight.min.js"></script>
+
+	
+<script src="/lib/highlight/highlightjs-line-numbers.js"></script>
+
+	
+<script src="/lib/jquery.js"></script>
+
+	
+<script src="/lib/jquery.pjax.js"></script>
+
+	
+<script src="/js/main.js"></script>
+
+<body id="lybody">
+	<div id="head">
+	<a id="pLogo" href="/"><img alt="P" src="/pic/logo.svg"></a>
+	<div id="urlText">aradoxskin.</div>
+	<a id="githubLogo" href="https://github.com/paradoxskin" target="_blank"><img alt="github" src="/pic/github.svg"></a>
+	<div id="urlText">.io</div>
+	<div id="sucklessText">- simple is best</div>
+	<div id="clear"></div>
+</div>
+
+	<hr id="hidden">
+	<script>
+	//if(localStorage.getItem('bgs')==null){
+		localStorage['bgs']='comp'
+
+			localStorage.setItem('bgs[num]','25');
+
+			localStorage.setItem('bgs[pic1]','/pic/wp/01.jpg');
+
+			localStorage.setItem('bgs[pic2]','/pic/wp/02.jpg');
+
+			localStorage.setItem('bgs[pic3]','/pic/wp/03.jpg');
+
+			localStorage.setItem('bgs[pic4]','/pic/wp/04.jpg');
+
+			localStorage.setItem('bgs[pic5]','/pic/wp/05.jpg');
+
+			localStorage.setItem('bgs[pic6]','/pic/wp/06.jpg');
+
+			localStorage.setItem('bgs[pic7]','/pic/wp/07.jpg');
+
+			localStorage.setItem('bgs[pic8]','/pic/wp/08.jpg');
+
+			localStorage.setItem('bgs[pic9]','/pic/wp/09.jpg');
+
+			localStorage.setItem('bgs[pic10]','/pic/wp/10.jpg');
+
+			localStorage.setItem('bgs[pic11]','/pic/wp/11.jpg');
+
+			localStorage.setItem('bgs[pic12]','/pic/wp/12.jpg');
+
+			localStorage.setItem('bgs[pic13]','/pic/wp/13.png');
+
+			localStorage.setItem('bgs[pic14]','/pic/wp/14.png');
+
+			localStorage.setItem('bgs[pic15]','/pic/wp/15.png');
+
+			localStorage.setItem('bgs[pic16]','/pic/wp/16.jpg');
+
+			localStorage.setItem('bgs[pic17]','/pic/wp/17.jpg');
+
+			localStorage.setItem('bgs[pic18]','/pic/wp/18.jpg');
+
+			localStorage.setItem('bgs[pic19]','/pic/wp/19.jpg');
+
+			localStorage.setItem('bgs[pic20]','/pic/wp/20.jpg');
+
+			localStorage.setItem('bgs[pic21]','/pic/wp/21.png');
+
+			localStorage.setItem('bgs[pic22]','/pic/wp/22.jpg');
+
+			localStorage.setItem('bgs[pic23]','/pic/wp/23.png');
+
+			localStorage.setItem('bgs[pic24]','/pic/wp/24.jpg');
+
+			localStorage.setItem('bgs[pic25]','/pic/wp/25.jpg');
+
+		if(localStorage.getItem('now')==null){
+			localStorage.setItem('now','pic22');
+		}
+	//}
+</script>
+
+<div id="nav">
+	<ul>
+		<li><button id="cgBg" onclick="randomSwitch()">O</button><button id="clBg" onclick="noBg()">_</button></li>
+
+		<iframe id="music-player" frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=7669623816&auto=0&height=90"></iframe>
+
+		<button id="nav-hide" onclick="hideMenu()">◤</button>
+
+		<span id="clear"></span>
+	</ul>
+</div>
+<button id="nav-show" onclick="showMenu()">◢</button>
+
+<span id="pup">
+	<div id="menu">
+	
+	
+		
+			<b><a href="/" class="menu-item-link" id="in">Home</a></b>
+		
+	
+		
+			<b><a data-pjax="#main" href="/blogs" class="menu-item-link-selected" id="in">Blogs</a></b>
+		
+	
+		
+			<b><a href="/archives" class="menu-item-link" id="in">Archives</a></b>
+		
+	
+		
+			<b><a href="/about" class="menu-item-link" id="in">who@mi</a></b>
+		
+	
+		
+			<b><a href="/links" class="menu-item-link" id="in">Links</a></b>
+		
+	
+	<div id="outlink">
+	
+		<a href="https://www.lexaloffle.com/pico-8.php" class="menu-item-link" id="out" target="_blank">pico-8</a>
+	
+		<a href="https://suckless.org/" class="menu-item-link" id="out" target="_blank">suckless</a>
+	
+	</div>
+</div>
+
+	<div id="main">
+		<div id="post">
+
+	<b><div id="start-title">git 学习笔记 8</div></b>
+
+	
+	<center><b><span id="start-date">start at 2023/03/01.</span></b></center>
+	
+
+    <blockquote>
+<p>令人头疼的期初期末考试周终于结束了<span id="more"></span>（放在期初的期末考试周），接下来终于可以做想做的事情了，比如说，读完这本书，作为第一本被我读完的图书馆书，你一定非常荣幸吧！</p>
+</blockquote>
+<h2 id="修改历史记录"><a href="#修改历史记录" class="headerlink" title="修改历史记录"></a>修改历史记录</h2><p>使用 <code>--amend</code> 参数可以修改最后一次 Commit 的信息，但只能修改最后一次，如果要改动更加早的信息就没法使用这个办法了，下面就介绍一下 <code>git rebase</code> 的另一个强大的互动模式 <code>git reabse -i</code></p>
+<h3 id="启动互动模式"><a href="#启动互动模式" class="headerlink" title="启动互动模式"></a>启动互动模式</h3><p>首先来看一下 git 记录</p>
+<pre><code class="bash">$ git log --oneline
+1baa9df (HEAD -&gt; master) modify d.txt
+9cb9203 modify b.txt
+73765e1 add d.txt
+834f147 add c.txt
+7362b74 add b.txt
+6c34fff modify a.txt
+332971d add a.txt
+</code></pre>
+<p>我们使用rebase的互动模式的时候必须指定某个 commit，我们指定最初的 commit <code>332971d</code>，意思是修改的范围为 <code>332971d</code> 到最后一条 commit，貌似 <code>332971d</code> 无法被修改</p>
+<pre><code class="bash">$ git rebase -i 332971d
+</code></pre>
+<p>然后我们会进入 vim，下面是 vim 页面显示的信息</p>
+<pre><code class="bash">pick 6c34fff modify a.txt
+pick 7362b74 add b.txt
+pick 834f147 add c.txt
+pick 73765e1 add d.txt
+pick 9cb9203 modify b.txt
+pick 1baa9df modify d.txt
+
+# Rebase 332971d..1baa9df onto 332971d (6 commands)
+#
+# Commands:
+# p, pick &lt;commit&gt; = use commit
+# r, reword &lt;commit&gt; = use commit, but edit the commit message
+# e, edit &lt;commit&gt; = use commit, but stop for amending
+# s, squash &lt;commit&gt; = use commit, but meld into previous commit
+# f, fixup [-C | -c] &lt;commit&gt; = like &quot;squash&quot; but keep only the previous
+#                    commit&#39;s log message, unless -C is used, in which case
+#                    keep only this commit&#39;s message; -c is same as -C but
+#                    opens the editor
+# x, exec &lt;command&gt; = run command (the rest of the line) using shell
+# b, break = stop here (continue rebase later with &#39;git rebase --continue&#39;)
+# d, drop &lt;commit&gt; = remove commit
+# l, label &lt;label&gt; = label current HEAD with a name
+# t, reset &lt;label&gt; = reset HEAD to a label
+# m, merge [-C &lt;commit&gt; | -c &lt;commit&gt;] &lt;label&gt; [# &lt;oneline&gt;]
+#         create a merge commit using the original merge commit&#39;s
+#         message (or the oneline, if no original merge commit was
+#         specified); use -c &lt;commit&gt; to reword the commit message
+# u, update-ref &lt;ref&gt; = track a placeholder for the &lt;ref&gt; to be updated
+#                       to this position in the new commits. The &lt;ref&gt; is
+#                       updated at the end of the rebase
+#
+# These lines can be re-ordered; they are executed from top to bottom.
+#
+# If you remove a line here THAT COMMIT WILL BE LOST.
+#
+# However, if you remove everything, the rebase will be aborted.
+#
+</code></pre>
+<p>能看到有两部分区域，一部分贴着 commit 列表，如果你观察仔细的话，会发现这里的 commit 列表的顺序和 <code>git log</code> 的顺序相反，这就意味着 <code>rebase</code> 的 commit 时间顺序是从上到下，这点要注意</p>
+<p>另一边贴着注释说明，没错，主要介绍的其实就是注释说明里的东西</p>
+<ul>
+<li>pick，表示维持这条 commit, 什么都不变</li>
+<li>reword，表示修改这条 commit 的说明</li>
+<li>edit，表示 rebase 停止到这条 commit，一般用来进行具体修改</li>
+<li>squash，表示合并到前一条 commit</li>
+<li>drop，删除该条 commit</li>
+</ul>
+<p>具体使用方法是修改 commit 前面的单词，比如说我想<strong>修改下面的第一条 commit</strong> 就可以这样（缩写和不缩写都是可以的）</p>
+<pre><code class="bash">r 6c34fff modify a.txt
+pick 7362b74 add b.txt
+pick 834f147 add c.txt
+pick 73765e1 add d.txt
+pick 9cb9203 modify b.txt
+pick 1baa9df modify d.txt
+</code></pre>
+<p>编辑完之后使用 <code>:wq</code> 退出交互模式</p>
+<p>退出之后会马上弹出一个新的 vim 界面，这是你用来修改指定 commit 信息的页面</p>
+<pre><code class="bash">modify a.txt
+
+# Please enter the commit message for your changes. Lines starting
+# with &#39;#&#39; will be ignored, and an empty message aborts the commit.
+#
+# Date:      Tue Mar 7 18:35:50 2023 +0800
+#
+# interactive rebase in progress; onto 332971d
+# Last command done (1 command done):
+#    reword 6c34fff modify a.txt
+# Next commands to do (5 remaining commands):
+#    pick 7362b74 add b.txt
+#    pick 834f147 add c.txt
+# You are currently editing a commit while rebasing branch &#39;master&#39; on &#39;332971d&#39;.
+#
+# Changes to be committed:
+#    modified:   a.txt
+#
+</code></pre>
+<p>修改好之后 <code>:wq</code> 即可，使用 <code>git log --oneline</code> 查看当前状态，发现第二条 commit 信息已经被我们修改了</p>
+<pre><code class="bash">$ git log --oneline
+00ebd6a (HEAD -&gt; master) modify d.txt
+695c0c4 modify b.txt
+43b4909 add d.txt
+1ae01db add c.txt
+689dd82 add b.txt
+ea3ebd0 modiiify a.txt
+332971d add a.txt
+</code></pre>
+<p>如果你想同时修改多个 commit 信息也是可以的，它会按照时间先后顺序一个一个跳出修改 commit 信息的界面，仔细观察你会发现修改了第二条 commit 之后很多 commit 的 SHA-1 都发生了变化，这是一个需要记住的现象，原理的话思考一下 git 底层原理你可能就能想明白（SHA-1 的值是由什么决定的？）</p>
+<p>如果你想撤销修改，可以使用 <code>git reset ORIG_HEAD --hard</code> 回到修改前的状态</p>
+<p>下面展示如何使用 rebase 的交互模式把<strong>多个 commit 合并为一条 commit</strong>, 使用的关键字是 <code>squash</code> 缩略为 <code>s</code> ，下面合并那几条 add 的 commit，注意上面那条现象（早的 commit 在上面）</p>
+<pre><code class="bash">pick ea3ebd0 modiiify a.txt
+pick 689dd82 add b.txt
+s 1ae01db add c.txt
+s 43b4909 add d.txt
+pick 695c0c4 modify b.txt
+pick 00ebd6a modify d.txt
+</code></pre>
+<p><code>:wq</code> 之后进入编写新的 commit 界面</p>
+<pre><code class="bash"># This is a combination of 3 commits.
+# This is the 1st commit message:
+
+add b.txt
+
+# This is the commit message #2:
+
+add c.txt
+
+# This is the commit message #3:
+
+add d.txt
+
+# Please enter the commit message for your changes. Lines starting
+# with &#39;#&#39; will be ignored, and an empty message aborts the commit.
+#
+# Date:      Tue Mar 7 18:36:27 2023 +0800
+#
+# interactive rebase in progress; onto 332971d
+# Last commands done (4 commands done):
+#    squash 1ae01db add c.txt
+#    squash 43b4909 add d.txt
+# Next commands to do (2 remaining commands):
+#    pick 695c0c4 modify b.txt
+#    pick 00ebd6a modify d.txt
+# You are currently rebasing branch &#39;master&#39; on &#39;332971d&#39;.
+#
+# Changes to be committed:
+#    new file:   b.txt
+#    new file:   c.txt
+#    new file:   d.txt
+#
+</code></pre>
+<p>修改 1st commit 的信息后 <code>:wq</code> 就完事了</p>
+<pre><code class="bash">$ git log --oneline
+181b3d0 (HEAD -&gt; master) modify d.txt
+3839de8 modify b.txt
+5fc87ae add b, c, d.txt
+ea3ebd0 modiiify a.txt
+332971d add a.txt
+</code></pre>
+<p>处理多条的时候注意看清楚信息，一般来说都是从最后往前修改的</p>
+<p>接下来演示<strong>将一个 commit 拆成多个 commit</strong> ，我们就把之前的操作给手动回档一下</p>
+<p>使用 <code>e(dit)</code></p>
+<pre><code class="bash">pick ea3ebd0 modiiify a.txt
+e 5fc87ae add b, c, d.txt
+pick 3839de8 modify b.txt
+pick 181b3d0 modify d.txt
+</code></pre>
+<p>使用 <code>:wq</code> 之后进入待 rebase continue 状态，HEAD 停止在了 <code>5fc87ae</code></p>
+<pre><code class="bash">Stopped at 5fc87ae...  add b, c, d.txt
+You can amend the commit now, with
+
+  git commit --amend
+
+Once you are satisfied with your changes, run
+
+  git rebase --continue
+</code></pre>
+<p>因为要拆散，所以就要回到前一个 commit 节点</p>
+<pre><code class="bash">$ git reset HEAD^
+$ git status
+interactive rebase in progress; onto 332971d
+Last commands done (2 commands done):
+   pick ea3ebd0 modiiify a.txt
+   edit 5fc87ae add b, c, d.txt
+Next commands to do (2 remaining commands):
+   pick 3839de8 modify b.txt
+   pick 181b3d0 modify d.txt
+  (use &quot;git rebase --edit-todo&quot; to view and edit)
+You are currently editing a commit while rebasing branch &#39;master&#39; on &#39;332971d&#39;.
+  (use &quot;git commit --amend&quot; to amend the current commit)
+  (use &quot;git rebase --continue&quot; once you are satisfied with your changes)
+
+Untracked files:
+  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+        b.txt
+        c.txt
+        d.txt
+</code></pre>
+<p>然后我们就一个一个添加这些文件吧</p>
+<pre><code class="bash">$ git log --oneline
+d546340 (HEAD) add d.txt
+9df0f92 add c.txt
+f3a8368 add b.txt
+ea3ebd0 modiiify a.txt
+332971d add a.txt
+</code></pre>
+<p>完事之后，使用 <code>git rebase --continue</code> 自动档完成接下来的事件，过程有点像处理冲突</p>
+<pre><code class="bash">$ git rebase --continue
+Successfully rebased and updated refs/heads/master.
+$ git log --oneline
+c7909c6 (HEAD -&gt; master) modify d.txt
+f069fe5 modify b.txt
+d546340 add d.txt
+9df0f92 add c.txt
+f3a8368 add b.txt
+ea3ebd0 modiiify a.txt
+332971d add a.txt
+</code></pre>
+<p>利用相同的原理就能做到很多事情了，比如说在某两条 commit 之间增加新的 commit（虽然这样做有可能会发生冲突</p>
+<p>其实 <code>pick</code> 关键字也能完成对历史的修改，比如说<strong>换 commit 的位置</strong>，下面换了第二条和第三条的位置</p>
+<pre><code class="bash">pick ea3ebd0 modiiify a.txt
+pick 9df0f92 add c.txt
+pick f3a8368 add b.txt
+pick d546340 add d.txt
+pick f069fe5 modify b.txt
+pick c7909c6 modify d.txt
+</code></pre>
+<p><code>:wq</code> 保存，commit 的顺序发生了变化</p>
+<pre><code class="bash">$ git log --oneline
+f5bca1e (HEAD -&gt; master) modify d.txt
+543cd8e modify b.txt
+6dd1fd7 add d.txt
+f8ba4ec add b.txt
+25cad87 add c.txt
+ea3ebd0 modiiify a.txt
+332971d add a.txt
+</code></pre>
+<p><strong>删除 commit 的方式</strong>也和之前那些类似，使用 <code>drop</code> 关键字即可，同样直接删除对应 commit 所在的行也是可以的</p>
+<h3 id="后果"><a href="#后果" class="headerlink" title="后果"></a>后果</h3><p>修改历史都是有可能会发生冲突的，你删除了后面要修改的内容，不发生冲突才怪</p>
+<p>所以修改历史的时候都要小心点，尽量少修改吧</p>
+<h2 id="Revert"><a href="#Revert" class="headerlink" title="Revert"></a>Revert</h2><p>和 <code>reset</code> <code>rebase</code> 类似，<code>revert</code> 也是用来后悔的工具，不过与前者不同，Revert 不会改变历史</p>
+<pre><code class="bash">$ git log --oneline
+6f5637b (HEAD -&gt; master) add c.txt
+ce674de modify b.txt
+f9c4478 add b.txt
+779a2c6 modify a.txt
+da3b8d4 add a.txt
+</code></pre>
+<p>我们现在想后悔 <code>ce674de</code> 那条修改，可以在 <code>revert</code> 命令后面加上 <code>--no-edit</code> 参数，这样就不用自己填写 commit 信息了，而使用默认的 revert 信息</p>
+<pre><code class="bash">$ git revert ce674de
+[master 8f9556e] Revert &quot;modify b.txt&quot;
+ 1 file changed, 1 deletion(-)
+$ git log --oneline
+8f9556e (HEAD -&gt; master) Revert &quot;modify b.txt&quot;
+6f5637b add c.txt
+ce674de modify b.txt
+f9c4478 add b.txt
+779a2c6 modify a.txt
+da3b8d4 add a.txt
+</code></pre>
+<p>发现并没有改变历史，而是增加了一条取消 revert 的 commit，大概就是把那条 commit 的修改反过来做吧</p>
+<p>取消 revert 倒是有两种方法，一种是直接 reset, 另一种是蠢方法，revert 那条 revert 的 commit（像取消了你的取消，搁这交康呢</p>
+<pre><code class="bash">$ git revert HEAD
+[master 7b7eb50] Revert &quot;Revert &quot;modify b.txt&quot;&quot;
+ 1 file changed, 1 insertion(+)
+$ git log --oneline
+7b7eb50 (HEAD -&gt; master) Revert &quot;Revert &quot;modify b.txt&quot;&quot;
+8f9556e Revert &quot;modify b.txt&quot;
+6f5637b add c.txt
+ce674de modify b.txt
+f9c4478 add b.txt
+779a2c6 modify a.txt
+da3b8d4 add a.txt
+</code></pre>
+<h3 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h3><p>一般来说，只有多人开发的时候才会使用 revert, 因为团队之间可能会不允许修改历史，如果是自己一个人开发的时候使用 revert 就太温柔了，直接用 <code>reset</code> 会方便很多</p>
+<blockquote>
+<p>整理这一章节大概花了三节晚自修吧，直接和大一一起晚自修确实舒服，因为那个教室肯定不用上课（www</p>
+<p>上了几天课感觉状态又有点松散，上课的时候既不听课也没法专心做手头的事情，还是晚上这段时间好（买一杯无糖单奶美式瑞幸，拿着心爱的 svp13，带着 sony 塞子 在心爱的 manjaro 上专一的做事</p>
+<p>不过效率说不上高吧，应该放点 lofi，今天循环了一晚上的 「<a target="_blank" rel="noopener" href="https://music.163.com/song?id=2022397203&userid=305857607">bye-bye show</a>」，真的好听啊，BiSH 的最后一首歌（其实下个月的新番有 BiSH 唱的 OP, 所以严格来说是倒数第二首，不过这首算是很正式的告别曲，好像去看一场 live 啊～</p>
+<p>这学期的话应该得把双拼学了，spring 学了，准备准备实习的面试</p>
+<p>加油！</p>
+</blockquote>
+
+
+	<b><span id="post-date">2023/03/07</span></b>
+	<div id="tags">
+		<ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag"># git</a></li></ul>
+	</div>
+
+	<div id="clear"></div>
+</div>
+<center><a class="gobk" href="javascript:;" onclick="Gobk()">&gt CLICK TO back &lt</a><center>
+<div id="cart">
+	<button id="cart-hide" onclick="cartCg()">◀</button>
+</div>
+<script>
+	if(history.state==null){
+		var tmpa=document.getElementsByClassName("gobk")[0];
+		tmpa.innerHTML="> CLICK TO land <";
+	}
+	showAIndex();
+</script>
+
+	</div>
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+	</script>
+</span>
+	<hr id="hidden">
+	
+
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+		initBg();
+		$(document).pjax('a','#pup',{fragment:'#pup',timeout: 8000});
+	</script>
+</body>
+</html>
