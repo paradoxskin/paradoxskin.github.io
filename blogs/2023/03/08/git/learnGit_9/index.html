@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html id="all">
+
+<head>
+	<meta charset="utf-8">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="/pic/favicon.ico">
+	<title>Paradoxless | Blogs</title>
+	
+<link rel="stylesheet" href="/css/main.css">
+
+	
+<link rel="stylesheet" href="/css/font.css">
+
+	
+<link rel="stylesheet" href="/lib/highlight/rainbow.min.css">
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+	
+<script src="/lib/highlight/highlight.min.js"></script>
+
+	
+<script src="/lib/highlight/highlightjs-line-numbers.js"></script>
+
+	
+<script src="/lib/jquery.js"></script>
+
+	
+<script src="/lib/jquery.pjax.js"></script>
+
+	
+<script src="/js/main.js"></script>
+
+<body id="lybody">
+	<div id="head">
+	<a id="pLogo" href="/"><img alt="P" src="/pic/logo.svg"></a>
+	<div id="urlText">aradoxskin.</div>
+	<a id="githubLogo" href="https://github.com/paradoxskin" target="_blank"><img alt="github" src="/pic/github.svg"></a>
+	<div id="urlText">.io</div>
+	<div id="sucklessText">- simple is best</div>
+	<div id="clear"></div>
+</div>
+
+	<hr id="hidden">
+	<script>
+	//if(localStorage.getItem('bgs')==null){
+		localStorage['bgs']='comp'
+
+			localStorage.setItem('bgs[num]','25');
+
+			localStorage.setItem('bgs[pic1]','/pic/wp/01.jpg');
+
+			localStorage.setItem('bgs[pic2]','/pic/wp/02.jpg');
+
+			localStorage.setItem('bgs[pic3]','/pic/wp/03.jpg');
+
+			localStorage.setItem('bgs[pic4]','/pic/wp/04.jpg');
+
+			localStorage.setItem('bgs[pic5]','/pic/wp/05.jpg');
+
+			localStorage.setItem('bgs[pic6]','/pic/wp/06.jpg');
+
+			localStorage.setItem('bgs[pic7]','/pic/wp/07.jpg');
+
+			localStorage.setItem('bgs[pic8]','/pic/wp/08.jpg');
+
+			localStorage.setItem('bgs[pic9]','/pic/wp/09.jpg');
+
+			localStorage.setItem('bgs[pic10]','/pic/wp/10.jpg');
+
+			localStorage.setItem('bgs[pic11]','/pic/wp/11.jpg');
+
+			localStorage.setItem('bgs[pic12]','/pic/wp/12.jpg');
+
+			localStorage.setItem('bgs[pic13]','/pic/wp/13.png');
+
+			localStorage.setItem('bgs[pic14]','/pic/wp/14.png');
+
+			localStorage.setItem('bgs[pic15]','/pic/wp/15.png');
+
+			localStorage.setItem('bgs[pic16]','/pic/wp/16.jpg');
+
+			localStorage.setItem('bgs[pic17]','/pic/wp/17.jpg');
+
+			localStorage.setItem('bgs[pic18]','/pic/wp/18.jpg');
+
+			localStorage.setItem('bgs[pic19]','/pic/wp/19.jpg');
+
+			localStorage.setItem('bgs[pic20]','/pic/wp/20.jpg');
+
+			localStorage.setItem('bgs[pic21]','/pic/wp/21.png');
+
+			localStorage.setItem('bgs[pic22]','/pic/wp/22.jpg');
+
+			localStorage.setItem('bgs[pic23]','/pic/wp/23.png');
+
+			localStorage.setItem('bgs[pic24]','/pic/wp/24.jpg');
+
+			localStorage.setItem('bgs[pic25]','/pic/wp/25.jpg');
+
+		if(localStorage.getItem('now')==null){
+			localStorage.setItem('now','pic22');
+		}
+	//}
+</script>
+
+<div id="nav">
+	<ul>
+		<li><button id="cgBg" onclick="randomSwitch()">O</button><button id="clBg" onclick="noBg()">_</button></li>
+
+		<iframe id="music-player" frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=7669623816&auto=0&height=90"></iframe>
+
+		<button id="nav-hide" onclick="hideMenu()">◤</button>
+
+		<span id="clear"></span>
+	</ul>
+</div>
+<button id="nav-show" onclick="showMenu()">◢</button>
+
+<span id="pup">
+	<div id="menu">
+	
+	
+		
+			<b><a href="/" class="menu-item-link" id="in">Home</a></b>
+		
+	
+		
+			<b><a data-pjax="#main" href="/blogs" class="menu-item-link-selected" id="in">Blogs</a></b>
+		
+	
+		
+			<b><a href="/archives" class="menu-item-link" id="in">Archives</a></b>
+		
+	
+		
+			<b><a href="/about" class="menu-item-link" id="in">who@mi</a></b>
+		
+	
+		
+			<b><a href="/links" class="menu-item-link" id="in">Links</a></b>
+		
+	
+	<div id="outlink">
+	
+		<a href="https://www.lexaloffle.com/pico-8.php" class="menu-item-link" id="out" target="_blank">pico-8</a>
+	
+		<a href="https://suckless.org/" class="menu-item-link" id="out" target="_blank">suckless</a>
+	
+	</div>
+</div>
+
+	<div id="main">
+		<div id="post">
+
+	<b><div id="start-title">git 学习笔记 9</div></b>
+
+	
+	<center><b><span id="start-date">start at 2023/03/08.</span></b></center>
+	
+
+    <h2 id="标签"><a href="#标签" class="headerlink" title="标签"></a>标签</h2><p>标签 (Tag) 也是 git 的四大对象之一，它和分支类似，是用来贴在某个 commit 上的，只不过<span id="more"></span>和分支有一点不一样，那就是它不会随着 commit 的移动而移动，可以想象成一动不动的分支吧，更像是一扇定点的传送门</p>
+<h3 id="标签的分类"><a href="#标签的分类" class="headerlink" title="标签的分类"></a>标签的分类</h3><p>标签有两种</p>
+<ul>
+<li>lightweight tag, 轻量标签</li>
+<li>annotated tag, 附注标签</li>
+</ul>
+<p>官方有对这两种标签的描述</p>
+<blockquote>
+<p>Annotated tags are meant for release </p>
+<p>while lightweight tags are meant for private or temporary object labels.</p>
+</blockquote>
+<p>意思就是附注标签用来记载标签信息（比如贴这张标签的原因等），而轻量标签的作用是个人使用或者暂时贴一下。一般来说附注标签都是用来标注版本号的，如果不是很在意标签的信息，只需要使用轻量标签即可</p>
+<h3 id="使用标签"><a href="#使用标签" class="headerlink" title="使用标签"></a>使用标签</h3><pre><code class="bash">$ git tag xxx
+</code></pre>
+<p>和分支很像，这样就能在当前 commit 上贴上一张轻量标签，你也可以指定这张标签贴到哪条 commit 上</p>
+<pre><code class="bash">$ git log --oneline
+fb1c451 (HEAD -&gt; master, tag: test) add b.txt
+34456ef add a.txt
+$ git tag helloA 34456e
+$ git log --oneline
+fb1c451 (HEAD -&gt; master, tag: test) add b.txt
+34456ef (tag: helloA) add a.txt
+</code></pre>
+<p>如果你想贴一张附注标签只需要加上 <code>-a</code> 的选项即可，按回车之后会和提交 commit 类似，弹出一个 vim 编辑器出来，填上你要填的信息之后 <code>:wq</code> 即可，同样的道理你也可以使用 <code>-m &quot;info&quot;</code> 直接在命令里写下信息</p>
+<pre><code class="bash">$ git tag helloC -a
+$ git log --oneline
+8d1f70f (HEAD -&gt; master, tag: helloC) add c.txt
+fb1c451 (tag: test) add b.txt
+34456ef (tag: helloA) add a.txt
+</code></pre>
+<p>表面看上去会和轻量标签很像，查看标签信息的话要使用 <code>git show</code></p>
+<pre><code class="bash">$ git show test
+commit fb1c4512daa8af1b014d99e3bac67a6c3b0287d8 (tag: test)
+Author: paradoxskin &lt;1312269430@qq.com&gt;
+Date:   Wed Mar 8 16:19:07 2023 +0800
+
+    add b.txt
+
+diff --git a/b.txt b/b.txt
+new file mode 100644
+index 0000000..a71ea33
+--- /dev/null
++++ b/b.txt
+@@ -0,0 +1 @@
++print(&quot;hello, b&quot;)
+$ git show helloC
+tag helloC
+Tagger: paradoxskin &lt;1312269430@qq.com&gt;
+Date:   Wed Mar 8 16:22:23 2023 +0800
+
+just text
+
+commit 8d1f70fe0a8ab0205d556a65e1c831cfacc0ae59 (HEAD -&gt; master, tag: helloC)
+Author: paradoxskin &lt;1312269430@qq.com&gt;
+Date:   Wed Mar 8 16:22:05 2023 +0800
+
+    add c.txt
+
+diff --git a/c.txt b/c.txt
+new file mode 100644
+index 0000000..b95cfac
+--- /dev/null
++++ b/c.txt
+@@ -0,0 +1 @@
++print(&quot;hello c&quot;)
+</code></pre>
+<p>可以看到附注标签的内容多出了一块附注的内容</p>
+<p>和分支的存储方式类似，标签除了对象之外也在 <code>.git/refs/tags</code> 目录下存在，指向某个对象，其中轻量标签指向的是某个 commit, 而附注标签指向的是 tag 对象，毕竟要存储信息嘛</p>
+<h3 id="删除标签"><a href="#删除标签" class="headerlink" title="删除标签"></a>删除标签</h3><p>和删除分支很像，直接用 <code>-d</code> 删除即可</p>
+<pre><code class="bash">$ git tag -d test
+Deleted tag &#39;test&#39; (was fb1c451)
+$ git log --oneline
+8d1f70f (HEAD -&gt; master, tag: helloC) add c.txt
+fb1c451 add b.txt
+34456ef (tag: helloA) add a.txt
+</code></pre>
+<h3 id="标签的用途"><a href="#标签的用途" class="headerlink" title="标签的用途"></a>标签的用途</h3><p>标签是不会动的分支，一般会用表示开发软件时候的里程碑，比如说软件版本号之类的 (1.0.0)，我反正是不咋用的</p>
+<h2 id="Stash简要"><a href="#Stash简要" class="headerlink" title="Stash简要"></a>Stash简要</h2><blockquote>
+<p>我之前还以为这本书的时间太早了，git 还没更新出 stash, 原来作者没有单独错位标题名，只是作为中途要去处理其他分支时候的一种解决方案，而且作者也不是很喜欢用 stash</p>
+</blockquote>
+<p>使用 stash 的场景很常见：做事做了一半的时候突然要处理其他事，为了不丢失之前的进度，要短暂的保存一下进度</p>
+<pre><code class="bash">$ git status
+On branch master
+Changes to be committed:
+  (use &quot;git restore --staged &lt;file&gt;...&quot; to unstage)
+        new file:   d.txt
+
+$ git stash
+Saved working directory and index state WIP on master: 8d1f70f add c.txt
+$ git status
+On branch master
+nothing to commit, working tree clean
+</code></pre>
+<p>要注意 stash 默认是不暂存 Untracked 状态的文件，需要额外使用 <code>-u</code> 参数，stash 之后发现文件都消失了，别担心，文件没有消失，他们至少被存进了一个栈的结构</p>
+<pre><code class="bash">$ git stash list
+stash@&#123;0&#125;: WIP on master: 8d1f70f add c.txt
+</code></pre>
+<p>如果在往这个 list 里加东西，<code>stash@&#123;0&#125;</code> 会变成 <code>stash@&#123;1&#125;</code> </p>
+<pre><code class="bash">$ git stash list
+stash@&#123;0&#125;: WIP on master: 8ac6b40 temp2
+stash@&#123;1&#125;: WIP on master: 8d1f70f add c.txt
+</code></pre>
+<p>为什么说是栈呢，这就要说到怎么<strong>回收 stash</strong> 了</p>
+<p>使用 <code>git stash pop</code> 会默认回收出序号最小的 stash</p>
+<pre><code class="bash">$ git stash pop
+On branch master
+Changes to be committed:
+  (use &quot;git restore --staged &lt;file&gt;...&quot; to unstage)
+        new file:   d.txt
+
+Dropped refs/stash@&#123;0&#125; (8653ffcc50f4b3aad1d24acbf878f138bb48ddfc)
+</code></pre>
+<p>默认弹出了刚才的 <code>stash@&#123;0&#125;</code>，这就是说它是栈的原因，当然其实没有这么绝对，你可以指定弹出哪个 stash</p>
+<pre><code class="bash">$ git stash list
+stash@&#123;0&#125;: WIP on master: 8ac6b40 temp2
+stash@&#123;1&#125;: WIP on master: 8d1f70f add c.txt
+$ git stash pop stash@&#123;1&#125;
+On branch master
+Changes to be committed:
+  (use &quot;git restore --staged &lt;file&gt;...&quot; to unstage)
+        new file:   d.txt
+
+Dropped stash@&#123;1&#125; (ee3fba3714cd72a06be16f7821509cdfa93e9019)
+</code></pre>
+<p>如果你不打算使用那个 stash 可以直接使用 <code>git stash drop</code> 来丢弃 stash，另外还有一条 <code>git stash apply</code>，它的作用是只应用 stash 而不在 list 中删除那个 stash，也就是说你可以吧 <code>git stash pop</code> 看成 <code>git stash apply + git stash drop</code></p>
+<blockquote>
+<p>我和作者的观点一致，觉得 <code>git stash</code> 的功能不是很喜欢，更喜欢直接 commit，回来的时候 <code>git reset HEAD^</code> 软回退就好了</p>
+</blockquote>
+<h2 id="push隐私文件后应急"><a href="#push隐私文件后应急" class="headerlink" title="push隐私文件后应急"></a>push隐私文件后应急</h2><p>典型的事故有不小心 push 了包含数据库密码的配置文件，因为 git 能够查看历史，所以即便你在之后的 commit 中将那个文件删除也可以通过回溯的方式找到那个文件，那么第一时间应该做什么呢？</p>
+<p><strong>修改密码</strong></p>
+<p>修改密码能让你急剧地降低风险，然后再去解决提交历史的问题</p>
+<p>最简单的方法，直接把整个 <code>.git</code> 文件夹给删了，然后把密码文件给删了之后再 commit</p>
+<p>除了这么简单粗暴的方法，书中还介绍了另一种指令 <code>git filter-branch</code> </p>
+<p>由于构造例子很费灵感和时间，所以我就不本地构造环境了，就讲一下功能</p>
+<p>如果你选择手动处理所有涉及到这个密码文件的 commit (因为有时候你发现问题的时候已经过了很多个 commit 了)</p>
+<p>那么 rebase 的时候可能就很痛苦了，要一条一条 commit 的修改，中间可能还会遇到很多冲突，而这条命令可以一次修改大量的 commit，不过这个命令貌似很不常用，网上评价它为 git 中的核武器（？</p>
+<p>使用用法如下</p>
+<pre><code class="bash">$ git filter-branch --tree-filter &quot;rm -f config/database.yml&quot;
+$ git reset refs/original/refs/heads/master --hard
+</code></pre>
+<p>下面那行是用来后悔之前的<code>fliter-branch</code> 行为的，这个命令的具体用法还是自己查查吧，感觉参数很多的样子，对所有的 commit 批量执行后面双引号里面的命令之后自动 commit 掉，除了删除配置文件，删除很大的二进制文件的时候也有奇效，修改完之后就要用 <code>git push -f</code> 强推仓库了</p>
+<p>书中还提了下 <code>git cherry-pick SHA-1</code> 这个命令，主要用来复制指定 commit 的命令，也是小众命令，应该不常用，就不提起了</p>
+<h2 id="git的垃圾回收"><a href="#git的垃圾回收" class="headerlink" title="git的垃圾回收"></a>git的垃圾回收</h2><p>文件进入了 git 中，那么想走是没那么容易的，想要全部清理感觉不是容易的事</p>
+<p>上文中使用 <code>filter-branch</code> 来清理密码配置文件，然而下面又可以用 <code>git reset</code> 恢复，这说明其实这个动作并没有把密码文件给清理感觉，无法回档才能算干净地清理</p>
+<p>自然是有深度清理的方法</p>
+<pre><code class="bash">$ git filter-branch -f --tree-filter &quot;rm -f config/database.yml&quot;
+</code></pre>
+<p>增加一个 <code>-f</code> 是因为要强行覆盖掉 <code>filter-branch</code> 的备份点，但还没有处理完，下面这条命令能把刚刚 <code>filter-branch</code> 的备份点给删了，禁止再往回跳</p>
+<pre><code class="bash">$ rm .git/refs/original/refs/heads/master
+</code></pre>
+<p>除了这个以外还有一个 <code>git reflog</code> 也要清理</p>
+<pre><code class="bash">$ git reflog expire --all --expire=now
+</code></pre>
+<p>这能让 reflog 立即过期（默认30天），使用 <code>git fsck --unreachable</code> 能看到很多 unreachable 状态的对象，最后叫垃圾车来回收那些没用的对象</p>
+<pre><code class="bash">$ git gc --prune=now
+</code></pre>
+<p>这样之后就把不该继续存在的对象给彻底清理了，就再也 reset 不回去了</p>
+<p>上面那一系列行为就可以看出 git 的整个垃圾回收机制了，那些 unreachable 的对象正是 git 需要回收的垃圾，在 <code>git gc</code> 到来运送垃圾之前，那些对象处于未被回收状态，就还能被我们回溯到，而 <code>git gc --prune=now</code> 能让垃圾车迅速到来运走垃圾，所谓的 unreachable 被作者称作 “没人爱” 的边缘对象，指的就是 git 底层文件夹里那些没有被任何指针指向的对象，在没有被回收之前我们都能对这些对象进行 “拯救”</p>
+<p>这便是 git 的垃圾回收过程</p>
+<blockquote>
+<p>写这种笔记真的好累人啊，要是不做笔记应该早就看完这本书了，不过自己这样写一写确实加深了很多印象</p>
+<p>不过这种技术类的笔记其实不保值，最实惠的学习方式还是读官方文档，我写的博客或者是别人写的属总有一天会因为某次更新而变成 useless</p>
+<p>就剩两章了，远端仓库 和 git flow，很快就能接受掉这本书看 spring 去了</p>
+</blockquote>
+
+
+	<b><span id="post-date">2023/03/08</span></b>
+	<div id="tags">
+		<ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag"># git</a></li></ul>
+	</div>
+
+	<div id="clear"></div>
+</div>
+<center><a class="gobk" href="javascript:;" onclick="Gobk()">&gt CLICK TO back &lt</a><center>
+<div id="cart">
+	<button id="cart-hide" onclick="cartCg()">◀</button>
+</div>
+<script>
+	if(history.state==null){
+		var tmpa=document.getElementsByClassName("gobk")[0];
+		tmpa.innerHTML="> CLICK TO land <";
+	}
+	showAIndex();
+</script>
+
+	</div>
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+	</script>
+</span>
+	<hr id="hidden">
+	
+
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+		initBg();
+		$(document).pjax('a','#pup',{fragment:'#pup',timeout: 8000});
+	</script>
+</body>
+</html>
