@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html id="all">
+
+<head>
+	<meta charset="utf-8">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="/pic/favicon.ico">
+	<title>Paradoxless | Blogs</title>
+	
+<link rel="stylesheet" href="/css/main.css">
+
+	
+<link rel="stylesheet" href="/css/font.css">
+
+	
+<link rel="stylesheet" href="/lib/highlight/rainbow.min.css">
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+	
+<script src="/lib/highlight/highlight.min.js"></script>
+
+	
+<script src="/lib/highlight/highlightjs-line-numbers.js"></script>
+
+	
+<script src="/lib/jquery.js"></script>
+
+	
+<script src="/lib/jquery.pjax.js"></script>
+
+	
+<script src="/js/main.js"></script>
+
+<body id="lybody">
+	<div id="head">
+	<a id="pLogo" href="/"><img alt="P" src="/pic/logo.svg"></a>
+	<div id="urlText">aradoxskin.</div>
+	<a id="githubLogo" href="https://github.com/paradoxskin" target="_blank"><img alt="github" src="/pic/github.svg"></a>
+	<div id="urlText">.io</div>
+	<div id="sucklessText">- simple is best</div>
+	<div id="clear"></div>
+</div>
+
+	<hr id="hidden">
+	<script>
+	//if(localStorage.getItem('bgs')==null){
+		localStorage['bgs']='comp'
+
+			localStorage.setItem('bgs[num]','25');
+
+			localStorage.setItem('bgs[pic1]','/pic/wp/01.jpg');
+
+			localStorage.setItem('bgs[pic2]','/pic/wp/02.jpg');
+
+			localStorage.setItem('bgs[pic3]','/pic/wp/03.jpg');
+
+			localStorage.setItem('bgs[pic4]','/pic/wp/04.jpg');
+
+			localStorage.setItem('bgs[pic5]','/pic/wp/05.jpg');
+
+			localStorage.setItem('bgs[pic6]','/pic/wp/06.jpg');
+
+			localStorage.setItem('bgs[pic7]','/pic/wp/07.jpg');
+
+			localStorage.setItem('bgs[pic8]','/pic/wp/08.jpg');
+
+			localStorage.setItem('bgs[pic9]','/pic/wp/09.jpg');
+
+			localStorage.setItem('bgs[pic10]','/pic/wp/10.jpg');
+
+			localStorage.setItem('bgs[pic11]','/pic/wp/11.jpg');
+
+			localStorage.setItem('bgs[pic12]','/pic/wp/12.jpg');
+
+			localStorage.setItem('bgs[pic13]','/pic/wp/13.png');
+
+			localStorage.setItem('bgs[pic14]','/pic/wp/14.png');
+
+			localStorage.setItem('bgs[pic15]','/pic/wp/15.png');
+
+			localStorage.setItem('bgs[pic16]','/pic/wp/16.jpg');
+
+			localStorage.setItem('bgs[pic17]','/pic/wp/17.jpg');
+
+			localStorage.setItem('bgs[pic18]','/pic/wp/18.jpg');
+
+			localStorage.setItem('bgs[pic19]','/pic/wp/19.jpg');
+
+			localStorage.setItem('bgs[pic20]','/pic/wp/20.jpg');
+
+			localStorage.setItem('bgs[pic21]','/pic/wp/21.png');
+
+			localStorage.setItem('bgs[pic22]','/pic/wp/22.jpg');
+
+			localStorage.setItem('bgs[pic23]','/pic/wp/23.png');
+
+			localStorage.setItem('bgs[pic24]','/pic/wp/24.jpg');
+
+			localStorage.setItem('bgs[pic25]','/pic/wp/25.jpg');
+
+		if(localStorage.getItem('now')==null){
+			localStorage.setItem('now','pic22');
+		}
+	//}
+</script>
+
+<div id="nav">
+	<ul>
+		<li><button id="cgBg" onclick="randomSwitch()">O</button><button id="clBg" onclick="noBg()">_</button></li>
+
+		<iframe id="music-player" frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=7669623816&auto=0&height=90"></iframe>
+
+		<button id="nav-hide" onclick="hideMenu()">◤</button>
+
+		<span id="clear"></span>
+	</ul>
+</div>
+<button id="nav-show" onclick="showMenu()">◢</button>
+
+<span id="pup">
+	<div id="menu">
+	
+	
+		
+			<b><a href="/" class="menu-item-link" id="in">Home</a></b>
+		
+	
+		
+			<b><a data-pjax="#main" href="/blogs" class="menu-item-link-selected" id="in">Blogs</a></b>
+		
+	
+		
+			<b><a href="/archives" class="menu-item-link" id="in">Archives</a></b>
+		
+	
+		
+			<b><a href="/about" class="menu-item-link" id="in">who@mi</a></b>
+		
+	
+		
+			<b><a href="/links" class="menu-item-link" id="in">Links</a></b>
+		
+	
+	<div id="outlink">
+	
+		<a href="https://www.lexaloffle.com/pico-8.php" class="menu-item-link" id="out" target="_blank">pico-8</a>
+	
+		<a href="https://suckless.org/" class="menu-item-link" id="out" target="_blank">suckless</a>
+	
+	</div>
+</div>
+
+	<div id="main">
+		<div id="post">
+
+	<b><div id="start-title">rust学习笔记 3</div></b>
+
+	
+	<center><b><span id="start-date">start at 2023/03/26.</span></b></center>
+	
+
+    <h2 id="复合结构"><a href="#复合结构" class="headerlink" title="复合结构"></a>复合结构</h2><h3 id="结构体"><a href="#结构体" class="headerlink" title="结构体"></a>结构体</h3><p>rust 中的结构体和元组都可以将若干个类型不相同的数据捆绑在一起<span id="more"></span>，但结构体的每个成员和其本身都有一个名字，这样访问的时候就不用记住下标了，元组一般用来非定义的多值传递，而结构体是规范的</p>
+<ul>
+<li>定义</li>
+</ul>
+<pre><code class="rust">struct Site &#123;
+    domain: String,
+    name: String,
+    nation: String
+&#125;
+</code></pre>
+<p>和 C 语言有以下区别：</p>
+<ol>
+<li>定义语句仅用来定义，不能定义实例 (初始化)</li>
+<li>结尾不用 <code>;</code></li>
+<li>每个字段定义后用 <code>,</code> 分隔</li>
+</ol>
+<ul>
+<li>创建实例</li>
+</ul>
+<pre><code class="rust">fn main() &#123;
+    let domain = String::from(&quot;paradoxskin.github.io&quot;);
+    let paradox = Site &#123;
+        domain,
+        nation: String::from(&quot;China&quot;),
+        name: String::from(&quot;paradoxless&quot;)
+    &#125;;
+&#125;
+</code></pre>
+<p>实例化的过程类似创建 json，不需要按照定义的顺序输入，而且如果有字段名称和现存变量同名，就可以像上面的 domain 那样简写</p>
+<ul>
+<li>复制修改实例</li>
+</ul>
+<pre><code class="rust">let bing = Site &#123;
+    name: String::from(&quot;bing&quot;),
+    domain: String::from(&quot;cn.bing.com&quot;),
+    ..paradox
+&#125;;
+</code></pre>
+<p>在两个实例属性差不多的时候就可以只修改有区别的字段，之后使用 <code>..实例</code> 即可，这句之后不能加 <code>,</code></p>
+<p>虽然书上说 不允许一成不变地复制另一个结构体实例，要至少修改一个字段的值，但是我全部复制还是可以通过编译</p>
+<h3 id="结构体所有权"><a href="#结构体所有权" class="headerlink" title="结构体所有权"></a>结构体所有权</h3><p>上面第一段实例化代码中的 <code>domain</code> 变量的所有权在实例化的时候发生了转移，之后无法直接使用 <code>domain</code> 这一变量了</p>
+<p>关于结构体还有一个知识点</p>
+<pre><code class="rust">struct Temp &#123;
+    some: &amp;str,
+    strr: &amp;str
+&#125;
+</code></pre>
+<p>上面一段代码是无法通过编译的，编译器会提示需要命名的生命周期符号，正确写法就是加上生命周期符号：</p>
+<pre><code class="rust">struct Temp&lt;&#39;c&gt; &#123;
+    some: &amp;&#39;c str,
+    strr: &amp;&#39;c str
+&#125;
+</code></pre>
+<p>这个符号的含义是让被打上标记的点生命周期一样长，下面有一个会出现 不可预测生命周期 的函数例子</p>
+<pre><code class="rust">fn longer(s1: &amp;str, s2:&amp;str) -&gt; &amp;str &#123;
+    if s2.len() &gt; s1.len() &#123;
+        return s2;
+    &#125;
+    else &#123;
+        return s1;
+    &#125;
+&#125;
+</code></pre>
+<p>上面这段函数也是无法通过编译的，因为如果 s1比较长，那么函数的返回值的生命周期会和 s1 一样长，反之则会和 s2 一样长，编译器无法做出谁更长的判断，因此，函数必须声明 s1 和 s2 的生命周期</p>
+<pre><code class="rust">fn longer&lt;&#39;a&gt;(s1: &amp;&#39;a str, s2:&amp;&#39;a str) -&gt; &amp;&#39;a str &#123;
+    if s2.len() &gt; s1.len() &#123;
+        return s2;
+    &#125;
+    else &#123;
+        return s1;
+    &#125;
+&#125;
+</code></pre>
+<p>这样函数的两个参数的生命周期就一样长了</p>
+<p>在结构体里也是一样的道理，要举出例子还是有点困难的，如果搞不清楚可以直接认为只要在结构体里使用引用类型，就一定要在 <code>&amp;</code> 类型后面加个 <code>&#39;a</code> 即可</p>
+<h3 id="结构体方法"><a href="#结构体方法" class="headerlink" title="结构体方法"></a>结构体方法</h3><p>相当于类中函数</p>
+<pre><code class="rust">struct Rect &#123;
+    width: u32,
+    height: u32,
+&#125;
+
+impl Rect &#123;
+    fn area(&amp;self) -&gt; u32 &#123;
+        self.width * self.height
+    &#125;
+    fn wider(&amp;self, rect: &amp;Rect) -&gt; bool &#123;
+        self.width &gt; rect.width
+    &#125;
+&#125;
+impl Rect &#123;
+    fn circum(&amp;self) -&gt; u32 &#123;
+        (self.width + self.height) * 2
+    &#125;
+    fn xx() -&gt; u32 &#123;
+        233
+    &#125;
+&#125;
+fn main() &#123;
+    let rect1 = Rect &#123; width: 30, height: 50 &#125;;
+    let rect2 = Rect &#123; width: 10, height: 50 &#125;;
+    println!(&quot;rect1&#39;s area is &#123;&#125;&quot;, rect1.area());
+    println!(&quot;rect2&#39;s circum is &#123;&#125;&quot;, rect2.circum());
+    println!(&quot;Is rect1 wider than rect2: &#123;&#125;&quot;, rect1.wider(&amp;rect2));
+    println!(&quot;&#123;&#125;&quot;, Rect::xx());
+&#125;
+</code></pre>
+<p>结构体方法写在 <code>impl</code> 语句块里，语句块需要指定结构体，同一个语句块里可以写多个结构体方法，代码中也可以有有多个 <code>impl</code> 语句块，<code>&amp;self</code> 代表结构体对象自己，如果没有 <code>&amp;self</code> 参数就相当一个静态函数，不能基于对象被调用</p>
+<blockquote>
+<p>注意，impl 不是接口的意思</p>
+</blockquote>
+<h3 id="元组结构体"><a href="#元组结构体" class="headerlink" title="元组结构体"></a>元组结构体</h3><pre><code class="rust">fn main() &#123;
+    struct Color(u8, u8, u8);
+    struct Point(f64, f64);
+
+    let black = Color(0, 0, 0);
+    let origin = Point(1.0, 0.0);
+
+    println!(&quot;black = &#123;&#125; &#123;&#125; &#123;&#125;&quot;, black.0, black.1, black.2);
+    println!(&quot;origin = &#123;&#125; &#123;&#125;&quot;, origin.0, origin.1);
+&#125;
+</code></pre>
+<p>元组结构体和元组类似，区别就是它有名字和固定的类型格式，这个数据存在的意义就是处理那些需要定义类型又不想太复杂的简单数据，简单的说，就是为了牺牲了点结构体的可读性获取便捷性（ 颜色、坐标 ）</p>
+<h3 id="单元结构体"><a href="#单元结构体" class="headerlink" title="单元结构体"></a>单元结构体</h3><p>这种结构体无须任何成员，我现在还不知道它存在的意义是什么（</p>
+<pre><code class="rust">struct UnitStruct;
+</code></pre>
+<h3 id="枚举类"><a href="#枚举类" class="headerlink" title="枚举类"></a>枚举类</h3><p>和 C++ 中的枚举类有所不同，rust 中的枚举类不是默认为 0, 1, 2…</p>
+<p>但我也不知到 Rust 中的枚举类有什么用，就先简单抄一下就好了</p>
+<pre><code class="rust">#[derive(Debug)]
+enum Color &#123;
+    Red,
+    Green,
+    Blue
+&#125;
+fn main() &#123;
+    let color = Color::Red;
+    println!(&quot;&#123;:?&#125;&quot;, color);
+&#125;
+</code></pre>
+<p>输出 <code>Red</code> </p>
+<p>枚举类可以包含属性，并实例化</p>
+<pre><code class="rust">enum Book &#123;
+    Papery(u32),
+    Electronic(String),
+&#125;
+fn main() &#123;
+    let book = Book::Papery(1001);
+    let ebook = Book::Electronic(String::from(&quot;https://xxx.xxx&quot;));
+&#125;
+</code></pre>
+<p>如有必要，可以用结构体的键值命名枚举类的属性</p>
+<pre><code class="rust">enum Book &#123;
+    Papery &#123;
+        index: u32
+    &#125;,
+    Electronic &#123;
+        url: String
+    &#125;
+&#125;
+fn main() &#123;
+    let book = Book::Papery &#123; index: (1001) &#125;;
+    let ebook = Book::Electronic &#123; url: String::from(&quot;https://xxx.xxx&quot;) &#125;;
+&#125;
+</code></pre>
+<ul>
+<li>使用 match 语法</li>
+</ul>
+<blockquote>
+<p>”switch 语法就是为了枚举类而设计的“</p>
+</blockquote>
+<pre><code class="rust">enum Book &#123;
+    Papery(u32),
+    Electronic &#123;
+        url: String
+    &#125;
+&#125;
+fn main() &#123;
+    let book = Book::Papery(1001);
+    match book &#123;
+        Book::Papery(index) =&gt; &#123;
+            println!(&quot;Papery book &#123;&#125;&quot;, index);
+        &#125;,
+        Book::Electronic &#123; url &#125; =&gt; &#123;
+            println!(&quot;E-book &#123;&#125;&quot;, url);
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p>如果实例是哪个枚举项就执行哪个，如果是用结构体申明的，就用 <code>Electronic</code> 这样的格式，用元组语法定义就用 <code>Papery</code> 那种格式</p>
+<ul>
+<li><code>if-let</code> 语法</li>
+</ul>
+<p>如果只是想要写一个简单的判断值为某个枚举项的话，就可以不费那么大劲去写 <code>match</code>，可以直接用 <code>if-let</code> 语法</p>
+<pre><code class="rust">if let Book::Electronic &#123; url &#125; = &amp;book &#123;
+    println!(&quot;eeeee&quot;);
+&#125;
+if let Book::Papery(index) = &amp;book &#123;
+    println!(&quot;&#123;&#125;&quot;, index)
+&#125;
+</code></pre>
+<p>等价于</p>
+<pre><code class="rust">match book &#123;
+    匹配项 =&gt; &#123;
+        something
+    &#125;,
+    _ =&gt; &#123;&#125;
+&#125;
+</code></pre>
+<h3 id="枚举类的方法"><a href="#枚举类的方法" class="headerlink" title="枚举类的方法"></a>枚举类的方法</h3><p>枚举类和结构体同样可以使用 impl 语句块编写方法</p>
+<p>写面展示一个例子</p>
+<pre><code class="rust">#[derive(Debug)]
+enum Signal &#123;
+    Red,
+    Yellow,
+    Green
+&#125;
+
+impl Signal &#123;
+    fn red(&amp;mut self) &#123;
+        *self = Signal::Red;
+    &#125;
+
+    fn yellow(&amp;mut self) &#123;
+        *self = Signal::Yellow;
+    &#125;
+
+    fn green(&amp;mut self) &#123;
+        *self = Signal::Green;
+    &#125;
+&#125;
+
+fn main() &#123;
+    let mut signal = Signal::Red;
+    println!(&quot;&#123;:?&#125;&quot;, signal);
+    signal.yellow();
+    println!(&quot;&#123;:?&#125;&quot;, signal);
+    signal.green();
+    println!(&quot;&#123;:?&#125;&quot;, signal);
+&#125;
+</code></pre>
+<h2 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h2><p>和其他语言的泛型类似</p>
+<p>Rust 中函数、结构体和枚举项都可以使用泛型</p>
+<h3 id="泛型函数"><a href="#泛型函数" class="headerlink" title="泛型函数"></a>泛型函数</h3><p>下面的泛型是用来返回数组最后一个元素的</p>
+<pre><code class="rust">fn get_last&lt;T&gt;(array: &amp;[T]) -&gt; &amp;T &#123;
+    &amp;array[array.len() - 1]
+&#125;
+fn main() &#123;
+    let la = [&quot;hwllo&quot;, &quot;two&quot;, &quot;one&quot;];
+    let lb = [1, 2, 3, 4, 233];
+    println!(&quot;&#123;&#125;&quot;, get_last(&amp;la));
+    println!(&quot;&#123;&#125;&quot;, get_last(&amp;lb));
+&#125;
+</code></pre>
+<p>这里的泛型函数的使用方式被简化了，完整的使用方法是 <code>函数名::&lt;泛型&gt;(参数...)</code></p>
+<h3 id="泛型结构体"><a href="#泛型结构体" class="headerlink" title="泛型结构体"></a>泛型结构体</h3><pre><code class="rust">struct Point&lt;T&gt; &#123;
+    x: T,
+    y: T
+&#125;
+
+fn main() &#123;
+    let point = Point::&lt;i32&gt; &#123;
+        x: 1,
+        y: 233,
+    &#125;;
+    let point2 = Point &#123;
+        x: 1.3,
+        y: 2.333
+    &#125;;
+&#125;
+</code></pre>
+<p>这里和上面类似，支持自动类型判断，当然，如果自动类型判断冲突的时候，编译器是不会让你通过的</p>
+<pre><code class="rust">// 错误代码
+let point3 = Point &#123;
+    x: 1,
+    y: 2.33
+&#125;;
+</code></pre>
+<p>下面是多泛型的示范：</p>
+<pre><code class="rust">struct Point&lt;T, X&gt; &#123;
+    x: T,
+    y: X
+&#125;
+
+fn main() &#123;
+    let point = Point::&lt;i32, i32&gt; &#123;
+        x: 1,
+        y: 233,
+    &#125;;
+&#125;
+</code></pre>
+<h3 id="泛型枚举类"><a href="#泛型枚举类" class="headerlink" title="泛型枚举类"></a>泛型枚举类</h3><p>枚举类和结构体类似</p>
+<pre><code class="rust">enum Shape&lt;T&gt; &#123;
+    Rectangle(T, T),
+    Cube(T, T, T)
+&#125;
+
+fn main() &#123;
+    let s1 = Shape::Rectangle(23, 32);
+    let s2: Shape&lt;i32&gt; = Shape::Cube(1,2,3);
+&#125;
+</code></pre>
+<h3 id="impl-泛型"><a href="#impl-泛型" class="headerlink" title="impl 泛型"></a>impl 泛型</h3><p>用来为泛型复合类型编写方法，主要方法有两种，一种是对泛型类直接实现方法，另一种是对具体类实现方法</p>
+<pre><code class="rust">struct Rect&lt;T&gt; &#123;
+    x: T,
+    y: T
+&#125;
+// 对泛型直接实现方法
+impl&lt;A&gt; Rect&lt;A&gt; &#123; //可以不是T, 是A
+    fn get_x(&amp;self) -&gt; &amp;A &#123;
+        &amp;self.x
+    &#125;
+    fn get_y(&amp;self) -&gt; &amp;A &#123;
+        &amp;self.y
+    &#125;
+&#125;
+// 对具体类实现方法
+impl Rect&lt;i32&gt; &#123;
+    fn area(&amp;self) -&gt; i32 &#123;
+        self.x * self.y
+    &#125;
+&#125;
+
+fn main() &#123;
+    let rect = Rect&#123;y: 45, x: 24&#125;;
+    println!(&quot;&#123;&#125; * &#123;&#125; = &#123;&#125;&quot;, rect.get_x(), rect.get_y(), rect.area());
+&#125;
+</code></pre>
+<p>在对泛型直接实现方法那里包含两个泛型声明，这两处的泛型声明是必要的，而且是有从属关系的，<code>impl</code> 后面的泛型从属于 <code>Rect</code> 的</p>
+<h3 id="泛型方法"><a href="#泛型方法" class="headerlink" title="泛型方法"></a>泛型方法</h3><p>既然函数有泛型，那么方法有泛型也不是奇怪的事情，以下是对一个非泛型类实现的一个泛型方法：</p>
+<pre><code class="rust">struct Rect &#123;
+    x: i32,
+    y: i32
+&#125;
+
+impl Rect &#123;
+    fn ffxx&lt;T&gt;(&amp;self, a: T) -&gt; T&#123;
+        a
+    &#125;
+&#125;
+fn main() &#123;
+    let rect = Rect&#123; x: 32, y: 23&#125;;
+    println!(&quot;&#123;&#125;&quot;, rect.ffxx(&quot;hello&quot;));
+&#125;
+</code></pre>
+<p>以下是对泛型类的泛型方法：</p>
+<pre><code class="rust">#[derive(Debug)]
+struct Data&lt;A, B&gt; &#123;
+    x: A,
+    y: B
+&#125;
+
+impl&lt;A, B&gt; Data&lt;A, B&gt; &#123;
+    fn mix&lt;C, D&gt;(self, other: Data&lt;C, D&gt;) -&gt; Data&lt;A, D&gt; &#123;
+        Data &#123; x: self.x, y: other.y &#125;
+    &#125;
+&#125;
+
+fn main() &#123;
+    let a = Data &#123;
+        x: 123.45,
+        y: &quot;hello&quot;
+    &#125;;
+    let b = Data &#123;
+        x: 666,
+        y: 2333
+    &#125;;
+    let c = a.mix(b);
+    println!(&quot;&#123;:?&#125;&quot;, c);
+&#125;
+</code></pre>
+<p>对这个所有权的分析真是困难啊，上面经过 <code>a.mix(b)</code> 之后，<code>a</code> 和 <code>b</code> 的所有权都给了 <code>c</code> ，确实是这个道理，但是要怎么写才能让 <code>a</code> 和 <code>b</code> 不失去所有权呢？现在不是很熟练 :(</p>
+<blockquote>
+<p>一脸懵逼地写出来了，不止所以然</p>
+<pre><code class="rust">#[derive(Debug)]
+struct Data&lt;A, B&gt; &#123;
+    x: A,
+    y: B
+&#125;
+
+impl&lt;A, B&gt; Data&lt;A, B&gt; &#123;
+    fn mix2&lt;&#39;a, C, D&gt;(&amp;&#39;a self, other: &amp;&#39;a Data&lt;C, D&gt;) -&gt; Data&lt;&amp;A, &amp;D&gt; &#123;
+        let x = &amp;self.x;
+        let y = &amp;other.y;
+        Data &#123; x, y &#125;
+    &#125;
+&#125;
+
+fn main() &#123;
+    let a = Data &#123;
+        x: 123.45,
+        y: &quot;hello&quot;
+    &#125;;
+    let b = Data &#123;
+        x: 666,
+        y: 2333
+    &#125;;
+    println!(&quot;&#123;:?&#125;&quot;, a.mix2(&amp;b));
+    println!(&quot;&#123;:?&#125;&quot;, a);
+&#125;
+</code></pre>
+<p>这章就先到这里吧，这周的计划还有三章，应该是来的及的（半场开香槟</p>
+<p>感觉一年后的我会骂现在学 rust 的我，我学这东西单纯是拿准备实习面试的时间去学自己的爱好啊，不是面向市场的，保护保护保护</p>
+</blockquote>
+
+
+	<b><span id="post-date">2023/03/28</span></b>
+	<div id="tags">
+		<ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/rust/" rel="tag"># rust</a></li></ul>
+	</div>
+
+	<div id="clear"></div>
+</div>
+<center><a class="gobk" href="javascript:;" onclick="Gobk()">&gt CLICK TO back &lt</a><center>
+<div id="cart">
+	<button id="cart-hide" onclick="cartCg()">◀</button>
+</div>
+<script>
+	if(history.state==null){
+		var tmpa=document.getElementsByClassName("gobk")[0];
+		tmpa.innerHTML="> CLICK TO land <";
+	}
+	showAIndex();
+</script>
+
+	</div>
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+	</script>
+</span>
+	<hr id="hidden">
+	
+
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+		initBg();
+		$(document).pjax('a','#pup',{fragment:'#pup',timeout: 8000});
+	</script>
+</body>
+</html>
