@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html id="all">
+
+<head>
+	<meta charset="utf-8">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="/pic/favicon.ico">
+	<title>Paradoxless | Blogs</title>
+	
+<link rel="stylesheet" href="/css/main.css">
+
+	
+<link rel="stylesheet" href="/css/font.css">
+
+	
+<link rel="stylesheet" href="/lib/highlight/rainbow.min.css">
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+	
+<script src="/lib/highlight/highlight.min.js"></script>
+
+	
+<script src="/lib/highlight/highlightjs-line-numbers.js"></script>
+
+	
+<script src="/lib/jquery.js"></script>
+
+	
+<script src="/lib/jquery.pjax.js"></script>
+
+	
+<script src="/js/main.js"></script>
+
+<body id="lybody">
+	<div id="head">
+	<a id="pLogo" href="/"><img alt="P" src="/pic/logo.svg"></a>
+	<div id="urlText">aradoxskin.</div>
+	<a id="githubLogo" href="https://github.com/paradoxskin" target="_blank"><img alt="github" src="/pic/github.svg"></a>
+	<div id="urlText">.io</div>
+	<div id="sucklessText">- simple is best</div>
+	<div id="clear"></div>
+</div>
+
+	<hr id="hidden">
+	<script>
+	//if(localStorage.getItem('bgs')==null){
+		localStorage['bgs']='comp'
+
+			localStorage.setItem('bgs[num]','25');
+
+			localStorage.setItem('bgs[pic1]','/pic/wp/01.jpg');
+
+			localStorage.setItem('bgs[pic2]','/pic/wp/02.jpg');
+
+			localStorage.setItem('bgs[pic3]','/pic/wp/03.jpg');
+
+			localStorage.setItem('bgs[pic4]','/pic/wp/04.jpg');
+
+			localStorage.setItem('bgs[pic5]','/pic/wp/05.jpg');
+
+			localStorage.setItem('bgs[pic6]','/pic/wp/06.jpg');
+
+			localStorage.setItem('bgs[pic7]','/pic/wp/07.jpg');
+
+			localStorage.setItem('bgs[pic8]','/pic/wp/08.jpg');
+
+			localStorage.setItem('bgs[pic9]','/pic/wp/09.jpg');
+
+			localStorage.setItem('bgs[pic10]','/pic/wp/10.jpg');
+
+			localStorage.setItem('bgs[pic11]','/pic/wp/11.jpg');
+
+			localStorage.setItem('bgs[pic12]','/pic/wp/12.jpg');
+
+			localStorage.setItem('bgs[pic13]','/pic/wp/13.png');
+
+			localStorage.setItem('bgs[pic14]','/pic/wp/14.png');
+
+			localStorage.setItem('bgs[pic15]','/pic/wp/15.png');
+
+			localStorage.setItem('bgs[pic16]','/pic/wp/16.jpg');
+
+			localStorage.setItem('bgs[pic17]','/pic/wp/17.jpg');
+
+			localStorage.setItem('bgs[pic18]','/pic/wp/18.jpg');
+
+			localStorage.setItem('bgs[pic19]','/pic/wp/19.jpg');
+
+			localStorage.setItem('bgs[pic20]','/pic/wp/20.jpg');
+
+			localStorage.setItem('bgs[pic21]','/pic/wp/21.png');
+
+			localStorage.setItem('bgs[pic22]','/pic/wp/22.jpg');
+
+			localStorage.setItem('bgs[pic23]','/pic/wp/23.png');
+
+			localStorage.setItem('bgs[pic24]','/pic/wp/24.jpg');
+
+			localStorage.setItem('bgs[pic25]','/pic/wp/25.jpg');
+
+		if(localStorage.getItem('now')==null){
+			localStorage.setItem('now','pic22');
+		}
+	//}
+</script>
+
+<div id="nav">
+	<ul>
+		<li><button id="cgBg" onclick="randomSwitch()">O</button><button id="clBg" onclick="noBg()">_</button></li>
+
+		<iframe id="music-player" frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=7669623816&auto=0&height=90"></iframe>
+
+		<button id="nav-hide" onclick="hideMenu()">◤</button>
+
+		<span id="clear"></span>
+	</ul>
+</div>
+<button id="nav-show" onclick="showMenu()">◢</button>
+
+<span id="pup">
+	<div id="menu">
+	
+	
+		
+			<b><a href="/" class="menu-item-link" id="in">Home</a></b>
+		
+	
+		
+			<b><a data-pjax="#main" href="/blogs" class="menu-item-link-selected" id="in">Blogs</a></b>
+		
+	
+		
+			<b><a href="/archives" class="menu-item-link" id="in">Archives</a></b>
+		
+	
+		
+			<b><a href="/about" class="menu-item-link" id="in">who@mi</a></b>
+		
+	
+		
+			<b><a href="/links" class="menu-item-link" id="in">Links</a></b>
+		
+	
+	<div id="outlink">
+	
+		<a href="https://www.lexaloffle.com/pico-8.php" class="menu-item-link" id="out" target="_blank">pico-8</a>
+	
+		<a href="https://suckless.org/" class="menu-item-link" id="out" target="_blank">suckless</a>
+	
+	</div>
+</div>
+
+	<div id="main">
+		<div id="post">
+
+	<b><div id="start-title">rust学习笔记 6</div></b>
+
+	
+	<center><b><span id="start-date">start at 2023/03/31.</span></b></center>
+	
+
+    <h2 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h2><p>特性（Trait）是对方法集合的抽象，类似于 java 中的接口，特性是类型的行为规范<span id="more"></span>，它宏观地对类型的功能做出要求，一次实现对多类别在特定情况下的使用统一化</p>
+<h3 id="定义特性"><a href="#定义特性" class="headerlink" title="定义特性"></a>定义特性</h3><p>关键字是 <code>trait</code></p>
+<pre><code class="rust">trait &lt;特性名称&gt; &#123;
+    &lt;方法...&gt;
+&#125;
+</code></pre>
+<p>下面是对比较大小特性的定义</p>
+<pre><code class="rust">trait Comparable &#123;
+    fn greater(&amp;self, b: &amp;Self) -&gt; bool;
+    fn less(&amp;self, b: &amp;Self) -&gt; bool;
+    fn equals(&amp;self, b: &amp;Self) -&gt; bool;
+&#125;
+</code></pre>
+<p><code>&amp;Self</code> 表示的是和自己相同的类型</p>
+<h3 id="实现特性"><a href="#实现特性" class="headerlink" title="实现特性"></a>实现特性</h3><p>实现特性的语法是通过 <code>impl</code> 语句块，在此基础上加点东西</p>
+<pre><code class="rust">impl &lt;特性名&gt; for &lt;实现特性的类&gt; &#123;
+    &lt;实现的函数/方法...&gt;
+&#125;
+</code></pre>
+<p>下面演示一个圆结构体的 Comparable 特性</p>
+<pre><code class="rust">struct Circle &#123;
+    radius: f64,
+    center: (f64, f64),
+&#125;
+
+impl Comparable for Circle &#123;
+    fn greater(&amp;self, b: &amp;Circle) -&gt; bool &#123;
+        self.radius &gt; b.radius
+    &#125;
+
+    fn less(&amp;self, b: &amp;Circle) -&gt; bool &#123;
+        self.radius &lt; b.radius
+    &#125;
+
+    fn equals(&amp;self, b: &amp;Circle) -&gt; bool &#123;
+        self.radius == b.radius
+    &#125;
+&#125;
+
+fn main() &#123;
+    let c1 = Circle &#123;
+        radius: 10.0,
+        center: (1.0, 2.0),
+    &#125;;
+
+    let c2 = Circle &#123;
+        radius: 11.0,
+        center: (1.0, 2.0),
+    &#125;;
+
+    println!(&quot;c1 &gt; c2 ? &#123;&#125;&quot;, c1.greater(&amp;c2));
+    println!(&quot;c1 &lt; c2 ? &#123;&#125;&quot;, c1.less(&amp;c2));
+    println!(&quot;c1 = c2 ? &#123;&#125;&quot;, c1.equals(&amp;c2));
+&#125;
+</code></pre>
+<p>使用 <code>impl</code> 块实现特性时要注意以下几点：</p>
+<ul>
+<li>同一个类可以实现多个特性</li>
+<li>每一个 impl 块只能实现一个特性</li>
+<li>如果一个 impl 块用于实现某个特性，这个 impl 块中不能出现不属于所实现特性的方法定义</li>
+</ul>
+<h3 id="默认特性"><a href="#默认特性" class="headerlink" title="默认特性"></a>默认特性</h3><p>特性在定义的时候允许直接定义方法作为实现中没有实现的方法的默认替代品，有点继承的感觉</p>
+<pre><code class="rust">trait Printable &#123;
+    fn print(&amp;self);
+
+    fn println(&amp;self) &#123;
+        self.print();
+        println!(&quot;[END]&quot;);
+    &#125;
+&#125;
+
+struct Text &#123;
+    content: String
+&#125;
+
+impl Printable for Text &#123;
+    fn print(&amp;self) &#123;
+        print!(&quot;&#123;&#125;&quot;, self.content);
+    &#125;
+&#125;
+
+fn main() &#123;
+    let text = Text &#123;
+        content: String::from(&quot;This is a piece of text.&quot;),
+    &#125;;
+    text.println();
+&#125;
+</code></pre>
+<h3 id="特性作参数"><a href="#特性作参数" class="headerlink" title="特性作参数"></a>特性作参数</h3><p>如果需要把特性作为一种参数类型出现在函数的参数列表中，在函数调用参数对象时，不必得知参数的具体类型，而能调用各种实现了该特性的类型的具体方法，由于不需要知道参数是什么类型的，所以无法使用参数的其他属性和方法</p>
+<pre><code class="rust">fn &lt;函数名&gt;(object: impl &lt;特性名称&gt;) -&gt; &lt;返回&gt; &#123;
+    ...
+&#125;
+</code></pre>
+<p>下面演示一个基于 Comparable 的选择排序：</p>
+<pre><code class="rust">trait Comparable &#123;
+    fn greater(&amp;self, b: &amp;Self) -&gt; bool;
+    fn less(&amp;self, b: &amp;Self) -&gt; bool;
+    fn equals(&amp;self, b: &amp;Self) -&gt; bool;
+&#125;
+
+fn select_sort(array: &amp;mut [&amp;impl Comparable]) &#123;
+    for i in 0..array.len() &#123;
+        let mut k = i;
+        for j in (i + 1)..array.len() &#123;
+            if array[j].less(&amp;array[k]) &#123;
+                k = j;
+            &#125;
+        &#125;
+        if k != i &#123;
+            let t = array[k];
+            array[k] = array[i];
+            array[i] = t;
+        &#125;
+    &#125;
+&#125;
+
+impl Comparable for f64 &#123;
+    fn greater(&amp;self, b: &amp;f64) -&gt; bool &#123;
+        *self &gt; *b
+    &#125;
+
+    fn less(&amp;self, b: &amp;f64) -&gt; bool &#123;
+        *self &lt; *b
+    &#125;
+
+    fn equals(&amp;self, b: &amp;f64) -&gt; bool &#123;
+        *self == *b
+    &#125;
+&#125;
+
+fn main() &#123;
+    let fa = [1.0, 4.0, 5.0, 2.0, 3.0];
+    let mut ra = [&amp;fa[0], &amp;fa[1], &amp;fa[2], &amp;fa[3], &amp;fa[4]];
+    select_sort(&amp;mut ra);
+    for f in ra &#123;
+        println!(&quot;&#123;&#125;&quot;, f);
+    &#125;
+&#125;
+</code></pre>
+<p><code>&amp;mut [&amp;impl Comparable]</code> 是新的语法点，<code>impl Comparable</code> 表示实现了这个特性</p>
+<p>这个引用数组 ra 是不是有点小丑？我是不懂这种语法有什么用，看的头晕:dizzy_face:</p>
+<h3 id="泛型特性参数"><a href="#泛型特性参数" class="headerlink" title="泛型特性参数"></a>泛型特性参数</h3><p>其实是用来简写</p>
+<pre><code class="rust">fn function(a: impl SomeTrait, b: impl SomeTrait, c: impl SomeTrait) &#123;
+    ...
+&#125;
+</code></pre>
+<p>为</p>
+<pre><code class="rust">fn function&lt;T: SomeTrait&gt;(a: T, b:T, c:T) &#123;
+    ...
+&#125;
+</code></pre>
+<p>是不是干净很多，但是使用的前提是这三个参数的具体类型一样，当这三个参数的具体类型不同时，不能使用这个语法</p>
+<h3 id="特性叠加"><a href="#特性叠加" class="headerlink" title="特性叠加"></a>特性叠加</h3><p>参数需要同时实现多个特性</p>
+<pre><code class="rust">fn function(a: impl TraitA + TraitB)
+</code></pre>
+<p>复杂的实现关系可以使用 <code>where</code> 关键字优化</p>
+<pre><code class="rust">fn function(a: impl A + B, b: impl B + C) -&gt; i32
+// 简化为
+fn function&lt;T, U&gt;(a: T, b: U) -&gt; i32
+    where    T: Display + Clone,
+            U: Clone + Debug
+</code></pre>
+<h3 id="特性做返回值"><a href="#特性做返回值" class="headerlink" title="特性做返回值"></a>特性做返回值</h3><p>特性作为返回值的时候，可以返回同种实现了这个特性可的类型的对象，什么是同种？意思就是：</p>
+<p>下面这段代码是无法通过编译的，虽然 i32 和 f64 都实现了 A，但是类型不一样，所以不能这样返回</p>
+<pre><code class="rust">trait A &#123;&#125;
+
+impl A for i32 &#123;&#125;
+impl A for f64 &#123;&#125;
+
+fn give() -&gt; impl A &#123;
+    let a: i32 = 233;
+    let b: f64 = 233;
+    if xxx &#123;
+        return a;
+    &#125;
+    return b;
+&#125;
+</code></pre>
+<h3 id="有条件的实现方法"><a href="#有条件的实现方法" class="headerlink" title="有条件的实现方法"></a>有条件的实现方法</h3><p>有一个泛型 <code>A&lt;T&gt;</code> 和一个特性 B，现在需要 A 实现一个方法 d, 前提是 A 的泛型 T 实现了特性 B, 请问怎么写</p>
+<p>答案是：</p>
+<pre><code class="rust">struct A&lt;T&gt;;
+
+trait B &#123;&#125;
+
+impl&lt;T: B &gt; A&lt;T&gt; &#123;
+    
+&#125;
+</code></pre>
+<h2 id="文件-I-O"><a href="#文件-I-O" class="headerlink" title="文件 I/O"></a>文件 I/O</h2><blockquote>
+<p>会用就行，和大多数语言一样</p>
+</blockquote>
+<pre><code class="rust">use std::fs;
+use std::fs::File;
+use std::io::Read; // 读入必要的use
+use std::io::Write; // 写入必要的use
+use std::fs::OpenOptions;
+
+fn main() &#123;
+    // 直接读文本
+    let text = fs::read_to_string(&quot;tmp&quot;).unwrap();
+    print!(&quot;&#123;&#125;&quot;, text);
+
+    // 直接读二进制
+    let binary = fs::read(&quot;tmp&quot;).unwrap();
+    let text = String::from_utf8(binary).unwrap();
+    println!(&quot;text&quot;);
+
+    // 打开文件读取为File类型
+    let mut file = File::open(&quot;tmp&quot;).unwrap();
+    // File类型直接读为字符串
+    let mut text = String::new();
+    file.read_to_string(&amp;mut text);
+    // File类型读为二进制
+    let mut binary = Vec::&lt;u8&gt;::new();
+    file.read_to_end(&amp;mut binary).unwrap();
+    let text = String::from_utf8(binary).unwrap();
+
+    // 使用数组读File
+    let mut file = File::open(&quot;tmp&quot;).unwrap();
+    let mut binary: [u8; 5] = [0_u8; 5];
+    file.read(&amp;mut binary).unwrap();
+    // 数组转为Vec
+    let text = String::from_utf8(Vec::from(binary)).unwrap();
+
+    // 逐字读
+    let mut file = File::open(&quot;tmp&quot;).unwrap();
+    let mut buffer = [0_u8];
+    let mut binary = Vec::&lt;u8&gt;::new();
+    loop &#123;
+        let count = file.read(&amp;mut buffer).unwrap();
+        if count == 0 &#123;
+            break;
+        &#125;
+        binary.push(buffer[0]);
+    &#125;
+    let text = String::from_utf8(binary).unwrap();
+    println!(&quot;&#123;&#125;&quot;, text);
+
+    // 创建文件 need use std::io::Write
+    let mut file = File::create(&quot;ttmp&quot;).unwrap();
+    file.write(b&quot;this is ttmp&quot;).unwrap();
+
+    // 追加模式
+    let mut file = OpenOptions::new()
+        .append(true)
+        .open(&quot;ttmp&quot;)
+        .unwrap();
+    file.write(b&quot;[suffix]&quot;);
+&#125;
+</code></pre>
+<p>最后一个追加模式的输入方法其实就是自定义模式的一个 append 模式，自定义模式下能使用 write, read, append 模式</p>
+<p>除此之外还有</p>
+<pre><code class="rust">fn truncate(&amp;mut self, bool) -&gt; &amp;mut Self // 清除现有文件内容并打开
+fn create(&amp;mut self, bool) -&gt; &amp;mut Self // 如果存在就打开，没有就创建
+fn create_new(&amp;mut self, bool) -&gt; &amp;mut Self // 如果存在就可恢复错误，必须搭配 write 或者 append 使用
+</code></pre>
+<p>除了写文本，还能写二进制文件</p>
+<pre><code class="rust">use std::fs::File;
+use std::io::&#123;Write, Read&#125;;
+
+// 写二进制文件
+fn write() &#123;
+    const PI: f64 = 3.1415926535;
+    let mut file = File::create(&quot;PI.bin&quot;).unwrap();
+    file.write(&amp;PI.to_ne_bytes()).unwrap();
+&#125;
+
+// 读二进制文件
+fn read() &#123;
+    let mut file = File::open(&quot;PI.bin&quot;).unwrap();
+    let mut buffer = [0_u8; 8];
+    file.read(&amp;mut buffer).unwrap();
+    
+    let data = f64::from_ne_bytes(buffer);
+    println!(&quot;&#123;&#125;&quot;, data);
+&#125;
+
+fn main() &#123;
+    write();
+    read();
+&#125;
+</code></pre>
+<p>另外是创建目录</p>
+<pre><code class="rust">use std::fs;
+
+fn main() &#123;
+    // 读取目录
+    let dir = fs::read_dir(&quot;/&quot;).unwrap();
+    for item in dir &#123;
+        let entry = item.unwrap();
+        println!(&quot;&#123;&#125;&quot;, entry.file_name().to_str().unwrap());
+    &#125;
+
+    // 创建目录
+    fs::create_dir(&quot;./data&quot;).unwrap();
+    // 递归创建目录
+    fs::create_dir_all(&quot;./data/1/2&quot;).unwrap();
+    // 删除文件
+    fs::File::create(&quot;./hellooo&quot;).unwrap();
+    fs::remove_file(&quot;./hellooo&quot;).unwrap();
+    // 删除空目录
+    fs::remove_dir(&quot;./data&quot;).unwrap();
+    // 删除非空目录
+    fs::remove_dir_all(&quot;./data&quot;).unwrap();
+&#125;
+</code></pre>
+
+
+	<b><span id="post-date">2023/04/17</span></b>
+	<div id="tags">
+		<ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/rust/" rel="tag"># rust</a></li></ul>
+	</div>
+
+	<div id="clear"></div>
+</div>
+<center><a class="gobk" href="javascript:;" onclick="Gobk()">&gt CLICK TO back &lt</a><center>
+<div id="cart">
+	<button id="cart-hide" onclick="cartCg()">◀</button>
+</div>
+<script>
+	if(history.state==null){
+		var tmpa=document.getElementsByClassName("gobk")[0];
+		tmpa.innerHTML="> CLICK TO land <";
+	}
+	showAIndex();
+</script>
+
+	</div>
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+	</script>
+</span>
+	<hr id="hidden">
+	
+
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+		initBg();
+		$(document).pjax('a','#pup',{fragment:'#pup',timeout: 8000});
+	</script>
+</body>
+</html>
