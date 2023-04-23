@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html id="all">
+
+<head>
+	<meta charset="utf-8">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="/pic/favicon.ico">
+	<title>Paradoxless | Blogs</title>
+	
+<link rel="stylesheet" href="/css/main.css">
+
+	
+<link rel="stylesheet" href="/css/font.css">
+
+	
+<link rel="stylesheet" href="/lib/highlight/rainbow.min.css">
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+	
+<script src="/lib/highlight/highlight.min.js"></script>
+
+	
+<script src="/lib/highlight/highlightjs-line-numbers.js"></script>
+
+	
+<script src="/lib/jquery.js"></script>
+
+	
+<script src="/lib/jquery.pjax.js"></script>
+
+	
+<script src="/js/main.js"></script>
+
+<body id="lybody">
+	<div id="head">
+	<a id="pLogo" href="/"><img alt="P" src="/pic/logo.svg"></a>
+	<div id="urlText">aradoxskin.</div>
+	<a id="githubLogo" href="https://github.com/paradoxskin" target="_blank"><img alt="github" src="/pic/github.svg"></a>
+	<div id="urlText">.io</div>
+	<div id="sucklessText">- simple is best</div>
+	<div id="clear"></div>
+</div>
+
+	<hr id="hidden">
+	<script>
+	//if(localStorage.getItem('bgs')==null){
+		localStorage['bgs']='comp'
+
+			localStorage.setItem('bgs[num]','25');
+
+			localStorage.setItem('bgs[pic1]','/pic/wp/01.jpg');
+
+			localStorage.setItem('bgs[pic2]','/pic/wp/02.jpg');
+
+			localStorage.setItem('bgs[pic3]','/pic/wp/03.jpg');
+
+			localStorage.setItem('bgs[pic4]','/pic/wp/04.jpg');
+
+			localStorage.setItem('bgs[pic5]','/pic/wp/05.jpg');
+
+			localStorage.setItem('bgs[pic6]','/pic/wp/06.jpg');
+
+			localStorage.setItem('bgs[pic7]','/pic/wp/07.jpg');
+
+			localStorage.setItem('bgs[pic8]','/pic/wp/08.jpg');
+
+			localStorage.setItem('bgs[pic9]','/pic/wp/09.jpg');
+
+			localStorage.setItem('bgs[pic10]','/pic/wp/10.jpg');
+
+			localStorage.setItem('bgs[pic11]','/pic/wp/11.jpg');
+
+			localStorage.setItem('bgs[pic12]','/pic/wp/12.jpg');
+
+			localStorage.setItem('bgs[pic13]','/pic/wp/13.png');
+
+			localStorage.setItem('bgs[pic14]','/pic/wp/14.png');
+
+			localStorage.setItem('bgs[pic15]','/pic/wp/15.png');
+
+			localStorage.setItem('bgs[pic16]','/pic/wp/16.jpg');
+
+			localStorage.setItem('bgs[pic17]','/pic/wp/17.jpg');
+
+			localStorage.setItem('bgs[pic18]','/pic/wp/18.jpg');
+
+			localStorage.setItem('bgs[pic19]','/pic/wp/19.jpg');
+
+			localStorage.setItem('bgs[pic20]','/pic/wp/20.jpg');
+
+			localStorage.setItem('bgs[pic21]','/pic/wp/21.png');
+
+			localStorage.setItem('bgs[pic22]','/pic/wp/22.jpg');
+
+			localStorage.setItem('bgs[pic23]','/pic/wp/23.png');
+
+			localStorage.setItem('bgs[pic24]','/pic/wp/24.jpg');
+
+			localStorage.setItem('bgs[pic25]','/pic/wp/25.jpg');
+
+		if(localStorage.getItem('now')==null){
+			localStorage.setItem('now','pic22');
+		}
+	//}
+</script>
+
+<div id="nav">
+	<ul>
+		<li><button id="cgBg" onclick="randomSwitch()">O</button><button id="clBg" onclick="noBg()">_</button></li>
+
+		<iframe id="music-player" frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=7669623816&auto=0&height=90"></iframe>
+
+		<button id="nav-hide" onclick="hideMenu()">◤</button>
+
+		<span id="clear"></span>
+	</ul>
+</div>
+<button id="nav-show" onclick="showMenu()">◢</button>
+
+<span id="pup">
+	<div id="menu">
+	
+	
+		
+			<b><a href="/" class="menu-item-link" id="in">Home</a></b>
+		
+	
+		
+			<b><a data-pjax="#main" href="/blogs" class="menu-item-link-selected" id="in">Blogs</a></b>
+		
+	
+		
+			<b><a href="/archives" class="menu-item-link" id="in">Archives</a></b>
+		
+	
+		
+			<b><a href="/about" class="menu-item-link" id="in">who@mi</a></b>
+		
+	
+		
+			<b><a href="/links" class="menu-item-link" id="in">Links</a></b>
+		
+	
+	<div id="outlink">
+	
+		<a href="https://www.lexaloffle.com/pico-8.php" class="menu-item-link" id="out" target="_blank">pico-8</a>
+	
+		<a href="https://suckless.org/" class="menu-item-link" id="out" target="_blank">suckless</a>
+	
+	</div>
+</div>
+
+	<div id="main">
+		<div id="post">
+
+	<b><div id="start-title">rust学习笔记 7</div></b>
+
+	
+	<center><b><span id="start-date">start at 2023/04/17.</span></b></center>
+	
+
+    <h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><blockquote>
+<p>之前简单看了看，发现和 c++ 的 stl 很像…</p>
+<p>那么其实就很好理解了<span id="more"></span></p>
+<p>不过 stl 里的 map 是用红黑树写的，rust 中是用 BTree写的</p>
+</blockquote>
+<h3 id="vector"><a href="#vector" class="headerlink" title="vector"></a>vector</h3><p>和 stl 的 vector 功能基本一致，能模拟栈</p>
+<ul>
+<li>创建vector</li>
+</ul>
+<pre><code class="rust">let v = Vec::&lt;i32&gt;::new();
+let v: Vec&lt;i32&gt; = Vec::new();
+let v = vec![2, 3, 4];
+</code></pre>
+<p>更喜欢第三种，但是第三种有时候没法确定数据类型，所以第一种也不错，少打字万岁</p>
+<ul>
+<li>在尾部添加元素</li>
+</ul>
+<pre><code class="rust">let mut v = Vec::&lt;i32&gt;::new();
+v.push(2);
+</code></pre>
+<p>必须要可变才能添加元素</p>
+<ul>
+<li>移除尾部元素</li>
+</ul>
+<pre><code class="rust">let x = v.pop();
+if let Option::Some(i) = x &#123;
+    println!(&quot;&#123;&#125;&quot;, i);
+&#125;
+</code></pre>
+<p>如果尾部元素不为空，返回 <code>Option::Some</code>，否则返回 <code>Option::None</code> </p>
+<ul>
+<li>删除指定下标</li>
+</ul>
+<pre><code class="rust">v.remove(index);
+</code></pre>
+<p>会返回那个元素</p>
+<ul>
+<li>拼接两个 vector</li>
+</ul>
+<pre><code class="rust">let mut v1 = vec![1, 2, 3];
+let mut v2 = vec![10, 20, 30];
+v1.append(&amp;mut v2);
+for i in v1 &#123;
+    println!(&quot;&#123;&#125;&quot;, i);
+&#125;
+// v2 为空
+</code></pre>
+<p>需要两个都为可变，另一个会被清空</p>
+<blockquote>
+<p>因为随即访问有时候会访问到错误下标出问题，所以下面就不用这种「不安全」的方法了</p>
+</blockquote>
+<ul>
+<li>安全地取值</li>
+</ul>
+<pre><code class="rust">let value = v1.get(6);
+if let Option::Some(i) = value &#123;
+    println!(&quot;&#123;&#125;&quot;, i);
+&#125;
+else &#123;
+    println!(&quot;not exists&quot;);
+&#125;
+</code></pre>
+<p>所谓的安全，就是能从容的应对错误的情况罢</p>
+<ul>
+<li>取首尾</li>
+</ul>
+<pre><code class="rust">v1.first();
+v1.last();
+</code></pre>
+<p>会返回一个 Option</p>
+<ul>
+<li>安全地赋值</li>
+</ul>
+<pre><code class="rust">if let Option::Some(tmp) = v1.get_mut(2) &#123;
+    *tmp += 20;
+&#125;
+
+for i in &amp;mut v1 &#123;
+    *i += 50;
+&#125;
+</code></pre>
+<p>所有基本操作的前提都是存在该元素，这就很安全</p>
+<blockquote>
+<p>刚刚开始觉得这就是浪费时间，后来想想一个安全的程序，报错是要避免的，与其报错，不如多写点代码</p>
+</blockquote>
+<h3 id="VecDeque"><a href="#VecDeque" class="headerlink" title="VecDeque"></a>VecDeque</h3><p>双端向量，和普通 vector 的方法基本一致独特之处是能模拟队列</p>
+<p>vector 不需要use，但是 vecDeque 就需要 use</p>
+<pre><code class="rust">use std::collections::VecDeque;
+</code></pre>
+<ul>
+<li>创建</li>
+</ul>
+<pre><code class="rust">let mut queue = VecDeque::&lt;i32&gt;::new();
+</code></pre>
+<ul>
+<li>头尾插、头尾出</li>
+</ul>
+<pre><code class="rust">queue.push_back(1);
+queue.push_back(2);
+queue.push_front(3);
+// [3, 1, 2]
+queue.pop_back();
+for i in &amp;queue &#123;
+    println!(&quot;&#123;&#125;&quot;, i);
+&#125;
+// [3, 1]
+queue.pop_front();
+for i in &amp;queue &#123;
+    println!(&quot;&#123;&#125;&quot;, i);
+&#125;
+// [1]
+</code></pre>
+<p>这个 for 居然也会触发 queue 的所有权机制，所以要记得用引用</p>
+<h3 id="LinkedList"><a href="#LinkedList" class="headerlink" title="LinkedList"></a>LinkedList</h3><p>rust 中的链表的方法还都不稳定，所以没必要的时候不要使用，略</p>
+<h3 id="Map"><a href="#Map" class="headerlink" title="Map"></a>Map</h3><p>和 stl 中的 map、python 中的字典差不多，有两种，一种是散列，另一种是树形结构的</p>
+<p>map 需要用 use</p>
+<pre><code class="rust">use std::collections::HashMap;
+
+fn main() &#123;
+    let mut map = HashMap::&lt;i32, i32&gt;::new();
+    map.insert(2, 233);
+    map.insert(45, 54);
+    for i in &amp;map &#123;
+        println!(&quot;&#123;&#125;:&#123;&#125;&quot;, i.0, i.1);
+    &#125;
+    let tmp = map.get(&amp;45);
+    if let Option::Some(i) = tmp &#123;
+        println!(&quot;value is &#123;&#125;&quot;, i);
+    &#125;
+    if let Option::Some(i) = map.get(&amp;233) &#123;
+        println!(&quot;value is &#123;&#125;&quot;, i);
+    &#125;
+    else &#123;
+        println!(&quot;not exists&quot;);
+    &#125;
+&#125;
+</code></pre>
+<p>在 for 循环中迭代值相当于一个元组，第一个是键的值，第二个是值的值，stl 中就是 first 和 second</p>
+<p>上面是散列 map，但是其实散列 map 和树状 map 的使用没有什么区别</p>
+<pre><code class="rust">use std::collections::BTreeMap;
+fn main() &#123;
+    let mut map = BTreeMap::&lt;i32, i32&gt;::new();
+    ...
+&#125;
+</code></pre>
+<p>他们之间还有一个区别就是键为自定义类型时需要实现的特性</p>
+<p>HashMap 的键需要实现的特性：</p>
+<ul>
+<li>Hash</li>
+<li>Eq：<ul>
+<li>PartialEq</li>
+</ul>
+</li>
+</ul>
+<p>BTreeMap 的键需要实现的特性：</p>
+<ul>
+<li>Eq：<ul>
+<li>PartialEq</li>
+</ul>
+</li>
+<li>Ord：<ul>
+<li>PartialOrd</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>Eq特性是空的，但是需要先实现 PartialEq</p>
+</blockquote>
+<h3 id="Set"><a href="#Set" class="headerlink" title="Set"></a>Set</h3><p>和 map 一样，同样分为两种，一种哈希散列，一种树状结构</p>
+<pre><code class="rust">use std::collections::HashSet;
+
+fn main() &#123;
+    let mut set = HashSet::&lt;i32&gt;::new();
+    set.insert(233);
+    set.insert(3);
+    if let None = set.get(&amp;5) &#123;
+        println!(&quot;empty&quot;)
+    &#125;
+    for i in &amp;set &#123;
+        println!(&quot;&#123;&#125;&quot;, i);
+    &#125;
+    set.remove(&amp;233);
+&#125;
+</code></pre>
+<p>树状：</p>
+<pre><code class="rust">use std::collections::BTreeSet;
+
+fn main() &#123;
+    let mut set = BTreeSet::&lt;i32&gt;::new();
+    ...
+&#125;
+</code></pre>
+<p>自定义需要实现的特性还是对应一样的</p>
+<p>理论上是散列更快，但是 stl 里可以使用 <code>upper_bound</code> 这种，BTree 还是有存在的必要的</p>
+<h3 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h3><p>其实就是 stl 里的优先队列，二叉树实现，有大根堆和小根堆的区别</p>
+<p>默认是大根堆</p>
+<pre><code class="rust">use std::collections::BinaryHeap;
+
+fn main() &#123;
+    let mut pq = BinaryHeap::&lt;i32&gt;::new();
+    pq.push(5);
+    pq.push(6);
+    pq.push(8);
+    pq.push(1);
+    pq.push(2);
+    pq.push(3);
+    pq.push(4);
+    loop &#123;
+        let top = pq.pop();
+        if let Some(i) = top &#123;
+            println!(&quot;pop: &#123;&#125;&quot;, i);
+        &#125; else &#123;
+            break;
+        &#125;
+    &#125;
+    println!(&quot;done.&quot;)
+&#125;
+</code></pre>
+<p>如果需要小根堆需要在创建二叉堆的时候使用 <code>std::cmp::Reverse</code> 指定数据类型，实现 Ord 特性的类型比较大小与原有结果相反，从而构造出小根堆</p>
+<pre><code class="rust">use std::collections::BinaryHeap;
+use std::cmp::Reverse;
+
+fn main() &#123;
+    let mut pq = BinaryHeap::&lt;Reverse&lt;i32&gt;&gt;::new();
+    pq.push(Reverse(5));
+    pq.push(Reverse(8));
+    pq.push(Reverse(1));
+    pq.push(Reverse(2));
+    pq.push(Reverse(4));
+    loop &#123;
+        let top = pq.pop();
+        if let Some(i) = top &#123;
+            println!(&quot;pop: &#123;&#125;&quot;, i.0);
+        &#125; else &#123;
+            break;
+        &#125;
+    &#125;
+    println!(&quot;done.&quot;)
+&#125;
+</code></pre>
+<p>能从 vector 导入进一个优先队列</p>
+<pre><code class="rust">use std::collections::BinaryHeap;
+
+fn main() &#123;
+    let vec = vec![1, 3, 2, 5, 4];
+    let mut heap = BinaryHeap::from(vec);
+    loop &#123;
+        let top = heap.pop();
+        if let Some(i) = top &#123;
+            println!(&quot;pop: &#123;&#125;&quot;, i);
+        &#125; else &#123;
+            break;
+        &#125;
+    &#125;
+    println!(&quot;done.&quot;)
+&#125;
+</code></pre>
+<p>从数组导入也是可以的</p>
+<h3 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h3><p>首先，rust 中的字符串相关的数据类型有：</p>
+<ul>
+<li>String，字符串</li>
+<li>&amp;str，字符串切片</li>
+<li>char，字符</li>
+</ul>
+<p>和一般语言的主要区别在于字符串和切片上</p>
+<pre><code class="rust">fn main() &#123;
+    let one = 1.to_string();
+    let float = 2.33.to_string();
+    let slice = &quot;hello&quot;.to_string();
+&#125;
+</code></pre>
+<p>上面三个变量的数据类型都是 String，单独的一个 “hello” 并不是 String 类型的，而是 <code>&amp;str</code> 类型，熟悉的 <code>to_string</code> 方法，如果要想给一个类型加上 <code>to_string</code> 方法，那么就需要实现 ToString 特性，要求实现一个 <code>to_string(&amp;self) -&gt; String &#123;&#125;</code></p>
+<p>字符串还可以完成拼接</p>
+<p>如果需要拼接 &amp;str 或者 char 类型，可以调用方法</p>
+<pre><code class="rust">fn main() &#123;
+    let mut one = 1.to_string();
+    one.push_str(&quot;hello&quot;);
+    one.push(&#39;2&#39;);
+    println!(&quot;&#123;&#125;&quot;, one);
+&#125;
+</code></pre>
+<p>对于 String 类型，直接用 <code>+</code> 号即可完成拼接</p>
+<pre><code class="rust">let xx = one + &amp;float + &amp;slice;
+println!(&quot;&#123;&#125;&quot;, xx);
+</code></pre>
+<p>但是完成拼接后，第一个字符串的所有权会转移到这个字符串上</p>
+<p>利用宏 <code>format!</code> 可以用于拼接字符串，类似 Sprintf 那种</p>
+<pre><code class="rust">fn main() &#123;
+    let (year, month, day, hour, minute) = (2023, 4, 21, 18, 50);
+    let string = format!(&quot;&#123;&#125;-&#123;&#125;-&#123;&#125; &#123;:02&#125;:&#123;:02&#125;&quot;,year, month, day, hour, minute);
+    println!(&quot;&#123;&#125;&quot;, string);
+&#125;
+</code></pre>
+<p>另一个问题的话就是字符串的截取</p>
+<pre><code class="rust">fn main() &#123;
+    let string = &quot;STRING&quot;.to_string();
+    let m = &amp;string[0..4];
+    println!(&quot;&#123;&#125;&quot;, m);
+&#125;
+</code></pre>
+<p>截出来的 m 是字符串切片类型的 <code>[0..4]</code> 代表从第0个字符到第3个字符</p>
+<p>除了字符串切片，还有对字符的截取</p>
+<pre><code class="rust">fn main() &#123;
+    let string = &quot;STRING&quot;.to_string();
+    let m = string.chars().nth(2).unwrap();
+    println!(&quot;&#123;&#125;&quot;, m);
+&#125;
+</code></pre>
+<p>最后提一嘴编码问题，rust 之允许使用 utf-8，中文也是支持的，但是要注意中文单字符有3字节那么大，长度也会因此改变，所以截取如果只截取一个汉字一半的话会报错的，这个要注意，不过用 chars 转成字符集的话就字的位置和序号就对应起来了</p>
+<blockquote>
+<p>老是因为没有打 mut 被编译器教做人 (´_&gt;`)</p>
+</blockquote>
+<h2 id="面向对象"><a href="#面向对象" class="headerlink" title="面向对象"></a>面向对象</h2><p>首先需要说明，rust 并不是一门面向对象的语言，需要解构面向对象这个概念</p>
+<p>面向对象包括：</p>
+<ul>
+<li>类</li>
+<li>对象</li>
+<li>封装</li>
+<li>继承</li>
+<li>多态</li>
+</ul>
+<p>rust 没有学 cpp 在有 struct 的基础上再引入了 class 这个 OOP 的东西，这两个东西比较起来就是只有访问权的区别了，只留了 struct，很纯净</p>
+<p>如果你要用 OOP 的思想，在 rust 中也是可以用的，rust 中的结构体就是类和对象那种，没什么好说的；然后封装，默认情况下都是对外私有，只有 pub 关键字对外公开；继承是 rust 没有的，如果需要的话可以在 struct 里放一个父类，感觉没必要的说(´・ω・｀)；最后的多态就是可以用特性</p>
+<blockquote>
+<p>困死我了，就剩八章了，明天要爆肝三章(ง •̀_•́)ง</p>
+</blockquote>
+
+
+	<b><span id="post-date">2023/04/21</span></b>
+	<div id="tags">
+		<ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/rust/" rel="tag"># rust</a></li></ul>
+	</div>
+
+	<div id="clear"></div>
+</div>
+<center><a class="gobk" href="javascript:;" onclick="Gobk()">&gt CLICK TO back &lt</a><center>
+<div id="cart">
+	<button id="cart-hide" onclick="cartCg()">◀</button>
+</div>
+<script>
+	if(history.state==null){
+		var tmpa=document.getElementsByClassName("gobk")[0];
+		tmpa.innerHTML="> CLICK TO land <";
+	}
+	showAIndex();
+</script>
+
+	</div>
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+	</script>
+</span>
+	<hr id="hidden">
+	
+
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+		initBg();
+		$(document).pjax('a','#pup',{fragment:'#pup',timeout: 8000});
+	</script>
+</body>
+</html>
