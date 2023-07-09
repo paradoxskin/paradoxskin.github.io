@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html id="all">
+
+<head>
+	<meta charset="utf-8">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="/pic/favicon.ico">
+	<title>Paradoxless | Blogs</title>
+	
+<link rel="stylesheet" href="/css/main.css">
+
+	
+<link rel="stylesheet" href="/css/font.css">
+
+	
+<link rel="stylesheet" href="/lib/highlight/rainbow.min.css">
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+	
+<script src="/lib/highlight/highlight.min.js"></script>
+
+	
+<script src="/lib/highlight/highlightjs-line-numbers.js"></script>
+
+	
+<script src="/lib/jquery.js"></script>
+
+	
+<script src="/lib/jquery.pjax.js"></script>
+
+	
+<script src="/js/main.js"></script>
+
+<body id="lybody">
+	<div id="head">
+	<a id="pLogo" href="/"><img alt="P" src="/pic/logo.svg"></a>
+	<div id="urlText">aradoxskin.</div>
+	<a id="githubLogo" href="https://github.com/paradoxskin" target="_blank"><img alt="github" src="/pic/github.svg"></a>
+	<div id="urlText">.io</div>
+	<div id="sucklessText">- simple is best</div>
+	<div id="clear"></div>
+</div>
+
+	<hr id="hidden">
+	<script>
+	//if(localStorage.getItem('bgs')==null){
+		localStorage['bgs']='comp'
+
+			localStorage.setItem('bgs[num]','25');
+
+			localStorage.setItem('bgs[pic1]','/pic/wp/01.jpg');
+
+			localStorage.setItem('bgs[pic2]','/pic/wp/02.jpg');
+
+			localStorage.setItem('bgs[pic3]','/pic/wp/03.jpg');
+
+			localStorage.setItem('bgs[pic4]','/pic/wp/04.jpg');
+
+			localStorage.setItem('bgs[pic5]','/pic/wp/05.jpg');
+
+			localStorage.setItem('bgs[pic6]','/pic/wp/06.jpg');
+
+			localStorage.setItem('bgs[pic7]','/pic/wp/07.jpg');
+
+			localStorage.setItem('bgs[pic8]','/pic/wp/08.jpg');
+
+			localStorage.setItem('bgs[pic9]','/pic/wp/09.jpg');
+
+			localStorage.setItem('bgs[pic10]','/pic/wp/10.jpg');
+
+			localStorage.setItem('bgs[pic11]','/pic/wp/11.jpg');
+
+			localStorage.setItem('bgs[pic12]','/pic/wp/12.jpg');
+
+			localStorage.setItem('bgs[pic13]','/pic/wp/13.png');
+
+			localStorage.setItem('bgs[pic14]','/pic/wp/14.png');
+
+			localStorage.setItem('bgs[pic15]','/pic/wp/15.png');
+
+			localStorage.setItem('bgs[pic16]','/pic/wp/16.jpg');
+
+			localStorage.setItem('bgs[pic17]','/pic/wp/17.jpg');
+
+			localStorage.setItem('bgs[pic18]','/pic/wp/18.jpg');
+
+			localStorage.setItem('bgs[pic19]','/pic/wp/19.jpg');
+
+			localStorage.setItem('bgs[pic20]','/pic/wp/20.jpg');
+
+			localStorage.setItem('bgs[pic21]','/pic/wp/21.png');
+
+			localStorage.setItem('bgs[pic22]','/pic/wp/22.jpg');
+
+			localStorage.setItem('bgs[pic23]','/pic/wp/23.png');
+
+			localStorage.setItem('bgs[pic24]','/pic/wp/24.jpg');
+
+			localStorage.setItem('bgs[pic25]','/pic/wp/25.jpg');
+
+		if(localStorage.getItem('now')==null){
+			localStorage.setItem('now','pic22');
+		}
+	//}
+</script>
+
+<div id="nav">
+	<ul>
+		<li><button id="cgBg" onclick="randomSwitch()">O</button><button id="clBg" onclick="noBg()">_</button></li>
+
+		<iframe id="music-player" frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=7669623816&auto=0&height=90"></iframe>
+
+		<button id="nav-hide" onclick="hideMenu()">◤</button>
+
+		<span id="clear"></span>
+	</ul>
+</div>
+<button id="nav-show" onclick="showMenu()">◢</button>
+
+<span id="pup">
+	<div id="menu">
+	
+	
+		
+			<b><a href="/" class="menu-item-link" id="in">Home</a></b>
+		
+	
+		
+			<b><a data-pjax="#main" href="/blogs" class="menu-item-link-selected" id="in">Blogs</a></b>
+		
+	
+		
+			<b><a href="/archives" class="menu-item-link" id="in">Archives</a></b>
+		
+	
+		
+			<b><a href="/about" class="menu-item-link" id="in">who@mi</a></b>
+		
+	
+		
+			<b><a href="/links" class="menu-item-link" id="in">Links</a></b>
+		
+	
+	<div id="outlink">
+	
+		<a href="https://www.lexaloffle.com/pico-8.php" class="menu-item-link" id="out" target="_blank">pico-8</a>
+	
+		<a href="https://suckless.org/" class="menu-item-link" id="out" target="_blank">suckless</a>
+	
+	</div>
+</div>
+
+	<div id="main">
+		<div id="post">
+
+	<b><div id="start-title">qmk 固件 tap dance</div></b>
+
+	
+	<center><b><span id="start-date">start at 2023/07/07.</span></b></center>
+	
+
+    <h2 id="Tap-Dance"><a href="#Tap-Dance" class="headerlink" title="Tap Dance"></a>Tap Dance</h2><blockquote>
+<p>又开始折腾键盘的起因是我想把机械键盘拿去公司<span id="more"></span>，然后选择带AP2-红轴去，然后闲着没事在 github 上搜了一下 annepro，结果搜到一个叫open anne pro的小组</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/image-20230708101528290.png" alt="image-20230708101528290"></p>
+<p>起初以为是官方的固件维护小组，后来去google了下，发现这个小组是非官方的，并且可以完成对AP2的qmk固件刷入，看的我直接心动了，虽然AP2的原厂固件已经算自由，用了keychron之后AP2给我最大的膈应就是tap层，AP2的tap层真是只有tap，只能按一下算一下，但是开源固件的tap可以先tap一下，然后按住，就可以一直算tap了</p>
+<p><a target="_blank" rel="noopener" href="https://openannepro.github.io/">给AP2大换血</a></p>
+</blockquote>
+<blockquote>
+<p>虽然自定义的还算舒服，但是使用预置的按键实现tap的时候还是有一定限制，比如说LT只能hold指定一个layer，tap指定一个basic key，MT的前者为一个mod key，没有 basic key 和 basic key的，所以我就搜索了相关的内容，发现了tap dance这个东西（虽然这东西官方文档里有写www</p>
+</blockquote>
+<h3 id="预置函数"><a href="#预置函数" class="headerlink" title="预置函数"></a>预置函数</h3><ul>
+<li><p><code>ACTION_TAP_DANCE_DOUBLE(kc1, kc2)</code>，tap 一次 kc1，tap 两次 kc2</p>
+</li>
+<li><p><code>ACTION_TAP_DANCE_DUAL_ROLE(kc, layer)</code>，tap 一次 kc，tap 两次等效为 <code>TO(layzer)</code></p>
+</li>
+</ul>
+<blockquote>
+<p>TO(layer), Turns on <code>layer</code> and turns off all other layers, except the default layer</p>
+<p>Don’t forget to add a way back to another layer when using this, as you  might get stuck on the target layer if you forget to do so. You can plug out your keyboard and plug it back in to revert to your default layer,  but it’s better to avoid the hassle by including a <code>TO(layer)</code> key on the target layer.</p>
+<p>这个是什么？待试验</p>
+</blockquote>
+<p>这两个预置函数能满足大多数使用需求，但是肉眼可见，有一定局限性，就是只能发送 basic keycodes，不够自定义，不过想要全自定义也不是很难（貌似能实现ctrl和alt与基本按键的嵌套，不过</p>
+<h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><ul>
+<li><p>Tapping term，默认的tapping term是200ms，它代表如果你在200ms内松开按键就视作为tap，超过就视作为hold，<strong>它同样也意味着如果你在上一次 tap 的 200ms 内再次 tap 会给 tap 计数器 + 1</strong>，下图第二幅为tap两次的情况。你可以通过在 <code>config.h</code> 里 <code>#define TAPPING_TERM 300</code> 来修改这个时间<img src="https://thomasbaart.nl/wp-content/uploads/2018/12/TapDance_TappingTerm-1-1024x421.png" alt="https://thomasbaart.nl/wp-content/uploads/2018/12/TapDance_TappingTerm-1-1024x421.png"></p>
+</li>
+<li><p>ANSI vs ISO，ANSI的全称为 American National Standards Institute，ISO的全称为International Organization for Standardization，区别在于键位的布局和形状上，查看图片一目了然，我一直用的都是ANSI，都不知道ISO布局，事实上不管什么比例的键盘使用ISO的人都占少数，但是这种回车还是蛮美观的，不过回车的距离相对来说远了点，所以不大好用<img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/isovsansi.png" alt="isovsansi"></p>
+</li>
+</ul>
+<center>ISO & ANSI</center>
+
+
+
+<h3 id="自定义！"><a href="#自定义！" class="headerlink" title="自定义！"></a>自定义！</h3><ul>
+<li><p><code>ACTION_TAP_DANCE_FN(fn)</code>，当你在输入完 tap 之后的 <code>TAPPING_TERM</code> 毫秒之后，将调用参数里的函数，下图中演示为两次，实际输入中不一定要输入两次，可以输入更多次数（<img src="https://thomasbaart.nl/wp-content/uploads/2018/12/TapDance_TappingTerm_FN-1024x229.png" alt="img">当然，这个fn是有要求的，<span id="mark">要求为 <code>void your_function_name(qk_tap_dance_state_t *state, void *user_data)</code></span>，在这个函数里，你可以通过 <code>state-&gt;count</code> 获取到按下按键的次数，你可以用 <code>ACTION_TAP_DANCE(function_name)</code> 注册到按键上</p>
+</li>
+<li><p><code>ACTION_TAP_DANCE_FN_ADVANCED(on_each_tap_fn, on_dance_finish_fn, on_dance_reset_fn)</code>，这个函数可以让你在每次 tap 的时候都执行 <code>on_each_tap_fn</code>，然后最后输入完毕之后再调用 <code>on_dance_finish_fn</code>，重置状态之后调用 <code>on_dance_reset_fn</code><img src="https://thomasbaart.nl/wp-content/uploads/2018/12/TapDance_TappingTerm_FN_Advanced-1024x248.png" alt="img">每个函数参数都是可选项，可以用 <code>NULL</code> 用来表示不需要再某个函数调用函数，函数要求和<a href="#mark">上面一样</a>，在按下按键的一瞬间，<code>on_each_tap_fn</code> 被调用，而不是在按键松开的时候被调用它，当 tap dance 结束时，<code>on_dance_finished_fn</code> 被调用，当以下情况时 tap dance 会被结束：</p>
+<ul>
+<li><code>TAPPING_TERM</code> 里有其他按键被按下，函数会被调用，其中 <code>state-&gt;interrupted</code> 会变成 <code>true</code></li>
+<li><code>TAPPING_TERM</code> 里没有任何按键被按下</li>
+</ul>
+<p>  <img src="https://thomasbaart.nl/wp-content/uploads/2018/12/TapDance_TappingTerm_FN_Advanced_Interrupt-1024x286.png" alt="img"></p>
+<p>  最后，tap dance 被重置，调用 <code>on_dance_reset_fn</code>，一个按键在以下情况下会被 reset：</p>
+<ul>
+<li><code>on_dance_finished_fn</code> 执行结束</li>
+<li><code>state-finished</code> 被设置成 <code>true</code>，你可以在 <code>on_each_tap_fn</code> 中这么干，这样 <code>on_dance_finished_fn</code> 就会被跳过，直接去调用 <code>on_dance_reset_fn</code></li>
+</ul>
+<p>  你能用 <code>on_each_tap_fn</code> 跳过 <code>on_dance_finished_fn</code> 但是没法跳过 <code>on_dance_reset_fn</code></p>
+</li>
+<li><p><code>ACTION_TAP_DANCE_FN_ADVANCED_TIME(on_each_tap_fn, on_dance_finished_fn, on_dance_reset_fn, tap_specific_tapping_term)</code>，可以让你在之前的基础上设置局部的 <code>TAPPING_TERM</code></p>
+</li>
+</ul>
+<h3 id="使用示范"><a href="#使用示范" class="headerlink" title="使用示范"></a>使用示范</h3><p>  使用 tap dance 的步骤基本一致：</p>
+<ol>
+<li>确保在你的 <code>rules.mk</code> 里面开启了 <code>TAP_DANCE_ENABLE</code> ，<code>TAP_DANCE_ENABLE=yes</code> ，如果你没有 <code>rules.mk</code> 文件，可以在 <code>keymap.c</code> 的目录下创建它，里面只需要写上一行文本 <code>TAP_DANCE_ENABLE=yes</code> 即可</li>
+<li>为 tap dance 的按键们定义按键名的枚举项，你可以用自己喜欢的名字命名，作者喜欢用 <code>TD_</code> 因为这样让他知道这是一个tap dance，当你定义好了之后就可以用 <code>TD(tap dance的按键名)</code> 来绑定到按键上了</li>
+<li>如果你想要使用上述的几个自定义函数，那么你需要在注册他们之前定义好这些函数</li>
+<li>使用 <code>tap_dance_actions[]</code> 来注册 tap dance 的序列</li>
+</ol>
+<p>下面是具体的实例</p>
+<h4 id="双击"><a href="#双击" class="headerlink" title="双击"></a>双击</h4><p>双击是最简单的 tap dance，我们来写一下Q和W的双击，把下面这段写进你的 <code>keymap.c</code> 里</p>
+<pre><code class="c">// Tap Dance declarations
+enum &#123;
+    TD_Q_W,
+&#125;;
+
+// Tap Dance definitions
+tap_dance_action_t tap_dance_actions[] = &#123;
+    // Tap once for Escape, twice for Caps Lock
+    [TD_Q_W] = ACTION_TAP_DANCE_DOUBLE(KC_Q, KC_W),
+&#125;;
+
+// Add tap dance item to your keymap in place of a keycode
+const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = &#123;
+    // ...
+    TD(TD_Q_W)
+    // ...
+&#125;;
+</code></pre>
+<p>官方文档给的例子很好，建议<a target="_blank" rel="noopener" href="https://docs.qmk.fm/#/feature_tap_dance?id=examples">直接参考官方的</a></p>
+<h3 id="我的"><a href="#我的" class="headerlink" title="我的"></a>我的</h3><p>我主要实现以下功能：</p>
+<ul>
+<li>L5#1 要能做到 tap 时为 <code>&lt;C-e&gt;</code> (用来snippet) ，hold 时候为普通的 <code>&lt;Ctrl&gt;</code></li>
+<li>L5#2 tap 时为 <code>&lt;c-s&gt;</code>，hold 时为普通 Fn2</li>
+<li>数字键双击hold为fn层（？不确定，感觉不稳，还是之后用锁吧</li>
+</ul>
+<p>主要参考官方的第三个例子(ctrl cv)</p>
+<p>切换方案，tap和hold的分界线还是太不明显了，这个调节起来相当困难，所以把前两条改成TD，但是貌似不支持 MO()，所以之后再说，妈的睡了！</p>
+<hr>
+<blockquote>
+<p>参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://thomasbaart.nl/2018/12/13/qmk-basics-tap-dance/">QMK Basics: Tap dance, or how to let a key do more with one, two, three</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.qmk.fm/#/feature_tap_dance?id=tap-dance-a-single-key-can-do-3-5-or-100-different-things">Tap Dance: A Single Key Can Do 3, 5, or 100 Different Things</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.reddit.com/r/olkb/comments/lpea1h/qmk_tapdance_help/">QMK tapdance help</a></li>
+</ul>
+</blockquote>
+
+
+	<b><span id="post-date">2023/07/10</span></b>
+	<div id="tags">
+		<ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9D%82/" rel="tag"># 杂</a></li></ul>
+	</div>
+
+	<div id="clear"></div>
+</div>
+<center><a class="gobk" href="javascript:;" onclick="Gobk()">&gt CLICK TO back &lt</a><center>
+<div id="cart">
+	<button id="cart-hide" onclick="cartCg()">◀</button>
+</div>
+<script>
+	if(history.state==null){
+		var tmpa=document.getElementsByClassName("gobk")[0];
+		tmpa.innerHTML="> CLICK TO land <";
+	}
+	showAIndex();
+</script>
+
+	</div>
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+	</script>
+</span>
+	<hr id="hidden">
+	
+
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+		initBg();
+		$(document).pjax('a','#pup',{fragment:'#pup',timeout: 8000});
+	</script>
+</body>
+</html>
