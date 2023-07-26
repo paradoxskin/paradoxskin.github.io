@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html id="all">
+
+<head>
+	<meta charset="utf-8">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="shortcut icon" href="/pic/favicon.ico">
+	<title>Paradoxless | Blogs</title>
+	
+<link rel="stylesheet" href="/css/main.css">
+
+	
+<link rel="stylesheet" href="/css/font.css">
+
+	
+<link rel="stylesheet" href="/lib/highlight/rainbow.min.css">
+
+<meta name="generator" content="Hexo 5.4.2"></head>
+	
+<script src="/lib/highlight/highlight.min.js"></script>
+
+	
+<script src="/lib/highlight/highlightjs-line-numbers.js"></script>
+
+	
+<script src="/lib/jquery.js"></script>
+
+	
+<script src="/lib/jquery.pjax.js"></script>
+
+	
+<script src="/js/main.js"></script>
+
+<body id="lybody">
+	<div id="head">
+	<a id="pLogo" href="/"><img alt="P" src="/pic/logo.svg"></a>
+	<div id="urlText">aradoxskin.</div>
+	<a id="githubLogo" href="https://github.com/paradoxskin" target="_blank"><img alt="github" src="/pic/github.svg"></a>
+	<div id="urlText">.io</div>
+	<div id="sucklessText">- simple is best</div>
+	<div id="clear"></div>
+</div>
+
+	<hr id="hidden">
+	<script>
+	//if(localStorage.getItem('bgs')==null){
+		localStorage['bgs']='comp'
+
+			localStorage.setItem('bgs[num]','25');
+
+			localStorage.setItem('bgs[pic1]','/pic/wp/01.jpg');
+
+			localStorage.setItem('bgs[pic2]','/pic/wp/02.jpg');
+
+			localStorage.setItem('bgs[pic3]','/pic/wp/03.jpg');
+
+			localStorage.setItem('bgs[pic4]','/pic/wp/04.jpg');
+
+			localStorage.setItem('bgs[pic5]','/pic/wp/05.jpg');
+
+			localStorage.setItem('bgs[pic6]','/pic/wp/06.jpg');
+
+			localStorage.setItem('bgs[pic7]','/pic/wp/07.jpg');
+
+			localStorage.setItem('bgs[pic8]','/pic/wp/08.jpg');
+
+			localStorage.setItem('bgs[pic9]','/pic/wp/09.jpg');
+
+			localStorage.setItem('bgs[pic10]','/pic/wp/10.jpg');
+
+			localStorage.setItem('bgs[pic11]','/pic/wp/11.jpg');
+
+			localStorage.setItem('bgs[pic12]','/pic/wp/12.jpg');
+
+			localStorage.setItem('bgs[pic13]','/pic/wp/13.png');
+
+			localStorage.setItem('bgs[pic14]','/pic/wp/14.png');
+
+			localStorage.setItem('bgs[pic15]','/pic/wp/15.png');
+
+			localStorage.setItem('bgs[pic16]','/pic/wp/16.jpg');
+
+			localStorage.setItem('bgs[pic17]','/pic/wp/17.jpg');
+
+			localStorage.setItem('bgs[pic18]','/pic/wp/18.jpg');
+
+			localStorage.setItem('bgs[pic19]','/pic/wp/19.jpg');
+
+			localStorage.setItem('bgs[pic20]','/pic/wp/20.jpg');
+
+			localStorage.setItem('bgs[pic21]','/pic/wp/21.png');
+
+			localStorage.setItem('bgs[pic22]','/pic/wp/22.jpg');
+
+			localStorage.setItem('bgs[pic23]','/pic/wp/23.png');
+
+			localStorage.setItem('bgs[pic24]','/pic/wp/24.jpg');
+
+			localStorage.setItem('bgs[pic25]','/pic/wp/25.jpg');
+
+		if(localStorage.getItem('now')==null){
+			localStorage.setItem('now','pic22');
+		}
+	//}
+</script>
+
+<div id="nav">
+	<ul>
+		<li><button id="cgBg" onclick="randomSwitch()">O</button><button id="clBg" onclick="noBg()">_</button></li>
+
+		<iframe id="music-player" frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=110 src="//music.163.com/outchain/player?type=0&id=7669623816&auto=0&height=90"></iframe>
+
+		<button id="nav-hide" onclick="hideMenu()">◤</button>
+
+		<span id="clear"></span>
+	</ul>
+</div>
+<button id="nav-show" onclick="showMenu()">◢</button>
+
+<span id="pup">
+	<div id="menu">
+	
+	
+		
+			<b><a href="/" class="menu-item-link" id="in">Home</a></b>
+		
+	
+		
+			<b><a data-pjax="#main" href="/blogs" class="menu-item-link-selected" id="in">Blogs</a></b>
+		
+	
+		
+			<b><a href="/archives" class="menu-item-link" id="in">Archives</a></b>
+		
+	
+		
+			<b><a href="/about" class="menu-item-link" id="in">who@mi</a></b>
+		
+	
+		
+			<b><a href="/links" class="menu-item-link" id="in">Links</a></b>
+		
+	
+	<div id="outlink">
+	
+		<a href="https://www.lexaloffle.com/pico-8.php" class="menu-item-link" id="out" target="_blank">pico-8</a>
+	
+		<a href="https://suckless.org/" class="menu-item-link" id="out" target="_blank">suckless</a>
+	
+	</div>
+</div>
+
+	<div id="main">
+		<div id="post">
+
+	<b><div id="start-title">rust 数据处理</div></b>
+
+	
+	<center><b><span id="start-date">start at 2023/07/25.</span></b></center>
+	
+
+    <h2 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h2><blockquote>
+<p>最近想重写一下<a target="_blank" rel="noopener" href="https://github.com/paradoxskin/image2ascii">之前写的屎山代码</a>，本来想写一个 TUI 的，但是写 TUI 的话要写一个文件管理器，工程量太大了，所以干脆改成命令行程序得了<span id="more"></span>，后面考虑封装成 wasm 也是可以的，但是就 js 那显示速度真可以吗？</p>
+</blockquote>
+<p>我之前写的一坨东西的原理是用 ffmpeg 把视频拆掉，每帧都转换为 ascii 画，存在一个 Vec 里，后面经过一通乱优化，变为只存储改变像素点的信息，为了不用每次都加工一遍就把数据存储成二进制文件，下次想要观看的时候再载入即可，然而是有一个问题的，视频的音频信息是我手动用 ffmpeg 拆的，要想写的像样点是需要集成到程序里去的，同时直接序列化的二进制文件也挺大的，都超过原视频了(废话)，但是这一堆代码实在是太乱了，我不知道从何下手，而且 main 函数里都像是在测试函数功能一样乱，所以直接简单重构一下吧</p>
+<p>这篇文章可不是用来记录重构过程的，主要是记载一下以下几个库的使用方法:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.rs/binrw/latest/binrw/">binrw</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.rs/flate2/latest/flate2/">flate2</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.rs/bit-set/latest/bit_set/struct.BitSet.html">bit-set</a></li>
+</ul>
+<h2 id="binrw"><a href="#binrw" class="headerlink" title="binrw"></a>binrw</h2><p>顾名思义，binr(ead)w(rite) 是用来把数据二进制序列化和反序列化的工具，主流的序列化是<a target="_blank" rel="noopener" href="https://serde.rs/">serde</a>，之前的代码序列化就是用这个实现的，但是我用的似懂非懂，秉持一个能用就行的原则就冲了，但是用法还是不是很明白，为什么这次不再好好学习一下 serde 呢</p>
+<p>不知道，想用这个就用这个，又不是什么生产环境 ~</p>
+<p>binrw 给一个结构体序列化的前提是结构体里的所有元素都能够被序列化（废话</p>
+<p>如果我们知道结构体里某个属性的数据是定长的，那么我们只需要知道这个数据是什么类型的，查阅一下数据类型对应的信息即可推理出它需要占多少字节，那么如果结构体里所有数据都是定长的，并且按照这个顺序来排列，那么序列化完成之后，我们也能按照这个规则反序列化出这个数据原来的样子，这就是序列化的大致原理，本质上就是需要一套规则，这个规则有约定俗成的，比如说 serde 的本质上是要转换为一个中间模型，再把中间模型进行序列化，也有编码者自己规定的，不过知道了这套原理，我们自己也可以造轮子了！（你这个人怎么老是喜欢造轮子）</p>
+<p>我们只解决了不定长的数据，那么定长的数据怎么解决？答案是告诉它有多长，把序列化想象成时间冻结，你难道再冻结的时候还要完成什么操作吗，为什么不等着冻结结束后再行动呢，不过 binrw 不支持 char，可能是多国语言问题吧，不过 binrw 提供了 <code>NullString</code>，我还没仔细研究过。但是理论上来说什么东西都可以转换成字节，什么东西也都能转变为0和1组成的二进制，而多维数组也可以用映射的方式转换为一维数组，所以应该所有东西都是可以被序列化的，只不过有些结构体需要转换一下形态</p>
+<blockquote>
+<p><strong>规则</strong>是 无序 通往 有序 的大门</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/brett-jordan-M3cxjDNiLlQ-unsplash.jpg" alt="brett-jordan-M3cxjDNiLlQ-unsplash"></p>
+</blockquote>
+<p>屁话一堆，还是来看怎么使用 binrw 吧</p>
+<p>我们有这么一个结构体</p>
+<pre><code class="rust">struct Map &#123;
+    width: u16,
+    height: u16,
+    col: Vec&lt;u8&gt;,
+    name: String
+&#125;
+</code></pre>
+<p>现在对它进行装修，只需要用属性即可</p>
+<pre><code class="rust">#[binrw]
+#[brw(big, magic = b&quot;mmap&quot;)]
+struct Map &#123;
+    width: u16,
+    height: u16,
+    col: Vec&lt;u8&gt;,
+    name: String
+&#125;
+</code></pre>
+<p>第一行的 <code>#[binrw]</code> 等效于 <code>#[derive(BinRead, BinWrite)]</code> 相当于告诉编译器，这玩意需要序列化和反序列化</p>
+<p>噢，别忘了</p>
+<pre><code class="rust">use binrw::&#123;BinRead, BinWrite, binrw&#125;;
+</code></pre>
+<p>第二行的 <code>brw</code> 括号里的就是同时适用于读和写时的配置了，当然有 <code>br</code> 和 <code>bw</code>，把读写分开来</p>
+<p><code>big</code> 对应 <code>little</code>，分别代表大端字节序 (Big-Endian) 和 小端字节序(Little-Endian)</p>
+<blockquote>
+<p>   大端序（Big-Endian）将数据的低位字节存放在内存的高位地址，高位字节存放在低位地址。这种排列方式与数据用字节表示时的书写顺序一致，符合人类的阅读习惯。</p>
+<p>   小端序（Little-Endian），将一个多位数的低位放在较小的地址处，高位放在较大的地址处，则称小端序。小端序与人类的阅读习惯相反，但更符合计算机读取内存的方式，因为CPU读取内存中的数据时，是从低地址向高地址方向进行读取的。</p>
+</blockquote>
+<p>后面的 magic 就是 魔法句柄（前缀，就相当于是一个标识符，具体有什么用可以参考：</p>
+<blockquote>
+<pre><code class="rust">#[binrw]
+#[brw(little)]
+struct Point(i16, i16);
+
+#[derive(BinRead)]
+#[br(big, magic = b&quot;SHAP&quot;)]
+enum Shape &#123;
+    #[br(magic(0u8))] Rect &#123;
+        left: i16, top: i16, right: i16, bottom: i16
+    &#125;,
+    #[br(magic(1u8))] Oval &#123; origin: Point, rx: u8, ry: u8 &#125;
+&#125;
+
+let oval = Shape::read(&amp;mut Cursor::new(b&quot;SHAP\x01\x80\x02\xe0\x01\x2a\x15&quot;)).unwrap();
+assert_eq!(oval, Shape::Oval &#123; origin: Point(640, 480), rx: 42, ry: 21 &#125;);
+</code></pre>
+<p><code>[SHAP] [\x01] [\x80\x02\xe0\x01] [\x2a] [\x15]</code>，惊奇的发现居然可以同时嵌套其他实现了 <code>BinRead</code> 的结构体</p>
+</blockquote>
+<p>如果我们的 Map 只有 <code>width</code>  和 <code>height</code>，那么我们的工作就已经做完了，可惜我们还有两个非定长的数据类型，需要我们做一些改变，col 是一个动态数组，如果我们能告诉序列化它的长度就行了，我们加一个元素用来告诉它有多少长度，然后加一个属性指定，不能用 usize 噢，因为 usize 的大小取决于系统，不定就是无序，这里是br，不是brw，只有在读取的时候才要使用</p>
+<pre><code class="rust">&#123;
+    ...
+    col_count: u8,
+    #[br(count = col_count)]
+    col: Vec&lt;u8&gt;,
+    ...
+&#125;
+</code></pre>
+<p>剩下一个 name 字符串，我们需要怎么做呢？binrw库里有一个 <code>NullString</code> 类型，可以直接解决</p>
+<pre><code class="rust">struct Map &#123;
+    width: u16,
+    height: u16,
+    col_count: u8,
+    #[br(count = col_count)]
+    col: Vec&lt;u8&gt;,
+    name: NullString
+&#125;
+</code></pre>
+<blockquote>
+<p>NullString 的 hover 有写 A null-terminated 8-bit string.</p>
+</blockquote>
+<p>也就是把每个字符变成 u8，这样的话我们可以用动态数组来表示字符串就行了（mdzz</p>
+<pre><code class="rust">#[binrw]
+#[brw(big, magic = b&quot;mmap&quot;)]
+#[derive(Debug)]
+struct Map &#123;
+    width: u16,
+    height: u16,
+    col_count: u8,
+    #[br(count = col_count)]
+    col: Vec&lt;u8&gt;,
+    name_count: u8,
+    #[br(count = name_count * 2)]
+    name: Vec&lt;u8&gt;
+&#125;
+</code></pre>
+<p>我还特意让每个字符有两个字节</p>
+<p>接下来是序列化和反序列化了，虽然这个名字是 read 和 write，但是我可没打算直接读写这玩意，直接写也太大了！</p>
+<h3 id="encode"><a href="#encode" class="headerlink" title="encode"></a>encode</h3><pre><code class="rust">// encode
+fn encode() -&gt; Cursor&lt;Vec&lt;u8&gt;&gt;&#123;
+    let tmp = Map&#123;
+        width: 255,
+        height: 255,
+        col_count: 2,
+        col: vec![24, 29],
+        name_count: 3,
+        name: vec![6, 5, 4, 3, 2, 1]
+    &#125;;
+    let mut cur = Cursor::new(Vec::new());
+    tmp.write(&amp;mut cur).unwrap();
+    println!(&quot;&#123;:?&#125;\n&#123;:?&#125;&quot;, tmp, cur.clone().into_inner());
+    cur
+&#125;
+</code></pre>
+<p>我们中规中矩写一个结构体实例，然后把它写进 <code>std::io::Cursor</code> 里，write 写入对象的条件是实现 <code>Read</code> 和 <code>Seek</code> 两个特性，一般有 <code>Cursor</code> 和 <code>std::fs::File</code> 是同时实现这两个的，可以直接拿来用，binrw 自带了一个 io，里面有 Cursor，不过我还是喜欢用 std 的东西</p>
+<h3 id="decode"><a href="#decode" class="headerlink" title="decode"></a>decode</h3><pre><code class="rust">// decode
+fn decode(cur: Cursor&lt;Vec&lt;u8&gt;&gt;) &#123;
+    let mut cur = cur.clone();
+    cur.set_position(0);
+    let tmp = Map::read(&amp;mut cur).unwrap();
+    println!(&quot;&#123;:?&#125;&quot;, tmp);
+    let tmp = Map::read(&amp;mut Cursor::new(b&quot;mmap\x00\x10\x00\x10\x01\x21\x02\x01\x02\x03\x04&quot;)).unwrap();
+    println!(&quot;--------------------------\n&#123;:?&#125;&quot;, tmp);
+&#125;
+</code></pre>
+<p>这个比较简单粗暴好理解</p>
+<pre><code class="rust">fn main() &#123;
+    let tmp = encode();
+    decode(tmp);
+&#125;
+</code></pre>
+<p>最后串起来，完美执行</p>
+<p>不过我是不是应该用 test 来写这种东西，老喜欢把这种东西写进 main 里</p>
+<p>binrw 只能转为二进制文件，听名字就知道不能转为 json 那种有可读性的文件，所以有空还是要仔细学一下 serde </p>
+<h2 id="flate2"><a href="#flate2" class="headerlink" title="flate2"></a>flate2</h2><p>无损压缩，这个世界上无损压缩就那么几种算法，这个使用的是 DEFLATE 算法</p>
+<p>具体原理大概是</p>
+<blockquote>
+<p>是同时使用了LZ77算法与哈夫曼编码（Huffman Coding）的一个无损数据压缩算法。它最初是由美国程序员菲尔·卡茨（Phil Katz）为他的PKZIP软件第二版所定义的，后来被RFC 1951标准化</p>
+<p>LZ77算法通过使用编码器或者解码器中已经出现过的相应匹配数据信息，替换当前数据从而实现压缩功能。这个匹配信息使用称为长度-距离对的一对数据进行编码，它等同于“每个给定长度个字符都等于后面特定距离字符位置上的未压缩数据流。”</p>
+<p>在计算机资料处理中，霍夫曼编码使用变长编码表对源符号（如文件中的一个字母）进行编码，其中变长编码表是通过一种评估来源符号出现概率的方法得到的，出现概率高的字母使用较短的编码，反之出现概率低的则使用较长的编码，这便使编码之后的字符串的平均长度、期望值降低，从而达到无损压缩数据的目的。 </p>
+</blockquote>
+<p>看上去感觉像算法复杂度蛮高的字符串题，我倒还没闲工夫去搞懂实现，之前看《硅谷》倒是有压缩算法，不过那个太虚构了，还是现实一点来看看怎么用吧</p>
+<h3 id="encode-1"><a href="#encode-1" class="headerlink" title="encode"></a>encode</h3><p>现在我们手头上有这么一个文件 <code>hello.bin</code> （不要在意，python 随机生成的</p>
+<pre><code>72680631482092620292718750846970204021485234748435774041517442472626814666931994800891063031012107590392007700270477119190001397713259074394119884542568536691887563856179875906777442729307397216697965839016015982898586024802120372763575304436546803800343346110119155624139745996012937203406759252383312099212054595065493485133122242778699921849319092190189617215935844086880421389732609937526009152962736214786376085037305079631634016433474591688150666785609537224143490014517577206720316213313834220577937085406
+</code></pre>
+<p>现在我们需要对它压缩，那么我们第一步应该先把他都进来再说，因为文件都包含一个类似指针的东西会移动，所以一般都是申明为可变变量，然而编译器告诉我不用 mut</p>
+<pre><code class="rust">let mut file = std::fs::File::open(&quot;hello.bin&quot;).unwrap();
+</code></pre>
+<p>然后我们对这个文件的字节进行读取，一般来说压缩的话是整体压缩吧，分开压缩也不是不行，因为都是无损的，本质上也只是对一堆0和1进行修改，能完美还原的话中间步骤是什么样都无所谓，这里我们用  <code>std::io::BufReader</code> 把文件内容读为字节流</p>
+<pre><code class="rust">let buffer = BufReader::new(file);
+</code></pre>
+<p>然后我们开始压缩，创建一个压缩器，他应该实在 new 的时候就压缩好了</p>
+<pre><code class="rust">let mut encoder = bufread::DeflateEncoder::new(
+    buffer, flate2::Compression::best());
+</code></pre>
+<p>第一个参数是要压缩的字节流，第二个参数是使用的压缩类型，当然要选择效果最好的！</p>
+<p>其实不止这一种压缩器，还有其他的，我比较喜欢这个</p>
+<p>接下来让压缩器把读到的东西吐出来，不用多想，吐出来的东西也肯定是字节流</p>
+<pre><code class="rust">let mut buf = Vec::new();
+encoder.read_to_end(&amp;mut buf).unwrap();
+</code></pre>
+<p>干脆写进文件吧</p>
+<pre><code class="rust">let mut file2 = std::fs::File::create(&quot;zipp&quot;).unwrap();
+file2.write(buf.as_slice()).unwrap();
+</code></pre>
+<p>因为涉及到了读和写，所以不要忘记 <code>use std::io::&#123;Read, Write&#125;</code></p>
+<p>来看效果</p>
+<pre><code class="bash">$ ls -l
+-rw-r--r-- 1 paradoxskin paradoxskin 514 Jul 26 23:53 hello.bin
+-rw-r--r-- 1 paradoxskin paradoxskin 264 Jul 27 23:59 zipp
+</code></pre>
+<p>直接压缩了一半，相当的给力</p>
+<h3 id="decode-1"><a href="#decode-1" class="headerlink" title="decode"></a>decode</h3><p>都压缩了一个文件，所以解压就直接解压这个文件吧</p>
+<pre><code class="rust">let file = std::fs::File::open(&quot;zipp&quot;).unwrap();
+let buf = BufReader::new(file);
+</code></pre>
+<pre><code class="rust">let mut decoder = bufread::DeflateDecoder::new(buf);
+let mut v = Vec::new();
+decoder.read_to_end(&amp;mut v);
+println!(&quot;&#123;:?&#125;&quot;, v);
+</code></pre>
+<p>输出了一堆</p>
+<pre><code class="rust">[55, 50, 54, 56, 48, 54, 51, 49, 52, 56, 50, 48, 57, 50, 54, 50, 48, 50, 57, 50, 55, 49, 56, 55, 53, 48, 56, 52, 54, 57, 55, 48, 50, 48, 52, 48, 50, 49, 52, 56, 53, 50, 51, 52, 55, 52, 56, 52, 51, 53, 55, 55, 52, 48, 52, 49, 53, 49, 55, 52, 52, 50, 52, 55, 50, 54, 50, 54, 56, 49, 52, 54, 54, 54, 57, 51, 49, 57, 57, 52, 56, 48, 48, 56, 57, 49, 48, 54, 51, 48, 51, 49, 48, 49, 50, 49, 48, 55, 53, 57, 48, 51, 57, 50, 48, 48, 55, 55, 48, 48, 50, 55, 48, 52, 55, 55, 49, 49, 57, 49, 57, 48, 48, 48, 49, 51, 57, 55, 55, 49, 51, 50, 53, 57, 48, 55, 52, 51, 57, 52, 49, 49, 57, 56, 56, 52, 53, 52, 50, 53, 54, 56, 53, 51, 54, 54, 57, 49, 56, 56, 55, 53, 54, 51, 56, 53, 54, 49, 55, 57, 56, 55, 53, 57, 48, 54, 55, 55, 55, 52, 52, 50, 55, 50, 57, 51, 48, 55, 51, 57, 55, 50, 49, 54, 54, 57, 55, 57, 54, 53, 56, 51, 57, 48, 49, 54, 48, 49, 53, 57, 56, 50, 56, 57, 56, 53, 56, 54, 48, 50, 52, 56, 48, 50, 49, 50, 48, 51, 55, 50, 55, 54, 51, 53, 55, 53, 51, 48, 52, 52, 51, 54, 53, 52, 54, 56, 48, 51, 56, 48, 48, 51, 52, 51, 51, 52, 54, 49, 49, 48, 49, 49, 57, 49, 53, 53, 54, 50, 52, 49, 51, 57, 55, 52, 53, 57, 57, 54, 48, 49, 50, 57, 51, 55, 50, 48, 51, 52, 48, 54, 55, 53, 57, 50, 53, 50, 51, 56, 51, 51, 49, 50, 48, 57, 57, 50, 49, 50, 48, 53, 52, 53, 57, 53, 48, 54, 53, 52, 57, 51, 52, 56, 53, 49, 51, 51, 49, 50, 50, 50, 52, 50, 55, 55, 56, 54, 57, 57, 57, 50, 49, 56, 52, 57, 51, 49, 57, 48, 57, 50, 49, 57, 48, 49, 56, 57, 54, 49, 55, 50, 49, 53, 57, 51, 53, 56, 52, 52, 48, 56, 54, 56, 56, 48, 52, 50, 49, 51, 56, 57, 55, 51, 50, 54, 48, 57, 57, 51, 55, 53, 50, 54, 48, 48, 57, 49, 53, 50, 57, 54, 50, 55, 51, 54, 50, 49, 52, 55, 56, 54, 51, 55, 54, 48, 56, 53, 48, 51, 55, 51, 48, 53, 48, 55, 57, 54, 51, 49, 54, 51, 52, 48, 49, 54, 52, 51, 51, 52, 55, 52, 53, 57, 49, 54, 56, 56, 49, 53, 48, 54, 54, 54, 55, 56, 53, 54, 48, 57, 53, 51, 55, 50, 50, 52, 49, 52, 51, 52, 57, 48, 48, 49, 52, 53, 49, 55, 53, 55, 55, 50, 48, 54, 55, 50, 48, 51, 49, 54, 50, 49, 51, 51, 49, 51, 56, 51, 52, 50, 50, 48, 53, 55, 55, 57, 51, 55, 48, 56, 53, 52, 48, 54, 13, 10]
+</code></pre>
+<p>因为是字符的字节，所以</p>
+<pre><code class="rust">for tmp in v &#123;
+    print!(&quot;&#123;&#125;&quot;, tmp as char);
+&#125;
+</code></pre>
+<p>输出为</p>
+<pre><code>72680631482092620292718750846970204021485234748435774041517442472626814666931994800891063031012107590392007700270477119190001397713259074394119884542568536691887563856179875906777442729307397216697965839016015982898586024802120372763575304436546803800343346110119155624139745996012937203406759252383312099212054595065493485133122242778699921849319092190189617215935844086880421389732609937526009152962736214786376085037305079631634016433474591688150666785609537224143490014517577206720316213313834220577937085406
+</code></pre>
+<p>nice！</p>
+<h2 id="bit-set"><a href="#bit-set" class="headerlink" title="bit-set"></a>bit-set</h2><p>因为这东西太多了，所以这片小小的空地写不下我的学习日志（有空再学</p>
+<p>QED</p>
+
+
+	<b><span id="post-date">2023/07/27</span></b>
+	<div id="tags">
+		<ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/rust/" rel="tag"># rust</a></li></ul>
+	</div>
+
+	<div id="clear"></div>
+</div>
+<center><a class="gobk" href="javascript:;" onclick="Gobk()">&gt CLICK TO back &lt</a><center>
+<div id="cart">
+	<button id="cart-hide" onclick="cartCg()">◀</button>
+</div>
+<script>
+	if(history.state==null){
+		var tmpa=document.getElementsByClassName("gobk")[0];
+		tmpa.innerHTML="> CLICK TO land <";
+	}
+	showAIndex();
+</script>
+
+	</div>
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+	</script>
+</span>
+	<hr id="hidden">
+	
+
+	<script>
+		hljs.highlightAll();
+		hljs.initLineNumbersOnLoad();
+		initBg();
+		$(document).pjax('a','#pup',{fragment:'#pup',timeout: 8000});
+	</script>
+</body>
+</html>
