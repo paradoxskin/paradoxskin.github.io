@@ -31,7 +31,7 @@
 	
 <link rel="stylesheet" href="/lib/highlight/rainbow.min.css">
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 	
 <script src="/lib/highlight/highlight.min.js"></script>
 
@@ -188,19 +188,19 @@
 <p>linux确实存在arch对manjaro的鄙视链，但都用dwm了，本质上就只有arch滚的快和部分细微的区别了，只要少去arch社区提问就<del>不会露出破绽</del>，arch的wiki是真的好用啊，造福全linux发行版</p>
 </blockquote>
 <h2 id="step-2-烧录到U盘"><a href="#step-2-烧录到U盘" class="headerlink" title="step.2 烧录到U盘"></a>step.2 烧录到U盘</h2><p>下载好我们的iso文件后，我们需要一张U盘和一个烧录软件，U盘用的闪迪16GB，烧录软件我用的是<a target="_blank" rel="noopener" href="https://rufus.ie/zh/">Rufus</a>，各位烧友应该有自己的烧录软件吧，如果U盘之前没有烧过系统，是用来转移文件的，那这一步需要等的时间有点长，建议去B站刷会视频，不要去管它</p>
-<h2 id="step-3-进入BIOS-UEFI"><a href="#step-3-进入BIOS-UEFI" class="headerlink" title="step.3 进入BIOS / UEFI"></a>step.3 进入BIOS / UEFI</h2><blockquote>
+<h2 id="step-3-进入BIOS-UEFI"><a href="#step-3-进入BIOS-UEFI" class="headerlink" title="step.3 进入BIOS &#x2F; UEFI"></a>step.3 进入BIOS &#x2F; UEFI</h2><blockquote>
 <p>BIOS, Basic Input Output System.</p>
 <p>UEFI, Unified Extensible Firmware Interface</p>
 </blockquote>
 <p>VAIO 有个 ASSIST 键，查了下资料，是什么vaio拯救大师，可以进入bios，但是这台不知道怎么回事，按了没反应，只能按住F3按开机键，亮vaio的时候松开就进入了拯救大师模式，全是日文，只有个BIOS是我认识的，点他就行</p>
 <p>设置成这样</p>
-<pre><code>Intel(R) AT Support System    [Disabled]
+<pre><code>Intel(R) AT Support System	[Disabled]
 
-Secure Boot                    [Disabled]
+Secure Boot					[Disabled]
 
-External Device Boot        [Enabled]
-Select 1st Boot Priority    [External Device]
-Boot Mode                    [Legacy]
+External Device Boot		[Enabled]
+Select 1st Boot Priority	[External Device]
+Boot Mode					[Legacy]
 </code></pre>
 <p>最后一行是只有不用UEFI的才要用，否则就用UEFI，这两个概念我也不是特别清楚，首先你要明白操作系统有两种启动方式，legacy (BIOS) 和UEFI。他们分别对应了两种分区方式，MBR和GPT</p>
 <p>老电脑都是BIOS，不出意料<a target="_blank" rel="noopener" href="https://www.reddit.com/r/linux/comments/2abj2r/anyone_got_a_sony_vaio_pro_13/"> VAIO pro 13 的UEFI表现不好</a>，所以我选择legacy模式</p>
@@ -220,12 +220,12 @@ Boot Mode                    [Legacy]
 </thead>
 <tbody><tr>
 <td>FAT32</td>
-<td>/boot</td>
+<td>&#x2F;boot</td>
 <td>384 MiB</td>
 </tr>
 <tr>
 <td>FAT32</td>
-<td>/boot/efi</td>
+<td>&#x2F;boot&#x2F;efi</td>
 <td>384 MiB</td>
 </tr>
 <tr>
@@ -235,7 +235,7 @@ Boot Mode                    [Legacy]
 </tr>
 <tr>
 <td>ext4</td>
-<td>/</td>
+<td>&#x2F;</td>
 <td>剩余全部</td>
 </tr>
 </tbody></table>
@@ -389,7 +389,7 @@ coc-clangd
 <p>去官网下载，解压之后拷贝到<code>/usr/local/bin/</code>里，把可执行文件的<code>Typora</code>改名成<code>typora</code>，然后把<code>/usr/local/bin/Typora-linux</code>加入Path之后重启就可以用命令行启动了，启动之后输入Key和邮箱激活就完工了</p>
 <p>如果你没有购买正版的话，我推荐你 购买正版 或者 <a target="_blank" rel="noopener" href="https://paradoxskin.github.io/blogs/2022/09/12/%E6%9D%82/about_typora/">走后门下载正版</a></p>
 <blockquote>
-<p>现在是 2023/6/6 官方已经把后门堵上了，悲</p>
+<p>现在是 2023&#x2F;6&#x2F;6 官方已经把后门堵上了，悲</p>
 <p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/image-20230606211804272.png" alt="image-20230606211804272"></p>
 </blockquote>
 <p><strong>安装网易云音乐</strong></p>
@@ -399,7 +399,7 @@ $ yay -S netease-cloud-music
 <p>然后你最好把<code>/bin</code>里的<code>netease-cloud-music</code>改名成<code>wyy</code>🧐</p>
 <p>我其实没有配好 yay，能成功下载大概是因为网易云是在 cn 的吧</p>
 <blockquote>
-<p>本来给 vaio 装系统的时候就该写完的，结果一直忘记写了，到今天想给虚拟机扩容把它swap分区删了然后没法开机了，不得不重装才想起这篇文章… 所以赶快写写掉，不过我改了很多东西，我懒得改了，差不多能用，后面有空再做个plus版本，其实可以写几个脚本来自动化配置过程，有空再写，所以plus版本的在自动化脚本写出来之后再说吧，哈哈哈（咕咕咕    ——2023.06.06</p>
+<p>本来给 vaio 装系统的时候就该写完的，结果一直忘记写了，到今天想给虚拟机扩容把它swap分区删了然后没法开机了，不得不重装才想起这篇文章… 所以赶快写写掉，不过我改了很多东西，我懒得改了，差不多能用，后面有空再做个plus版本，其实可以写几个脚本来自动化配置过程，有空再写，所以plus版本的在自动化脚本写出来之后再说吧，哈哈哈（咕咕咕	——2023.06.06</p>
 </blockquote>
 
 

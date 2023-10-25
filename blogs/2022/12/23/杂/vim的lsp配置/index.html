@@ -31,7 +31,7 @@
 	
 <link rel="stylesheet" href="/lib/highlight/rainbow.min.css">
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 	
 <script src="/lib/highlight/highlight.min.js"></script>
 
@@ -233,7 +233,7 @@ rd /Q /S %cd%\tmp
 <p>梳理了下我总共需要8种语言的补全:</p>
 <ul>
 <li>python</li>
-<li>c/c++</li>
+<li>c&#x2F;c++</li>
 <li>lua</li>
 <li>java</li>
 <li>go</li>
@@ -245,7 +245,7 @@ rd /Q /S %cd%\tmp
 <pre><code class="bash">git clone git@github.com:prabirshrestha/asyncomplete.vim.git
 </code></pre>
 <h2 id="回归现实"><a href="#回归现实" class="headerlink" title="回归现实"></a>回归现实</h2><blockquote>
-<p>2022/12/21 21:08</p>
+<p>2022&#x2F;12&#x2F;21 21:08</p>
 <p>是时候回归现实了，昨天信誓旦旦的配了一天的lsp，最后还是没配出来</p>
 <p>我试了<a target="_blank" rel="noopener" href="https://github.com/autozimu/LanguageClient-neovim">LanguageClient-neovim</a>，发现pyls的 hover 和 帮助文档 报错，最后用了<a target="_blank" rel="noopener" href="https://github.com/dense-analysis/ale">ale</a>，它自带了python的补全，用起来还可以，就是它老是报我的码风警报啊，为什么人人都要像你们规定的那样写代码啊！</p>
 <p>遇到的问题都太奇葩，google不到，也不想issue，之后再回来配轻量的补全系统，感觉网上说的是真的，vim的配置时间比使用vim写代码的时间还要多，今天又干了些不知道在干什么的事情（因为在U管上看到一个vimer的界面觉得挺好的，很好奇是怎么做到的<img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/shotcut.PNG" alt="shotcut"></p>
@@ -324,7 +324,7 @@ enddef
 <center>但其实，我们只是需要一个理由罢了</center>
 </blockquote>
 <h2 id="COC"><a href="#COC" class="headerlink" title="COC"></a>COC</h2><p><a target="_blank" rel="noopener" href="https://github.com/neoclide/coc.nvim">COC</a>，全称为 <em><del>Call of Cthulhu</del></em> Conquer of Completion</p>
-<p>注意，安装COC要求node.js环境，<code>node</code> &gt;= <code>14.14</code></p>
+<p>注意，安装COC要求node.js环境，<code>node</code> &gt;&#x3D; <code>14.14</code></p>
 <p>同样放在opt文件夹里</p>
 <pre><code class="bash">git clone https://github.com/neoclide/coc.nvim.git
 </code></pre>
@@ -398,7 +398,7 @@ enddef
 </tr>
 <tr>
 <td>coc-clangd</td>
-<td>补全 c/c++</td>
+<td>补全 c&#x2F;c++</td>
 <td>要装好clang，流氓软件一样的，装clang一定要装LLVM，暂时不C系了，先不装</td>
 </tr>
 <tr>
@@ -459,8 +459,8 @@ let g:coc_global_extensions = []
 let g:flagHLSame=0
 let g:coc_explorer_global_presets=&#123;
  \ &#39;.vim&#39;: &#123;
- \        &#39;root-uri&#39;: $HOME .. &quot;/vimfiles&quot;,
- \        &#39;position&#39;: &#39;right&#39;
+ \		&#39;root-uri&#39;: $HOME .. &quot;/vimfiles&quot;,
+ \		&#39;position&#39;: &#39;right&#39;
  \ &#125;
  \&#125;
 &quot;let b:coc_suggest_disable=1

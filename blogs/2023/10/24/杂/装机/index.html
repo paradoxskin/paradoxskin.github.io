@@ -31,7 +31,7 @@
 	
 <link rel="stylesheet" href="/lib/highlight/rainbow.min.css">
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 	
 <script src="/lib/highlight/highlight.min.js"></script>
 
@@ -169,31 +169,153 @@
 	<div id="main">
 		<div id="post">
 
-	<b><div id="start-title">233</div></b>
+	<b><div id="start-title">manjaro个人装机指南</div></b>
 
 	
-	<center><b><span id="start-date">start at 2023/01/08?</span></b></center>
+	<center><b><span id="start-date">start at 2023/10/24.</span></b></center>
 	
 
-    <script src="/js/github-calendar.min.js"></script>
-<link
-   rel="stylesheet"
-   href="/css/github-calendar-responsive.css"
-/>
+    <blockquote>
+<p>好久没写博客了~~</p>
+<p>最近问室友买了一块512G的固态, 就给游戏本装上了双系统<span id="more"></span>, 这个双系统意外的好装啊, 开机还能让我选进 windows 还是 进 manjaro, 为什么大一的时候我没有花闲钱买一块固态呢…</p>
+<p>由于上一篇装机实在不太行(自己用的都是另外一套软件), 所以打算再写一篇关于装完机配置的博客, 在安装完系统之后按照博客一步步操作即可</p>
+</blockquote>
+<ul>
+<li>配置pacman mirrorlist</li>
+</ul>
+<pre><code class="shell">sudo pacman-mirrors -i -c China -m rank
+</code></pre>
+<ul>
+<li>装软件</li>
+</ul>
+<pre><code class="shell">sudo pacman -S 
+git openssh base-devel
+picom light acpi tlp xclip scrot
+neovim ranger lazygit fzf tmux feh ncdu
+python-neovim ueberzug xorg-xinput xorg-xsetroot
+ncspot clash firefox neofetch
+yay proxychains-ng mpg123 noto-fonts-emoji
+fcitx5-im fcitx5-chinese-addons
+perl perl-alien-base-modulebuild
+steam noto-fonts-emoji
+</code></pre>
+<ul>
+<li>登录ncspot，听歌</li>
+</ul>
+<ul>
+<li><p>下载clash订阅文件，放到 <code>~/.clash/clash.yaml</code></p>
+</li>
+<li><p>配置 github ssh-key</p>
+</li>
+</ul>
+<pre><code class="shell">ssh-keygen -t rsa -b 4096 -C &quot;1312269430@qq.com&quot;
+eval &quot;$(ssh-agent -s)&quot;
+ssh-add ~/.ssh/id_rsa
+# paste id_rsa.pub at github
+ssh -T git@github.com
+</code></pre>
+<ul>
+<li>下载资源整合包</li>
+</ul>
+<pre><code class="shell">curl -O https://parad0xpic.oss-cn-hangzhou.aliyuncs.com/zpkg.tar.gz
+mkdir zpkg
+tar -xzvf zpkg.tar.gz -C zpkg
+# or 
+git clone git@github.com:paradoxskin/zpkg.git
+</code></pre>
+<ul>
+<li>使用suckless套件</li>
+</ul>
+<pre><code class="shell">git clone git@github.com:paradoxskin/dwm.git
+git clone git@github.com:paradoxskin/st.git
+git clone git@github.com:paradoxskin/dmenu.git
+git clone git@github.com:paradoxskin/slock.git
+# sudo make clean install all
+</code></pre>
+<ul>
+<li>github 上下载各种配置文件</li>
+</ul>
+<pre><code class="shell">git clone git@github.com:paradoxskin/dot_file.git ~/.zStatic/dot_file
+git clone git@github.com:paradoxskin/.scripts.git ~/.scripts
+git clone git@github.com:paradoxskin/nvim.git ~/.config/nvim
+git clone git@github.com:paradoxskin/ranger.git ~/.config/ranger
+git clone git@github.com:creaktive/rainbarf.git
+</code></pre>
+<ul>
+<li>海量配置</li>
+</ul>
+<pre><code class="shell"># in zpkg
+# system-time -&gt; 修改/etc/locale.gen -&gt; 加入zh_CN.UTF-8 UTF-8
+sudo locale-gen
+sudo timedatectl set-ntp true
 
-<div class="calendar">
-    <!-- Loading stuff -->
-    Loading the data just for you.
-</div>
-<script>
-    GitHubCalendar(".calendar", "paradoxskin", { responsive: true });
-</script>
+# git
+git config --global user.email &quot;1312269430@qq.com&quot;
+git config --global user.name &quot;paradoxskin&quot;
+
+# fonts
+sudo cp pico-8.ttf /usr/share/fonts/TTF/
+sudo cp loli.ttf /usr/share/fonts/TTF/
+sudo cp -r SourceCodePro/ /usr/share/fonts/
+sudo fc-cache
+
+# lightdm
+sudo cp dwm.desktop /usr/share/xsessions/dwm.desktop
+sudo cp -r lightdm_wp /usr/share/pixmap/
+sudo cplightdm-gtk-greeter.conf /etc/lightdm/
+
+# dot_file
+# 如果以下有程序报已存在，则提前删除
+ln -s icom.conf ~/.config/
+ln -s .bashrc ~/
+ln -s .tmux.conf ~/
+ln -s .rainbarf.conf ~/
+
+# rainbarf
+perl Build.PL
+./Build test
+sudo ./Build install
+
+# touchpad
+sudo cp 30-touchpad.conf /etc/X11/xorg.conf.d/30-touchpad.conf
+
+# fcitx5
+sudo cp flypy.conf /usr/share/fcitx5/inputmethod/flypy.conf
+sudo cp flypy.dict /usr/share/libime/flypy.dict
+cp -r PB-color ~/.local/share/fcitx5/themes/
+cat .profile &gt;&gt; ~/.profile
+
+# dwm
+mkdir ~/.dwm
+cp ~/.scripts/autostart.sh ~/.dwm/
+
+# light
+sudo chmod +s $(which light)
+
+# image
+cp -r * ~/Pictures/
+
+# nvim -&gt; ~/.config/nvim | long time
+./plg_ins
+
+# slock
+cp -r slock_wp/ /usr/share/pixmap/
+sudo useradd slock
+sudo passwd slock
+# proxychains -&gt; /etc/proxychains.conf
+# 注释掉 proxy_dns, 在结尾设置 sock5 与 http
+
+# finish
+reboot
+</code></pre>
+<blockquote>
+<p>很简约对吧(我是说教程), 最近想把博客主题变的再极简点</p>
+</blockquote>
 
 
-
-	<b><span id="post-date">2023/01/08</span></b>
+	<b><span id="post-date">2023/10/24</span></b>
 	<div id="tags">
-		
+		<ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/linux/" rel="tag"># linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%9D%82/" rel="tag"># 杂</a></li></ul>
 	</div>
 
 	<div id="clear"></div>

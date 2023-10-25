@@ -31,7 +31,7 @@
 	
 <link rel="stylesheet" href="/lib/highlight/rainbow.min.css">
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 	
 <script src="/lib/highlight/highlight.min.js"></script>
 
@@ -181,7 +181,7 @@
 <h2 id="创建动态web项目"><a href="#创建动态web项目" class="headerlink" title="创建动态web项目"></a>创建动态web项目</h2><p>新建一个<strong>dynamic web project</strong></p>
 <p>展开新建的web项目-&gt;展开java resources-&gt;右键src-&gt;创建Servlet窗口-&gt;java package输出controller，class name随意，父类为HTTPServlet</p>
 <ul>
-<li>  Servlet程序负责扮演控制器的角色，弗雷HTTPServlet专门用于处理HTTP请求，所有的Servlet程序一般都需要继承HTTPServlet</li>
+<li>Servlet程序负责扮演控制器的角色，弗雷HTTPServlet专门用于处理HTTP请求，所有的Servlet程序一般都需要继承HTTPServlet</li>
 </ul>
 <p>打开新建的文件，发现一堆函数被标红了，这是因为HTTPServlet类定义在第三方库servlet-api.jar中，所以我们需要先导入这个库</p>
 <p>在tomcat的lib文件夹里找到这个文件，然后对着eclipse里的项目右键，选择属性，找到java构建路径，点击添加外部jar，然后找到之前lib的那个文件，点确定就可以了</p>
@@ -237,7 +237,7 @@ public class ABCServlet extends HttpServlet &#123;
 <p>只有在停止服务器的时候，才会终止程序</p>
 <p>为了提高开发效率，eclipse还提供了一种机制，eclipse能自动判断servlet源码是否被更改，如果被更改，就会重新编译并重启tomcat</p>
 <h2 id="创建JSP程序"><a href="#创建JSP程序" class="headerlink" title="创建JSP程序"></a>创建JSP程序</h2><p>在webContent目录下创建abc.jsp文件，</p>
-<p>在该文件的&lt;body&gt;和&lt;/body&gt;中间输入以下代码</p>
+<p>在该文件的&lt;body&gt;和&lt;&#x2F;body&gt;中间输入以下代码</p>
 <pre><code class="jsp">&lt;%
     System.out.println(&quot;你好，Tomcat控制台&quot;);
     String realPath = request.getServletContext().getRealPath(&quot;&quot;);
@@ -250,55 +250,55 @@ public class ABCServlet extends HttpServlet &#123;
 <p>JSP更像是页面模板，之前用过ejs，有点类似</p>
 <h2 id="有关JSP的字符编码"><a href="#有关JSP的字符编码" class="headerlink" title="有关JSP的字符编码"></a>有关JSP的字符编码</h2><p>关于JSP的编码有三个细节，第一个是JSP文件的编码形式，第二个是写在开头的pageEncoding，第三个是charset，处理这三个编码的具体逻辑是</p>
 <ul>
-<li>  按文件编码打开JSP文件</li>
-<li>  JSP引擎根据pageEncoding按照指定的字符集读取JSP文件</li>
-<li>  charset告诉浏览器应该用什么样的编码来解析HTTP响应</li>
+<li>按文件编码打开JSP文件</li>
+<li>JSP引擎根据pageEncoding按照指定的字符集读取JSP文件</li>
+<li>charset告诉浏览器应该用什么样的编码来解析HTTP响应</li>
 </ul>
 <p>当没有指定本地文件用什么样的编码储存时，eclipse会默认采用pageEncoding的编码存储，当文件中出现编码没有的字符时，eclipse就无法保存</p>
 <h2 id="MIME"><a href="#MIME" class="headerlink" title="MIME"></a>MIME</h2><p>全称Multipurpose Internet Mail Extensions，描述消息内容类型的互联网标准，语法格式为<code>type/subtype</code>type大致有三类<code>text/*</code>,<code>image/*</code>,<code>appliction/*</code></p>
 <h2 id="GET请求数据的构成"><a href="#GET请求数据的构成" class="headerlink" title="GET请求数据的构成"></a>GET请求数据的构成</h2><ol>
-<li> GET请求行，由3部分组成，中间用空格分隔<code>GET 请求路径?请求查询字符串 请求协议/协议版本</code></li>
+<li>GET请求行，由3部分组成，中间用空格分隔<code>GET 请求路径?请求查询字符串 请求协议/协议版本</code></li>
 <li>GET请求头列表<ul>
-<li>  Host：<code>服务器的主机域名或IP:端口号</code></li>
-<li>  Connection：连接状态，keep-alive表示与服务器建立长久连接</li>
-<li>  User-Agent：发出请求浏览器的类型、版本、操作系统信息等</li>
-<li>  Accept：浏览器支持的MIME</li>
-<li>  Accept-Encoding：支持的数据压缩方式</li>
-<li>  Accept-Language：支持的语言种类</li>
-<li>  Upgrade-Insecure-Requests：浏览器是否支持自动升级请求功能</li>
+<li>Host：<code>服务器的主机域名或IP:端口号</code></li>
+<li>Connection：连接状态，keep-alive表示与服务器建立长久连接</li>
+<li>User-Agent：发出请求浏览器的类型、版本、操作系统信息等</li>
+<li>Accept：浏览器支持的MIME</li>
+<li>Accept-Encoding：支持的数据压缩方式</li>
+<li>Accept-Language：支持的语言种类</li>
+<li>Upgrade-Insecure-Requests：浏览器是否支持自动升级请求功能</li>
 </ul>
 </li>
-<li> 空行，一般为回车符+换行符，目的是告诉服务器请求头列表到此结束</li>
+<li>空行，一般为回车符+换行符，目的是告诉服务器请求头列表到此结束</li>
 </ol>
 <h2 id="GET全过程"><a href="#GET全过程" class="headerlink" title="GET全过程"></a>GET全过程</h2><ol>
-<li><p> 在浏览器上输入URL</p>
+<li><p>在浏览器上输入URL</p>
 </li>
-<li><p> 按下Enter键，浏览器自动将URL封装成GET请求</p>
+<li><p>按下Enter键，浏览器自动将URL封装成GET请求</p>
 </li>
-<li><p> 主机和WEB服务器建立连接，一般为TCP/IP</p>
+<li><p>主机和WEB服务器建立连接，一般为TCP&#x2F;IP</p>
 </li>
-<li><p> 浏览器将封装好的GET请求发送给服务器，等待服务器响应</p>
+<li><p>浏览器将封装好的GET请求发送给服务器，等待服务器响应</p>
 </li>
 </ol>
 <hr>
 <ol start="5">
-<li> 服务器接收到GET请求数据，将各种信息封装到HttpServletRequest请求对象中</li>
-<li> 根据GET请求行中的请求路径，Tomcat调用构造方法，创建出实例对象，调用init方法初始化实例对象</li>
-<li> 将5中封装好的请求对象传入Servlet实例对象的doGet或者doPost方法</li>
-<li> 执行方法</li>
-<li> doGet依次完成以下操作：获取HTTP请求数据；调用业务逻辑代码，处理HTTP请求数据了；将处理结果封装成HTTP响应数据</li>
-<li> 浏览器接收HTTP响应数据，显示结果，等待发起新的HTTP请求</li>
-<li> 如果一段时间内服务器和浏览器没有发生数据传输，他们之间的网络连接将会断开</li>
-<li> 服务器停止服务，调用destroy销毁</li>
+<li>服务器接收到GET请求数据，将各种信息封装到HttpServletRequest请求对象中</li>
+<li>根据GET请求行中的请求路径，Tomcat调用构造方法，创建出实例对象，调用init方法初始化实例对象</li>
+<li>将5中封装好的请求对象传入Servlet实例对象的doGet或者doPost方法</li>
+<li>执行方法</li>
+<li>doGet依次完成以下操作：获取HTTP请求数据；调用业务逻辑代码，处理HTTP请求数据了；将处理结果封装成HTTP响应数据</li>
+<li>浏览器接收HTTP响应数据，显示结果，等待发起新的HTTP请求</li>
+<li>如果一段时间内服务器和浏览器没有发生数据传输，他们之间的网络连接将会断开</li>
+<li>服务器停止服务，调用destroy销毁</li>
 </ol>
 <h2 id="request请求对象获取GET请求数据"><a href="#request请求对象获取GET请求数据" class="headerlink" title="request请求对象获取GET请求数据"></a>request请求对象获取GET请求数据</h2><p>方法很多，主要分为六类</p>
 <ol>
-<li> 获取路径信息</li>
-<li> 获取GET请求参数信息</li>
-<li> 获取GET请求行信息</li>
-<li> 获取GET请求头信息</li>
-<li> 获取Web服务器主机和浏览器主机信息</li>
-<li> 获取URL Mappings</li>
+<li>获取路径信息</li>
+<li>获取GET请求参数信息</li>
+<li>获取GET请求行信息</li>
+<li>获取GET请求头信息</li>
+<li>获取Web服务器主机和浏览器主机信息</li>
+<li>获取URL Mappings</li>
 </ol>
 <pre><code class="java">//路径信息
 System.out.println(request.getContextPath());

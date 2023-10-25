@@ -31,7 +31,7 @@
 	
 <link rel="stylesheet" href="/lib/highlight/rainbow.min.css">
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 	
 <script src="/lib/highlight/highlight.min.js"></script>
 
@@ -176,7 +176,7 @@
 	
 
     <blockquote>
-<p>我多多少少也学了不少语言了，按顺序来：Lua -&gt; Python -&gt; VB -&gt; C -&gt; C++ -&gt; Java -&gt; Go -&gt; html/js/css，其他还有杂七杂八的非主流<span id="more"></span>语言也多多少少了解过有点，虽然都不算特别精通，毕竟还没有工作，所以都是了解基本的语法，没有那些能理解每种语言痛点的觉悟，不能提取每种语言的哲学。各种语言中都有相通的地方，理解了这些相通的地方之后，学习一门新的语言就都不难，一般流程都是学完基本的语法之后熟悉一些第三方库即可，这次学习 rust 并不是跟风啊，我也不知道这个邪教语言好在哪里，也不指望有什么 rust 岗位，只是觉得总该学一门来写以后爱好的项目，其实 C 是一个很好的选择，但我不想现在去深入，然后是 Linus 允许使用 rust 写 linux 内核，我就开始对这门语言有点好奇了</p>
+<p>我多多少少也学了不少语言了，按顺序来：Lua -&gt; Python -&gt; VB -&gt; C -&gt; C++ -&gt; Java -&gt; Go -&gt; html&#x2F;js&#x2F;css，其他还有杂七杂八的非主流<span id="more"></span>语言也多多少少了解过有点，虽然都不算特别精通，毕竟还没有工作，所以都是了解基本的语法，没有那些能理解每种语言痛点的觉悟，不能提取每种语言的哲学。各种语言中都有相通的地方，理解了这些相通的地方之后，学习一门新的语言就都不难，一般流程都是学完基本的语法之后熟悉一些第三方库即可，这次学习 rust 并不是跟风啊，我也不知道这个邪教语言好在哪里，也不指望有什么 rust 岗位，只是觉得总该学一门来写以后爱好的项目，其实 C 是一个很好的选择，但我不想现在去深入，然后是 Linus 允许使用 rust 写 linux 内核，我就开始对这门语言有点好奇了</p>
 </blockquote>
 <h2 id="胡言乱语"><a href="#胡言乱语" class="headerlink" title="胡言乱语"></a>胡言乱语</h2><p>rust 语法风格类似 javascript, 编译结果类似 C，编译出的程序高效，有 cargo 包管理</p>
 <p>rust 的应用领域：</p>
@@ -340,11 +340,11 @@ let x: u128 = 128;
 let x: usize = 64;
 </code></pre>
 <p>还有进制相关的</p>
-<pre><code class="rust">let x = 233_333;    // 十进制
-let x = 0xfffff;    // 十六进制
-let x = 0o77777;    // 八进制
-let x = 0b11100;    // 二进制
-let x = b&#39;A&#39;;        // 字节，只能为 u8 型
+<pre><code class="rust">let x = 233_333;	// 十进制
+let x = 0xfffff;	// 十六进制
+let x = 0o77777;	// 八进制
+let x = 0b11100;	// 二进制
+let x = b&#39;A&#39;;		// 字节，只能为 u8 型
 </code></pre>
 <p>整数型中间的 <code>_</code> 只是用来方便代码阅读的分隔符</p>
 <h3 id="浮点数"><a href="#浮点数" class="headerlink" title="浮点数"></a>浮点数</h3><p>支持两种浮点型，f32 和 f64，64位浮点数的精度更高</p>
@@ -370,8 +370,8 @@ let rem = 43 % 5;
     println!(&quot;&#123;&#125;&quot;, x.cos());
     println!(&quot;&#123;&#125;&quot;, x.tan());
     println!(&quot;&#123;&#125;&quot;, x.sqrt());
-    println!(&quot;&#123;&#125;&quot;, x.powi(3));    // 幂函数
-    println!(&quot;&#123;&#125;&quot;, x.ln());        // 对数
+    println!(&quot;&#123;&#125;&quot;, x.powi(3));	// 幂函数
+    println!(&quot;&#123;&#125;&quot;, x.ln());		// 对数
 &#125;
 </code></pre>
 <h3 id="字符"><a href="#字符" class="headerlink" title="字符"></a>字符</h3><pre><code class="rust">let en: char = &#39;U&#39;;

@@ -31,7 +31,7 @@
 	
 <link rel="stylesheet" href="/lib/highlight/rainbow.min.css">
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 	
 <script src="/lib/highlight/highlight.min.js"></script>
 
@@ -180,54 +180,15 @@
 <p>好像是Prim最小生成树？</p>
 </blockquote>
 <hr>
-<h1 id="CF-Round-736-DIV-2-题解-1549A-1549B-1549C"><a href="#CF-Round-736-DIV-2-题解-1549A-1549B-1549C" class="headerlink" title="CF Round 736 DIV.2 题解(1549A/1549B/1549C)"></a>CF Round 736 DIV.2 题解(1549A/1549B/1549C)</h1><h2 id="题目列表"><a href="#题目列表" class="headerlink" title="题目列表"></a>题目列表</h2><p>1.<a href="#a">A</a><br>2.<a href="#b">B</a><br>3.<a href="#c">C</a></p>
+<h1 id="CF-Round-736-DIV-2-题解-1549A-1549B-1549C"><a href="#CF-Round-736-DIV-2-题解-1549A-1549B-1549C" class="headerlink" title="CF Round 736 DIV.2 题解(1549A&#x2F;1549B&#x2F;1549C)"></a>CF Round 736 DIV.2 题解(1549A&#x2F;1549B&#x2F;1549C)</h1><h2 id="题目列表"><a href="#题目列表" class="headerlink" title="题目列表"></a>题目列表</h2><p>1.<a href="#a">A</a><br>2.<a href="#b">B</a><br>3.<a href="#c">C</a></p>
 <hr>
 <blockquote>
 <p>这几篇题解都是我从自己的CSDN里搬来的，不然显得我没打过ACM www<span id="more"></span></p>
 </blockquote>
-<h3 id="1-A"><a href="#1-A" class="headerlink" title="1.A"></a><span id='a'>1.A</span></h3><p><a target="_blank" rel="noopener" href="https://codeforces.com/contest/1549/problem/A">原题链接</a></p>
-<h4 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h4><p>给一个质数P，求a和b满足$P\ mod\ a == P\ mod\ b$。</p>
-<h4 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h4><p>水题，总所周知，大于2的质数全是奇数，所以直接输出2和P-1。</p>
+<h3 id="1-A"><a href="#1-A" class="headerlink" title="1.A"></a><span id='a'>1.A</span></h3><h2 id="原题链接-题目大意给一个质数P，求a和b满足-P-mod-a-P-mod-b-。-解题思路水题，总所周知，大于2的质数全是奇数，所以直接输出2和P-1。-AC代码cpp-include-using-namespace-std-int-main-int-t-scanf-d-t-int-a-b-p-while-t-scanf-d-p-printf-d-d-n-2-p-1-return-0"><a href="#原题链接-题目大意给一个质数P，求a和b满足-P-mod-a-P-mod-b-。-解题思路水题，总所周知，大于2的质数全是奇数，所以直接输出2和P-1。-AC代码cpp-include-using-namespace-std-int-main-int-t-scanf-d-t-int-a-b-p-while-t-scanf-d-p-printf-d-d-n-2-p-1-return-0" class="headerlink" title="原题链接#### 题目大意给一个质数P，求a和b满足$P\ mod\ a &#x3D;&#x3D; P\ mod\ b$。#### 解题思路水题，总所周知，大于2的质数全是奇数，所以直接输出2和P-1。#### AC代码cpp #include&lt;bits/stdc++.h&gt; using namespace std; int main(){     int t;     scanf(&quot;%d&quot;,&amp;t);     int a,b,p;     while(t--){         scanf(&quot;%d&quot;,&amp;p);         printf(&quot;%d %d\n&quot;,2,p-1);     }     return 0; } "></a><a target="_blank" rel="noopener" href="https://codeforces.com/contest/1549/problem/A">原题链接</a><br>#### 题目大意<br>给一个质数P，求a和b满足$P\ mod\ a &#x3D;&#x3D; P\ mod\ b$。<br>#### 解题思路<br>水题，总所周知，大于2的质数全是奇数，所以直接输出2和P-1。<br>#### AC代码<br><code>cpp #include&lt;bits/stdc++.h&gt; using namespace std; int main()&#123;     int t;     scanf(&quot;%d&quot;,&amp;t);     int a,b,p;     while(t--)&#123;         scanf(&quot;%d&quot;,&amp;p);         printf(&quot;%d %d\n&quot;,2,p-1);     &#125;     return 0; &#125; </code></h2><h3 id="2-B"><a href="#2-B" class="headerlink" title="2.B"></a><span id='b'>2.B</span></h3><h2 id="原题链接-题目大意国际象棋的兵的走位，给出我方和对面的位置，求我方士兵能到达对面的最大个数。-解题思路如果前面是0直接进，其他情况大概优先左边再往右，其实没啥思路，直接暴力就过了…-AC代码python-t-int-input-for-lkasjflkasfj-in-range-t-n-int-input-a-X-list-input-X-m-X-input-X-ans-0-for-i-in-range-1-n-1-if-m-i-1-if-a-i-0-ans-1-elif-a-i-1-1-ans-1-a-i-1-2-elif-a-i-1-1-ans-1-a-i-1-2-print-ans"><a href="#原题链接-题目大意国际象棋的兵的走位，给出我方和对面的位置，求我方士兵能到达对面的最大个数。-解题思路如果前面是0直接进，其他情况大概优先左边再往右，其实没啥思路，直接暴力就过了…-AC代码python-t-int-input-for-lkasjflkasfj-in-range-t-n-int-input-a-X-list-input-X-m-X-input-X-ans-0-for-i-in-range-1-n-1-if-m-i-1-if-a-i-0-ans-1-elif-a-i-1-1-ans-1-a-i-1-2-elif-a-i-1-1-ans-1-a-i-1-2-print-ans" class="headerlink" title="原题链接#### 题目大意国际象棋的兵的走位，给出我方和对面的位置，求我方士兵能到达对面的最大个数。#### 解题思路如果前面是0直接进，其他情况大概优先左边再往右，其实没啥思路，直接暴力就过了…#### AC代码python t=int(input()) for lkasjflkasfj in range(t):     n=int(input())     a=[&#39;X&#39;]+list(input())+[&#39;X&#39;]     m=&#39;X&#39;+input()+&#39;X&#39;     ans=0     for i in range(1,n+1):         if m[i]==&#39;1&#39;:             if a[i]==&#39;0&#39;:                 ans+=1             elif a[i-1]==&#39;1&#39;:                 ans+=1                 a[i-1]=&#39;2&#39;             elif a[i+1]==&#39;1&#39;:                 ans+=1                 a[i+1]=&#39;2&#39;     print(ans) "></a><a target="_blank" rel="noopener" href="https://codeforces.com/contest/1549/problem/B">原题链接</a><br>#### 题目大意<br>国际象棋的兵的走位，给出我方和对面的位置，求我方士兵能到达对面的最大个数。<br>#### 解题思路<br>如果前面是0直接进，其他情况大概优先左边再往右，其实没啥思路，直接暴力就过了…<br>#### AC代码<br><code>python t=int(input()) for lkasjflkasfj in range(t):     n=int(input())     a=[&#39;X&#39;]+list(input())+[&#39;X&#39;]     m=&#39;X&#39;+input()+&#39;X&#39;     ans=0     for i in range(1,n+1):         if m[i]==&#39;1&#39;:             if a[i]==&#39;0&#39;:                 ans+=1             elif a[i-1]==&#39;1&#39;:                 ans+=1                 a[i-1]=&#39;2&#39;             elif a[i+1]==&#39;1&#39;:                 ans+=1                 a[i+1]=&#39;2&#39;     print(ans) </code></h2><h3 id="3-C"><a href="#3-C" class="headerlink" title="3.C"></a><span id='c'>3.C</span></h3><p><a target="_blank" rel="noopener" href="https://codeforces.com/contest/1549/problem/C">原题链接</a></p>
+<h4 id="题目大意"><a href="#题目大意" class="headerlink" title="题目大意"></a>题目大意</h4><p>给一个初始的图，然后对于一个结点，如果他的所有相邻结点都比他大，那他就会被消灭掉，求最终还剩几个点。有三种操作，一个是删除一条边，一个是增加一个边，还有一个是查询答案。</p>
+<h4 id="解题思路"><a href="#解题思路" class="headerlink" title="解题思路"></a>解题思路</h4><p>因为所有点都是唯一的，所以对于每个联通的关系，总会有最小的结点被消灭，一直持续这个过程，最终状态就都是分离的，因此对于关系网中如果一个结点比所有和他相连的结点大，那最后那个结点会存活，而其他相连结点全部会被消灭掉，按照这个思路就可以模拟。不知道为什么，第一反应就是并查集，对每条边，每次把小结点的根变成大结点，然后不出所料的T了3次。最后换了一个思路，因为并查集是没有办法维护的，每次查询都要重新来对边合并，遍历一遍，时间成本是非常大的，所以应该找一个能维护的算法，最后决定用拓扑排序。让我们把每条边都变成从大的结点指向小的结点，记录每个点的入度，如果一个结点的入度为0那他最后就会存活，只要统计入度为0的点的个数就行了，而且维护起来相当方便👍</p>
 <h4 id="AC代码"><a href="#AC代码" class="headerlink" title="AC代码"></a>AC代码</h4><pre><code class="cpp">#include&lt;bits/stdc++.h&gt;
-using namespace std;
-int main()&#123;
-    int t;
-    scanf(&quot;%d&quot;,&amp;t);
-    int a,b,p;
-    while(t--)&#123;
-        scanf(&quot;%d&quot;,&amp;p);
-        printf(&quot;%d %d\n&quot;,2,p-1);
-    &#125;
-    return 0;
-&#125;
-</code></pre>
-<hr>
-<h3 id="2-B"><a href="#2-B" class="headerlink" title="2.B"></a><span id='b'>2.B</span></h3><p><a target="_blank" rel="noopener" href="https://codeforces.com/contest/1549/problem/B">原题链接</a></p>
-<h4 id="题目大意-1"><a href="#题目大意-1" class="headerlink" title="题目大意"></a>题目大意</h4><p>国际象棋的兵的走位，给出我方和对面的位置，求我方士兵能到达对面的最大个数。</p>
-<h4 id="解题思路-1"><a href="#解题思路-1" class="headerlink" title="解题思路"></a>解题思路</h4><p>如果前面是0直接进，其他情况大概优先左边再往右，其实没啥思路，直接暴力就过了…</p>
-<h4 id="AC代码-1"><a href="#AC代码-1" class="headerlink" title="AC代码"></a>AC代码</h4><pre><code class="python">t=int(input())
-for lkasjflkasfj in range(t):
-    n=int(input())
-    a=[&#39;X&#39;]+list(input())+[&#39;X&#39;]
-    m=&#39;X&#39;+input()+&#39;X&#39;
-    ans=0
-    for i in range(1,n+1):
-        if m[i]==&#39;1&#39;:
-            if a[i]==&#39;0&#39;:
-                ans+=1
-            elif a[i-1]==&#39;1&#39;:
-                ans+=1
-                a[i-1]=&#39;2&#39;
-            elif a[i+1]==&#39;1&#39;:
-                ans+=1
-                a[i+1]=&#39;2&#39;
-    print(ans)
-</code></pre>
-<hr>
-<h3 id="3-C"><a href="#3-C" class="headerlink" title="3.C"></a><span id='c'>3.C</span></h3><p><a target="_blank" rel="noopener" href="https://codeforces.com/contest/1549/problem/C">原题链接</a></p>
-<h4 id="题目大意-2"><a href="#题目大意-2" class="headerlink" title="题目大意"></a>题目大意</h4><p>给一个初始的图，然后对于一个结点，如果他的所有相邻结点都比他大，那他就会被消灭掉，求最终还剩几个点。有三种操作，一个是删除一条边，一个是增加一个边，还有一个是查询答案。</p>
-<h4 id="解题思路-2"><a href="#解题思路-2" class="headerlink" title="解题思路"></a>解题思路</h4><p>因为所有点都是唯一的，所以对于每个联通的关系，总会有最小的结点被消灭，一直持续这个过程，最终状态就都是分离的，因此对于关系网中如果一个结点比所有和他相连的结点大，那最后那个结点会存活，而其他相连结点全部会被消灭掉，按照这个思路就可以模拟。不知道为什么，第一反应就是并查集，对每条边，每次把小结点的根变成大结点，然后不出所料的T了3次。最后换了一个思路，因为并查集是没有办法维护的，每次查询都要重新来对边合并，遍历一遍，时间成本是非常大的，所以应该找一个能维护的算法，最后决定用拓扑排序。让我们把每条边都变成从大的结点指向小的结点，记录每个点的入度，如果一个结点的入度为0那他最后就会存活，只要统计入度为0的点的个数就行了，而且维护起来相当方便👍</p>
-<h4 id="AC代码-2"><a href="#AC代码-2" class="headerlink" title="AC代码"></a>AC代码</h4><pre><code class="cpp">#include&lt;bits/stdc++.h&gt;
 using namespace std;
 const int maxn=2e5+10;
 int a[maxn];

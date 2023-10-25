@@ -31,7 +31,7 @@
 	
 <link rel="stylesheet" href="/lib/highlight/rainbow.min.css">
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 	
 <script src="/lib/highlight/highlight.min.js"></script>
 
@@ -334,11 +334,11 @@ fn take_back(some_string: String) -&gt; String &#123;
 <h2 id="引用类型"><a href="#引用类型" class="headerlink" title="引用类型"></a>引用类型</h2><p>在 Rust 中，引用是一种类型，代表数据实体的使用权，如何类型都有它的引用类型，包括引用类型本身</p>
 <pre><code class="rust">fn main() &#123;
     let a: i32 = 3;
-    let b: &amp;i32 = &amp;a;    // 对a的引用
-    let c: &amp;&amp;i32 = &amp;b;    // 对b的引用，也是对a的引用
-    let d: &amp;&amp;&amp;i32 = &amp;c;    // 同理
+    let b: &amp;i32 = &amp;a;	// 对a的引用
+    let c: &amp;&amp;i32 = &amp;b;	// 对b的引用，也是对a的引用
+    let d: &amp;&amp;&amp;i32 = &amp;c;	// 同理
     let e = [3, 4, 5];
-    let f: &amp;[i32] = &amp;x;    // 对数组的引用
+    let f: &amp;[i32] = &amp;x;	// 对数组的引用
 &#125;
 </code></pre>
 <p>一般来说，引用类型往往用于借用无法被复制的数据对象的使用权，如果一个数据极其简单，比如 i32 等基础类型，往往不需要引用，直接传递对象的值</p>

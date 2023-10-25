@@ -31,7 +31,7 @@
 	
 <link rel="stylesheet" href="/lib/highlight/rainbow.min.css">
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 	
 <script src="/lib/highlight/highlight.min.js"></script>
 
@@ -214,183 +214,11 @@ int main()&#123;
 &#125;
 </code></pre>
 <hr>
-<h3 id="2-CF1551D1"><a href="#2-CF1551D1" class="headerlink" title=" 2. CF1551D1 "></a><span id="cf1551d1"> 2. CF1551D1 </span></h3><p><a target="_blank" rel="noopener" href="https://codeforces.com/problemset/problem/1551/D1">原题链接</a></p>
-<h4 id="题目大意-1"><a href="#题目大意-1" class="headerlink" title="题目大意"></a>题目大意</h4><p>  在NxM的棋盘上摆1x2的多米诺骨牌，判断是否能在摆下k的水平块的前提下摆满整个棋盘</p>
-<h4 id="解题思路-1"><a href="#解题思路-1" class="headerlink" title="解题思路"></a>解题思路</h4><p>  刚刚开始的思路是用某些小块固定出大块，然后发现思路不对，很难考虑完全。然后我就去看官方题解了…<br>  题解的大致意思是按n和m的奇偶分成四种情况</p>
-<ol>
-<li>n奇m奇:不用考虑，肯定是不可能。</li>
-<li>n偶m偶:k不会超过 m * n / 2 所以肯定可以做到。</li>
-<li>n偶m奇:既然n偶m偶能过，那就想办法让m的一行填掉。</li>
-<li>n奇m偶:原理同上，看看能不能填掉n的一行。<h4 id="AC代码-1"><a href="#AC代码-1" class="headerlink" title="AC代码"></a>AC代码</h4><pre><code class="cpp">#include&lt;bits/stdc++.h&gt;
-using namespace std;
-int main()&#123;
-int t;
-scanf(&quot;%d&quot;,&amp;t);
-int n,m,k;
-int kk;
-while(t--)&#123;
-   scanf(&quot;%d%d%d&quot;,&amp;n,&amp;m,&amp;k);
-   kk=n*m/2-k;
-   if(n%2&amp;&amp;m%2)&#123;
-       printf(&quot;NO\n&quot;);
-       continue;
-   &#125;
-   else if(n%2)&#123;
-       k-=m/2;
-   &#125;
-   else if(m%2)&#123;
-       kk-=n/2;
-   &#125;
-   if(k&lt;0||k%2||kk&lt;0)&#123;
-       printf(&quot;NO\n&quot;);
-       continue;
-   &#125;
-   printf(&quot;YES\n&quot;);
-&#125;
-return 0;
-&#125;
-</code></pre>
-</li>
-</ol>
-<hr>
-<h3 id="3-CF1551D2"><a href="#3-CF1551D2" class="headerlink" title="3 . CF1551D2 "></a><span id="cf1551d2">3 . CF1551D2 </span></h3><p><a target="_blank" rel="noopener" href="https://codeforces.com/problemset/problem/1551/D2">原题链接</a></p>
-<h4 id="题目大意-2"><a href="#题目大意-2" class="headerlink" title="题目大意"></a>题目大意</h4><p>  上一道题目的构造版本。</p>
-<h4 id="解题思路-2"><a href="#解题思路-2" class="headerlink" title="解题思路"></a>解题思路</h4><p>  思路和上面以提是一样的，但是构造思路很麻烦，看代码吧，以为涉及到字符串，所以用了我比较熟悉的python写，写的是十分的冗长…</p>
-<h4 id="AC代码-2"><a href="#AC代码-2" class="headerlink" title="AC代码"></a>AC代码</h4><pre><code class="python">t=int(input())
-h1=&quot;ac&quot;
-h2=&quot;bd&quot;
-s1=&quot;ef&quot;
-s2=&quot;gh&quot;
-for aslkfjalkfj in range(t):
-    n,m,k=[int(i) for i in input().split()]
-    kk=n*m//2-k
-    if(n%2 and m%2):
-        print(&quot;NO&quot;)
-        continue
-    elif n%2:
-        k-=m//2
-    elif m%2:
-        kk-=n/2
-    if(k&lt;0 or k%2 or kk&lt;0):
-        print(&quot;NO&quot;)
-        continue
-    print(&quot;YES&quot;)
-    mp=[&#39;&#39;]*n
-    x=0
-    y=0
-    tmp=0
-    if(n%2):
-        while k&gt;0:
-            mp[y]+=h1[tmp]+h1[tmp]
-            mp[y+1]+=h2[tmp]+h2[tmp]
-            tmp=1-tmp
-            x+=2
-            k-=2
-            if(x==m):
-                x=0
-                y+=2
-        while kk&gt;0:
-            if y&gt;0:
-                if mp[y-1][x]==s1[tmp]:
-                    tmp=1-tmp
-            mp[y]+=s1[tmp]+s2[tmp]
-            mp[y+1]+=s1[tmp]+s2[tmp]
-            tmp=1-tmp
-            x+=2
-            kk-=2
-            if(x==m):
-                x=0
-                y+=2
-        mp[n-1]=&#39;xxyy&#39;*(m//4)+&#39;x&#39;*(m%4)
-    if(m%2):
-        while k&gt;0:
-            mp[y]+=h1[tmp]+h1[tmp]
-            mp[y+1]+=h2[tmp]+h2[tmp]
-            tmp=1-tmp
-            x+=2
-            k-=2
-            if(x==m-1):
-                x=0
-                y+=2
-        while kk&gt;0:
-            if y&gt;0:
-                if mp[y-1][x]==s1[tmp]:
-                    tmp=1-tmp
-            mp[y]+=s1[tmp]+s2[tmp]
-            mp[y+1]+=s1[tmp]+s2[tmp]
-            tmp=1-tmp
-            x+=2
-            kk-=2
-            if(x==m-1):
-                x=0
-                y+=2
-        x=&quot;xy&quot;
-        for i in range(0,n,2):
-            mp[i]+=x[tmp]
-            mp[i+1]+=x[tmp]
-            tmp=1-tmp
-    else:
-        while k&gt;0:
-            mp[y]+=h1[tmp]+h1[tmp]
-            mp[y+1]+=h2[tmp]+h2[tmp]
-            tmp=1-tmp
-            x+=2
-            k-=2
-            if(x==m):
-                x=0
-                y+=2
-        while kk&gt;0:
-            if y&gt;0:
-                if mp[y-1][x]==s1[tmp]:
-                    tmp=1-tmp
-            mp[y]+=s1[tmp]+s2[tmp]
-            mp[y+1]+=s1[tmp]+s2[tmp]
-            tmp=1-tmp
-            x+=2
-            kk-=2
-            if(x==m):
-                x=0
-                y+=2
-    for i in mp:
-        print(i)
-</code></pre>
-<hr>
-<h3 id="4-CF-1203C"><a href="#4-CF-1203C" class="headerlink" title="4. CF 1203C "></a><span id="cf1203c">4. CF 1203C </span></h3><p><a target="_blank" rel="noopener" href="https://codeforces.com/problemset/problem/1203/C">原题链接</a></p>
-<h4 id="题目大意-3"><a href="#题目大意-3" class="headerlink" title="题目大意"></a>题目大意</h4><p>  找到输入n个数的最大公因子，再求出这个公因子又几个因数</p>
-<h4 id="解题思路-3"><a href="#解题思路-3" class="headerlink" title="解题思路"></a>解题思路</h4><p>  div3水题，连续gcd就可以求出最大公因子 然后因数分解只需要用试除法即可 时间复杂度是够的(不会分析gcd的时间复杂度</p>
-<h4 id="AC代码-3"><a href="#AC代码-3" class="headerlink" title="AC代码"></a>AC代码</h4><pre><code class="cpp">#include&lt;bits/stdc++.h&gt;
-using namespace std;
-long long gcd(long long a,long long b)&#123;
-    return b==0?a:gcd(b,a%b);
-&#125;
-int main()&#123;
-    int n;
-    scanf(&quot;%d&quot;,&amp;n);
-    long long i,j,k;
-    long long tmp,igcd;
-    scanf(&quot;%lld&quot;,&amp;igcd);
-    for(i=1;i&lt;n;i++)&#123;
-        scanf(&quot;%lld&quot;,&amp;tmp);
-        igcd=gcd(igcd,tmp);
-    &#125;
-    long long ans=0;
-    // qiu igcd de yin shu
-    for(i=1;i&lt;=sqrt(igcd);i++)&#123;
-        if(igcd%i==0)&#123;
-            ans+=2;
-            if(i*i==igcd)
-                ans--;
-        &#125;
-    &#125;
-    printf(&quot;%lld&quot;,ans);
-    return 0;
-&#125;
-</code></pre>
-<hr>
-<h3 id="5-CF-1203B"><a href="#5-CF-1203B" class="headerlink" title="5. CF 1203B "></a><span id="cf1203b">5. CF 1203B </span></h3><p><a target="_blank" rel="noopener" href="https://codeforces.com/problemset/problem/1203/B">原题链接</a></p>
-<h4 id="题目大意-4"><a href="#题目大意-4" class="headerlink" title="题目大意"></a>题目大意</h4><p>  给一组边，判断是否能用所给边构造出的所有矩形面积相等。</p>
-<h4 id="解题思路-4"><a href="#解题思路-4" class="headerlink" title="解题思路"></a>解题思路</h4><p>  贪心，要想所有矩形面积相等，必须从最长和最短边里选</p>
-<h4 id="AC代码-4"><a href="#AC代码-4" class="headerlink" title="AC代码"></a>AC代码</h4><pre><code class="cpp">#include&lt;bits/stdc++.h&gt;
+<h3 id="2-CF1551D1"><a href="#2-CF1551D1" class="headerlink" title=" 2. CF1551D1 "></a><span id="cf1551d1"> 2. CF1551D1 </span></h3><h2 id="原题链接-题目大意-在NxM的棋盘上摆1x2的多米诺骨牌，判断是否能在摆下k的水平块的前提下摆满整个棋盘-解题思路-刚刚开始的思路是用某些小块固定出大块，然后发现思路不对，很难考虑完全。然后我就去看官方题解了…-题解的大致意思是按n和m的奇偶分成四种情况-1-n奇m奇-不用考虑，肯定是不可能。-2-n偶m偶-k不会超过-m-n-2-所以肯定可以做到。-3-n偶m奇-既然n偶m偶能过，那就想办法让m的一行填掉。-4-n奇m偶-原理同上，看看能不能填掉n的一行。-AC代码cpp-include-using-namespace-std-int-main-int-t-scanf-d-t-int-n-m-k-int-kk-while-t-scanf-d-d-d-n-m-k-kk-n-m-2-k-if-n-2-m-2-printf-NO-n-continue-else-if-n-2-k-m-2-else-if-m-2-kk-n-2-if-k"><a href="#原题链接-题目大意-在NxM的棋盘上摆1x2的多米诺骨牌，判断是否能在摆下k的水平块的前提下摆满整个棋盘-解题思路-刚刚开始的思路是用某些小块固定出大块，然后发现思路不对，很难考虑完全。然后我就去看官方题解了…-题解的大致意思是按n和m的奇偶分成四种情况-1-n奇m奇-不用考虑，肯定是不可能。-2-n偶m偶-k不会超过-m-n-2-所以肯定可以做到。-3-n偶m奇-既然n偶m偶能过，那就想办法让m的一行填掉。-4-n奇m偶-原理同上，看看能不能填掉n的一行。-AC代码cpp-include-using-namespace-std-int-main-int-t-scanf-d-t-int-n-m-k-int-kk-while-t-scanf-d-d-d-n-m-k-kk-n-m-2-k-if-n-2-m-2-printf-NO-n-continue-else-if-n-2-k-m-2-else-if-m-2-kk-n-2-if-k" class="headerlink" title="原题链接#### 题目大意  在NxM的棋盘上摆1x2的多米诺骨牌，判断是否能在摆下k的水平块的前提下摆满整个棋盘#### 解题思路  刚刚开始的思路是用某些小块固定出大块，然后发现思路不对，很难考虑完全。然后我就去看官方题解了…  题解的大致意思是按n和m的奇偶分成四种情况  1. n奇m奇:不用考虑，肯定是不可能。  2. n偶m偶:k不会超过 m * n &#x2F; 2 所以肯定可以做到。  3. n偶m奇:既然n偶m偶能过，那就想办法让m的一行填掉。  4. n奇m偶:原理同上，看看能不能填掉n的一行。#### AC代码cpp #include&lt;bits/stdc++.h&gt; using namespace std; int main(){     int t;     scanf(&quot;%d&quot;,&amp;t);     int n,m,k;     int kk;     while(t--){         scanf(&quot;%d%d%d&quot;,&amp;n,&amp;m,&amp;k);         kk=n*m/2-k;         if(n%2&amp;&amp;m%2){             printf(&quot;NO\n&quot;);             continue;         }         else if(n%2){             k-=m/2;         }         else if(m%2){             kk-=n/2;         }         if(k&lt;0||k%2||kk&lt;0){             printf(&quot;NO\n&quot;);             continue;         }         printf(&quot;YES\n&quot;);     }     return 0; } "></a><a target="_blank" rel="noopener" href="https://codeforces.com/problemset/problem/1551/D1">原题链接</a><br>#### 题目大意<br>  在NxM的棋盘上摆1x2的多米诺骨牌，判断是否能在摆下k的水平块的前提下摆满整个棋盘<br>#### 解题思路<br>  刚刚开始的思路是用某些小块固定出大块，然后发现思路不对，很难考虑完全。然后我就去看官方题解了…<br>  题解的大致意思是按n和m的奇偶分成四种情况<br>  1. n奇m奇:不用考虑，肯定是不可能。<br>  2. n偶m偶:k不会超过 m * n &#x2F; 2 所以肯定可以做到。<br>  3. n偶m奇:既然n偶m偶能过，那就想办法让m的一行填掉。<br>  4. n奇m偶:原理同上，看看能不能填掉n的一行。<br>#### AC代码<br><code>cpp #include&lt;bits/stdc++.h&gt; using namespace std; int main()&#123;     int t;     scanf(&quot;%d&quot;,&amp;t);     int n,m,k;     int kk;     while(t--)&#123;         scanf(&quot;%d%d%d&quot;,&amp;n,&amp;m,&amp;k);         kk=n*m/2-k;         if(n%2&amp;&amp;m%2)&#123;             printf(&quot;NO\n&quot;);             continue;         &#125;         else if(n%2)&#123;             k-=m/2;         &#125;         else if(m%2)&#123;             kk-=n/2;         &#125;         if(k&lt;0||k%2||kk&lt;0)&#123;             printf(&quot;NO\n&quot;);             continue;         &#125;         printf(&quot;YES\n&quot;);     &#125;     return 0; &#125; </code></h2><h3 id="3-CF1551D2"><a href="#3-CF1551D2" class="headerlink" title="3 . CF1551D2 "></a><span id="cf1551d2">3 . CF1551D2 </span></h3><h2 id="原题链接-题目大意-上一道题目的构造版本。-解题思路-思路和上面以提是一样的，但是构造思路很麻烦，看代码吧，以为涉及到字符串，所以用了我比较熟悉的python写，写的是十分的冗长…-AC代码python-t-int-input-h1-ac-h2-bd-s1-ef-s2-gh-for-aslkfjalkfj-in-range-t-n-m-k-int-i-for-i-in-input-split-kk-n-m-2-k-if-n-2-and-m-2-print-NO-continue-elif-n-2-k-m-2-elif-m-2-kk-n-2-if-k0-if-y-0-if-mp-y-1-x-s1-tmp-tmp-1-tmp-mp-y-s1-tmp-s2-tmp-mp-y-1-s1-tmp-s2-tmp-tmp-1-tmp-x-2-kk-2-if-x-m-x-0-y-2-mp-n-1-xxyy-m-4-x-m-4-if-m-2-while-k-0-mp-y-h1-tmp-h1-tmp-mp-y-1-h2-tmp-h2-tmp-tmp-1-tmp-x-2-k-2-if-x-m-1-x-0-y-2-while-kk-0-if-y-0-if-mp-y-1-x-s1-tmp-tmp-1-tmp-mp-y-s1-tmp-s2-tmp-mp-y-1-s1-tmp-s2-tmp-tmp-1-tmp-x-2-kk-2-if-x-m-1-x-0-y-2-x-xy-for-i-in-range-0-n-2-mp-i-x-tmp-mp-i-1-x-tmp-tmp-1-tmp-else-while-k-0-mp-y-h1-tmp-h1-tmp-mp-y-1-h2-tmp-h2-tmp-tmp-1-tmp-x-2-k-2-if-x-m-x-0-y-2-while-kk-0-if-y-0-if-mp-y-1-x-s1-tmp-tmp-1-tmp-mp-y-s1-tmp-s2-tmp-mp-y-1-s1-tmp-s2-tmp-tmp-1-tmp-x-2-kk-2-if-x-m-x-0-y-2-for-i-in-mp-print-i"><a href="#原题链接-题目大意-上一道题目的构造版本。-解题思路-思路和上面以提是一样的，但是构造思路很麻烦，看代码吧，以为涉及到字符串，所以用了我比较熟悉的python写，写的是十分的冗长…-AC代码python-t-int-input-h1-ac-h2-bd-s1-ef-s2-gh-for-aslkfjalkfj-in-range-t-n-m-k-int-i-for-i-in-input-split-kk-n-m-2-k-if-n-2-and-m-2-print-NO-continue-elif-n-2-k-m-2-elif-m-2-kk-n-2-if-k0-if-y-0-if-mp-y-1-x-s1-tmp-tmp-1-tmp-mp-y-s1-tmp-s2-tmp-mp-y-1-s1-tmp-s2-tmp-tmp-1-tmp-x-2-kk-2-if-x-m-x-0-y-2-mp-n-1-xxyy-m-4-x-m-4-if-m-2-while-k-0-mp-y-h1-tmp-h1-tmp-mp-y-1-h2-tmp-h2-tmp-tmp-1-tmp-x-2-k-2-if-x-m-1-x-0-y-2-while-kk-0-if-y-0-if-mp-y-1-x-s1-tmp-tmp-1-tmp-mp-y-s1-tmp-s2-tmp-mp-y-1-s1-tmp-s2-tmp-tmp-1-tmp-x-2-kk-2-if-x-m-1-x-0-y-2-x-xy-for-i-in-range-0-n-2-mp-i-x-tmp-mp-i-1-x-tmp-tmp-1-tmp-else-while-k-0-mp-y-h1-tmp-h1-tmp-mp-y-1-h2-tmp-h2-tmp-tmp-1-tmp-x-2-k-2-if-x-m-x-0-y-2-while-kk-0-if-y-0-if-mp-y-1-x-s1-tmp-tmp-1-tmp-mp-y-s1-tmp-s2-tmp-mp-y-1-s1-tmp-s2-tmp-tmp-1-tmp-x-2-kk-2-if-x-m-x-0-y-2-for-i-in-mp-print-i" class="headerlink" title="原题链接#### 题目大意  上一道题目的构造版本。#### 解题思路  思路和上面以提是一样的，但是构造思路很麻烦，看代码吧，以为涉及到字符串，所以用了我比较熟悉的python写，写的是十分的冗长…#### AC代码python t=int(input()) h1=&quot;ac&quot; h2=&quot;bd&quot; s1=&quot;ef&quot; s2=&quot;gh&quot; for aslkfjalkfj in range(t):     n,m,k=[int(i) for i in input().split()]     kk=n*m//2-k     if(n%2 and m%2):         print(&quot;NO&quot;)         continue     elif n%2:         k-=m//2     elif m%2:         kk-=n/2     if(k&lt;0 or k%2 or kk&lt;0):         print(&quot;NO&quot;)         continue     print(&quot;YES&quot;)     mp=[&#39;&#39;]*n     x=0     y=0     tmp=0     if(n%2):         while k&gt;0:             mp[y]+=h1[tmp]+h1[tmp]             mp[y+1]+=h2[tmp]+h2[tmp]             tmp=1-tmp             x+=2             k-=2             if(x==m):                 x=0                 y+=2         while kk&gt;0:             if y&gt;0:                 if mp[y-1][x]==s1[tmp]:                     tmp=1-tmp             mp[y]+=s1[tmp]+s2[tmp]             mp[y+1]+=s1[tmp]+s2[tmp]             tmp=1-tmp             x+=2             kk-=2             if(x==m):                 x=0                 y+=2         mp[n-1]=&#39;xxyy&#39;*(m//4)+&#39;x&#39;*(m%4)     if(m%2):         while k&gt;0:             mp[y]+=h1[tmp]+h1[tmp]             mp[y+1]+=h2[tmp]+h2[tmp]             tmp=1-tmp             x+=2             k-=2             if(x==m-1):                 x=0                 y+=2         while kk&gt;0:             if y&gt;0:                 if mp[y-1][x]==s1[tmp]:                     tmp=1-tmp             mp[y]+=s1[tmp]+s2[tmp]             mp[y+1]+=s1[tmp]+s2[tmp]             tmp=1-tmp             x+=2             kk-=2             if(x==m-1):                 x=0                 y+=2         x=&quot;xy&quot;         for i in range(0,n,2):             mp[i]+=x[tmp]             mp[i+1]+=x[tmp]             tmp=1-tmp     else:         while k&gt;0:             mp[y]+=h1[tmp]+h1[tmp]             mp[y+1]+=h2[tmp]+h2[tmp]             tmp=1-tmp             x+=2             k-=2             if(x==m):                 x=0                 y+=2         while kk&gt;0:             if y&gt;0:                 if mp[y-1][x]==s1[tmp]:                     tmp=1-tmp             mp[y]+=s1[tmp]+s2[tmp]             mp[y+1]+=s1[tmp]+s2[tmp]             tmp=1-tmp             x+=2             kk-=2             if(x==m):                 x=0                 y+=2     for i in mp:         print(i) "></a><a target="_blank" rel="noopener" href="https://codeforces.com/problemset/problem/1551/D2">原题链接</a><br>#### 题目大意<br>  上一道题目的构造版本。<br>#### 解题思路<br>  思路和上面以提是一样的，但是构造思路很麻烦，看代码吧，以为涉及到字符串，所以用了我比较熟悉的python写，写的是十分的冗长…<br>#### AC代码<br><code>python t=int(input()) h1=&quot;ac&quot; h2=&quot;bd&quot; s1=&quot;ef&quot; s2=&quot;gh&quot; for aslkfjalkfj in range(t):     n,m,k=[int(i) for i in input().split()]     kk=n*m//2-k     if(n%2 and m%2):         print(&quot;NO&quot;)         continue     elif n%2:         k-=m//2     elif m%2:         kk-=n/2     if(k&lt;0 or k%2 or kk&lt;0):         print(&quot;NO&quot;)         continue     print(&quot;YES&quot;)     mp=[&#39;&#39;]*n     x=0     y=0     tmp=0     if(n%2):         while k&gt;0:             mp[y]+=h1[tmp]+h1[tmp]             mp[y+1]+=h2[tmp]+h2[tmp]             tmp=1-tmp             x+=2             k-=2             if(x==m):                 x=0                 y+=2         while kk&gt;0:             if y&gt;0:                 if mp[y-1][x]==s1[tmp]:                     tmp=1-tmp             mp[y]+=s1[tmp]+s2[tmp]             mp[y+1]+=s1[tmp]+s2[tmp]             tmp=1-tmp             x+=2             kk-=2             if(x==m):                 x=0                 y+=2         mp[n-1]=&#39;xxyy&#39;*(m//4)+&#39;x&#39;*(m%4)     if(m%2):         while k&gt;0:             mp[y]+=h1[tmp]+h1[tmp]             mp[y+1]+=h2[tmp]+h2[tmp]             tmp=1-tmp             x+=2             k-=2             if(x==m-1):                 x=0                 y+=2         while kk&gt;0:             if y&gt;0:                 if mp[y-1][x]==s1[tmp]:                     tmp=1-tmp             mp[y]+=s1[tmp]+s2[tmp]             mp[y+1]+=s1[tmp]+s2[tmp]             tmp=1-tmp             x+=2             kk-=2             if(x==m-1):                 x=0                 y+=2         x=&quot;xy&quot;         for i in range(0,n,2):             mp[i]+=x[tmp]             mp[i+1]+=x[tmp]             tmp=1-tmp     else:         while k&gt;0:             mp[y]+=h1[tmp]+h1[tmp]             mp[y+1]+=h2[tmp]+h2[tmp]             tmp=1-tmp             x+=2             k-=2             if(x==m):                 x=0                 y+=2         while kk&gt;0:             if y&gt;0:                 if mp[y-1][x]==s1[tmp]:                     tmp=1-tmp             mp[y]+=s1[tmp]+s2[tmp]             mp[y+1]+=s1[tmp]+s2[tmp]             tmp=1-tmp             x+=2             kk-=2             if(x==m):                 x=0                 y+=2     for i in mp:         print(i) </code></h2><h3 id="4-CF-1203C"><a href="#4-CF-1203C" class="headerlink" title="4. CF 1203C "></a><span id="cf1203c">4. CF 1203C </span></h3><p><a target="_blank" rel="noopener" href="https://codeforces.com/problemset/problem/1203/C">原题链接</a></p>
+<h4 id="题目大意-1"><a href="#题目大意-1" class="headerlink" title="题目大意"></a>题目大意</h4><h2 id="找到输入n个数的最大公因子，再求出这个公因子又几个因数-解题思路-div3水题，连续gcd就可以求出最大公因子-然后因数分解只需要用试除法即可-时间复杂度是够的-不会分析gcd的时间复杂度-AC代码cpp-include-using-namespace-std-long-long-gcd-long-long-a-long-long-b-return-b-0-a-gcd-b-a-b-int-main-int-n-scanf-d-n-long-long-i-j-k-long-long-tmp-igcd-scanf-lld-igcd-for-i-1-i"><a href="#找到输入n个数的最大公因子，再求出这个公因子又几个因数-解题思路-div3水题，连续gcd就可以求出最大公因子-然后因数分解只需要用试除法即可-时间复杂度是够的-不会分析gcd的时间复杂度-AC代码cpp-include-using-namespace-std-long-long-gcd-long-long-a-long-long-b-return-b-0-a-gcd-b-a-b-int-main-int-n-scanf-d-n-long-long-i-j-k-long-long-tmp-igcd-scanf-lld-igcd-for-i-1-i" class="headerlink" title="  找到输入n个数的最大公因子，再求出这个公因子又几个因数#### 解题思路  div3水题，连续gcd就可以求出最大公因子 然后因数分解只需要用试除法即可 时间复杂度是够的(不会分析gcd的时间复杂度#### AC代码cpp #include&lt;bits/stdc++.h&gt; using namespace std; long long gcd(long long a,long long b){     return b==0?a:gcd(b,a%b); } int main(){     int n;     scanf(&quot;%d&quot;,&amp;n);     long long i,j,k;     long long tmp,igcd;     scanf(&quot;%lld&quot;,&amp;igcd);     for(i=1;i&lt;n;i++){         scanf(&quot;%lld&quot;,&amp;tmp);         igcd=gcd(igcd,tmp);     }     long long ans=0;     // qiu igcd de yin shu     for(i=1;i&lt;=sqrt(igcd);i++){         if(igcd%i==0){             ans+=2;             if(i*i==igcd)                 ans--;         }     }     printf(&quot;%lld&quot;,ans);     return 0; } "></a>  找到输入n个数的最大公因子，再求出这个公因子又几个因数<br>#### 解题思路<br>  div3水题，连续gcd就可以求出最大公因子 然后因数分解只需要用试除法即可 时间复杂度是够的(不会分析gcd的时间复杂度<br>#### AC代码<br><code>cpp #include&lt;bits/stdc++.h&gt; using namespace std; long long gcd(long long a,long long b)&#123;     return b==0?a:gcd(b,a%b); &#125; int main()&#123;     int n;     scanf(&quot;%d&quot;,&amp;n);     long long i,j,k;     long long tmp,igcd;     scanf(&quot;%lld&quot;,&amp;igcd);     for(i=1;i&lt;n;i++)&#123;         scanf(&quot;%lld&quot;,&amp;tmp);         igcd=gcd(igcd,tmp);     &#125;     long long ans=0;     // qiu igcd de yin shu     for(i=1;i&lt;=sqrt(igcd);i++)&#123;         if(igcd%i==0)&#123;             ans+=2;             if(i*i==igcd)                 ans--;         &#125;     &#125;     printf(&quot;%lld&quot;,ans);     return 0; &#125; </code></h2><h3 id="5-CF-1203B"><a href="#5-CF-1203B" class="headerlink" title="5. CF 1203B "></a><span id="cf1203b">5. CF 1203B </span></h3><p><a target="_blank" rel="noopener" href="https://codeforces.com/problemset/problem/1203/B">原题链接</a></p>
+<h4 id="题目大意-2"><a href="#题目大意-2" class="headerlink" title="题目大意"></a>题目大意</h4><p>  给一组边，判断是否能用所给边构造出的所有矩形面积相等。</p>
+<h4 id="解题思路-1"><a href="#解题思路-1" class="headerlink" title="解题思路"></a>解题思路</h4><p>  贪心，要想所有矩形面积相等，必须从最长和最短边里选</p>
+<h4 id="AC代码-1"><a href="#AC代码-1" class="headerlink" title="AC代码"></a>AC代码</h4><pre><code class="cpp">#include&lt;bits/stdc++.h&gt;
 using namespace std;
 map&lt;int,int&gt;mp;
 struct node&#123;

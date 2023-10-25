@@ -31,7 +31,7 @@
 	
 <link rel="stylesheet" href="/lib/highlight/rainbow.min.css">
 
-<meta name="generator" content="Hexo 5.4.2"></head>
+<meta name="generator" content="Hexo 6.3.0"></head>
 	
 <script src="/lib/highlight/highlight.min.js"></script>
 
@@ -379,7 +379,7 @@ no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&q
 <p>符号的意思很直观明了，<code>&lt;&lt;&lt;&lt;&lt;</code> 和 <code>=====</code> 之间的是 HEAD 也就是 dog 分支的内容，另外一个则是 cat 分支的内容，现在这种情况就需要思考要怎么处理了，是要留一个还是两个都保留，如果没法做决定就把两边的人都叫来商量一下，改完之后记得 <code>git add</code> 和 <code>git commit</code></p>
 <p>值得一提的是，如果你使用 <code>git rebase</code> 合并过程中发生了冲突可能会有点不同，因为 <code>git rebase</code> 需要多次应用修改，冲突有可能是在 <code>rebase</code> 了一半的时候出现的，这时候处理完当前的冲突之后还需要继续刚刚中断的 rebase，<code>git rebase --continue</code></p>
 <h2 id="分支的存储"><a href="#分支的存储" class="headerlink" title="分支的存储"></a>分支的存储</h2><p>为什么都说 git 中开分支很便宜呢？</p>
-<p>答案是分支其实就是一个只有 40 字节的文件而已，你可以在你的 <code>.git/refs/heads/</code> 里找到你的分支们，而那些文件里存储的就是他们指向的 commit，如果你把这些文件删了，就相当于删了这些分支，除此之外还有一个重要的文件，那就是 <code>.git/HEAD</code>，它存储的是当前处于哪个分支上，当切换分支时，它会改变，<code>.git/ORIG_HEAD</code> 则是和分支文件差不多，功能之前提过就不重复了，还有一个冷知识就是你可以用 <code>@</code> 来替代 <code>HEAD</code>，<code>git reset @^</code> &lt;=&gt; <code>git reset HEAD^</code></p>
+<p>答案是分支其实就是一个只有 40 字节的文件而已，你可以在你的 <code>.git/refs/heads/</code> 里找到你的分支们，而那些文件里存储的就是他们指向的 commit，如果你把这些文件删了，就相当于删了这些分支，除此之外还有一个重要的文件，那就是 <code>.git/HEAD</code>，它存储的是当前处于哪个分支上，当切换分支时，它会改变，<code>.git/ORIG_HEAD</code> 则是和分支文件差不多，功能之前提过就不重复了，还有一个冷知识就是你可以用 <code>@</code> 来替代 <code>HEAD</code>，<code>git reset @^</code> &lt;&#x3D;&gt; <code>git reset HEAD^</code></p>
 <blockquote>
 <p>分支这一章就到这里了，学了分支之后感觉已经有点理解 git 的设计思路了</p>
 <p>下一章讲的是修改历史记录，期待能学到新东西</p>
