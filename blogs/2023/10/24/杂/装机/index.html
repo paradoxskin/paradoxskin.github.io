@@ -190,7 +190,7 @@
 </ul>
 <pre><code class="shell">sudo pacman -S 
 git openssh base-devel
-picom light acpi tlp xclip scrot
+picom light acpi tlp xclip scrot dunst
 neovim ranger lazygit fzf tmux feh ncdu
 python-neovim ueberzug xorg-xinput xorg-xsetroot
 ncspot clash firefox neofetch
@@ -198,6 +198,8 @@ yay proxychains-ng mpg123 noto-fonts-emoji
 fcitx5-im fcitx5-chinese-addons
 perl perl-alien-base-modulebuild
 steam noto-fonts-emoji
+sudo pacman -R
+xfce4-power-manager xfce4-notifyd xfce4-terminal
 </code></pre>
 <ul>
 <li>登录ncspot，听歌</li>
@@ -266,10 +268,12 @@ sudo cplightdm-gtk-greeter.conf /etc/lightdm/
 
 # dot_file
 # 如果以下有程序报已存在，则提前删除
-ln -s icom.conf ~/.config/
-ln -s .bashrc ~/
-ln -s .tmux.conf ~/
-ln -s .rainbarf.conf ~/
+# 注意! 要使用绝对路径 !
+ln -s **/picom.conf ~/.config/
+ln -s **/.bashrc ~/
+ln -s **/.tmux.conf ~/
+ln -s **/.rainbarf.conf ~/
+ls -s **/dunstrc ~/.config/dunst/
 
 # rainbarf
 perl Build.PL
