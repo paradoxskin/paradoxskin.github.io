@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>vim的lsp配置</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<p>虽然我本人不是特别喜欢用补全，但好像真的随着工作量的增大，只靠记忆和手速是干不过IDE的，所以我还是学习一下关于lsp的配置吧，以后以为效率低就找不到饭碗咯<!--more--></p>
+<blockquote>
+<p>虽然一只秉持能自己写插件就自己写的观念，但是写一个lsp之类的像AI一样我完全没接触过的领域，感觉我自己是完全写不出来，对我来说他们就像魔法一样</p>
+<p><del>网上很多资料都是neovim的lsp配置，看的好烦啊，不知道为什么对neovim有一点抵触</del></p>
+<p>主流的lsp插件有coc.nvim，但是它太庞大了，把vscode的应用给搬过来了，简直就是安装了一个生态系统，I dont like it</p>
+<p>看上一款相对轻量的vim-lsp，之前一直没时间研究，今天来看看</p>
+</blockquote>
+<h2>安装LSP本体</h2>
+<p>先在windows上配置，如果windows上能配置好，linux上就轻而易举了</p>
+<p>LSP，全称Language Server Protocol，最初用在微软的vscode，现在各大编辑器都开始使用了</p>
+<p>原理很类似前后端分离，把补全想象成前后端，前端是编辑器，后端负责各种语法相关的工作，返回给前端</p>
+<p>传统的补全都是一种编辑器自己写好一种语言的补全系统，如果想用其他编辑器用相同的语言补全系统，那么就需要再写一个补全系统了，LSP则只需要写好一个，各个编辑器向服务器端发送请求，服务器返回语法相关内容，所以只要编辑器处理好接口就行了，当然这个服务器不是真的跑在服务器上，而是跑在本地服务器上，所以不用担心个人隐私的泄露，<del>其实也说不好，除非自己写一个LSP</del></p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/image-20221220161204987.png" alt="image-20221220161204987"></p>
+<p>不想每次打开都加载，所以创了opt而不是start</p>
+<p>进入opt的命令行中，执行</p>
+<pre><code class="language-bash">git clone git@github.com:prabirshrestha/vim-lsp.git
+git clone git@github.com:mattn/vim-lsp-settings.git
+</code></pre>
+<p>第一个仓库是vim-lsp本体，第二个仓库是用来简便安装服务器的插件，只需要</p>
+<pre><code class="language-bash">:LspInstallServer
+</code></pre>
+<p>就能安装对应语言的lsp服务器</p>
+<pre><code class="language-bash">:LspUninstallServer server-name
+</code></pre>
+<p>来卸载服务器</p>
+<p>安装后的服务器在以下位置</p>
+<pre><code class="language-bash"># windows:
+%LOCALAPPDATA%\vim-lsp-settings\servers
+
+# Linux
+$HOME/.local/share/vim-lsp-settings/servers
+</code></pre>
+<blockquote>
+<p>You can change the directory to install servers by set <code>g:lsp_settings_servers_dir</code> option in full path.</p>
+</blockquote>
+<p>先去试着安装了C++的补全，结果下载失败了，我猜要代理，然后自己去看了下插件怎么写的，发现这插件就是写一堆配置脚本嘛</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/image-20221220163412582.png" alt="image-20221220163412582"></p>
+<p>这是c的windows补全安装脚本</p>
+<pre><code class="language-powershell">@echo off
+
+setlocal
+set VERSION=15.0.0
+echo Downloading clang and LLVM...
+curl -L -o LLVM-%VERSION%-win64.exe &quot;https://github.com/llvm/llvm-project/releases/download/llvmorg-%VERSION%/LLVM-%VERSION%-win64.exe&quot;
+echo Running setup...
+
+rem Run setup as regular user to avoid a UAC popup
+set __COMPAT_LAYER=RUNASINVOKER
+md tmp
+.\LLVM-%VERSION%-win64.exe /S /D=%cd%\tmp
+copy tmp\bin\clangd.exe clangd.exe
+del LLVM-%VERSION%-win64.exe
+rd /Q /S %cd%\tmp
+.\clangd.exe --version
+</code></pre>
+<p>这版本还不是最新版本，最新版本是15.0.6，然后我自己去github上下，发现这个exe能有200+Mb，吓得马上给我停下来了，感觉还是自己装来的靠谱，还要换一下服务器的安装位置，装C盘是顶不住的</p>
+<p>梳理了下我总共需要8种语言的补全:</p>
+<ul>
+<li>python</li>
+<li>c/c++</li>
+<li>lua</li>
+<li>java</li>
+<li>go</li>
+<li>rust</li>
+<li>javascript</li>
+<li>html</li>
+</ul>
+<h2>安装补全</h2>
+<p>一般都用<a href="https://github.com/prabirshrestha/asyncomplete.vim">asyncomplete.vim</a>，老套路</p>
+<pre><code class="language-bash">git clone git@github.com:prabirshrestha/asyncomplete.vim.git
+</code></pre>
+<h2>回归现实</h2>
+<blockquote>
+<p>2022/12/21 21:08</p>
+<p>是时候回归现实了，昨天信誓旦旦的配了一天的lsp，最后还是没配出来</p>
+<p>我试了<a href="https://github.com/autozimu/LanguageClient-neovim">LanguageClient-neovim</a>，发现pyls的 hover 和 帮助文档 报错，最后用了<a href="https://github.com/dense-analysis/ale">ale</a>，它自带了python的补全，用起来还可以，就是它老是报我的码风警报啊，为什么人人都要像你们规定的那样写代码啊！</p>
+<p>遇到的问题都太奇葩，google不到，也不想issue，之后再回来配轻量的补全系统，感觉网上说的是真的，vim的配置时间比使用vim写代码的时间还要多，今天又干了些不知道在干什么的事情（因为在U管上看到一个vimer的界面觉得挺好的，很好奇是怎么做到的<img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/shotcut.PNG" alt="shotcut"></p>
+<p>本来以为可以设置换行长度，后来发现换行和折行是有区别的，以后开博细水一下</p>
+<p>结果花了半天勉强做到这样（ 颜色似乎是反了，不过懒得找snazzy的hi了，感觉也还般配</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/image-20221221212239253.png" alt="image-20221221212239253"></p>
+<p>我甚至还特地写了一个自己之前完全没想到过的用方向来调节RGB参数的vim脚本</p>
+<pre><code class="language-vim">vim9script
+
+# R 
+# G 
+# B 
+
+# source % to test
+var R = 0
+var G = 0
+var B = 0
+
+noremap &lt;expr&gt; l (line('.') &lt;= 5 &amp;&amp; line('.') &gt;= 3) ? &quot;:call PlusColor()&lt;CR&gt;&quot; 
+\ : &quot;l&quot;
+noremap &lt;expr&gt; h (line('.') &lt;= 5 &amp;&amp; line('.') &gt;= 3) ? &quot;:call SulpColor()&lt;CR&gt;&quot; 
+\ : &quot;h&quot;
+
+def Tran(xxx: number): string
+  var rt = &quot;&quot;
+  var lts = &quot;0123456789abcdef&quot;
+  var tmp = xxx
+  while tmp &gt; 0
+      rt = lts[tmp % 16] .. rt
+      tmp = tmp / 16
+  endwhile
+  if len(rt) == 1
+      rt = &quot;0&quot; .. rt
+  elseif len(rt) == 0
+      rt = &quot;00&quot;
+  endif
+  return rt
+enddef
+
+def Paint()
+  exec &quot;hi ColorColumn guibg=&quot; .. &quot;#&quot; .. Tran(R) .. Tran(G) .. Tran(B)
+  echo &quot;#&quot; .. Tran(R) .. Tran(G) .. Tran(B)
+enddef
+
+def g:PlusColor()
+  var nowLine = line('.')
+  if nowLine == 3
+      R += R == 255 ? 0 : 1
+  elseif nowLine == 4
+      G += G == 255 ? 0 : 1
+  elseif nowLine == 5
+      B += B == 255 ? 0 : 1
+  endif
+  Paint()
+enddef
+
+def g:SulpColor()
+  var nowLine = line('.')
+  if nowLine == 3
+      R -= R == 0 ? 0 : 1
+  elseif nowLine == 4
+      G -= G == 0 ? 0 : 1
+  elseif nowLine == 5
+      B -= B == 0 ? 0 : 1
+  endif
+  Paint()
+enddef
+</code></pre>
+<p>顺便，纪念一下233！</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/xzczxsad.png" alt="xzczxsad"></p>
+<p>好了，回归正题，我<strong>决定用coc</strong>了！</p>
+<p>因为 <a href="https://www.bilibili.com/video/BV1Ka4y1E7AM">TheCW</a> 有教学，还问了下vimzh电报群</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/image-20221221212653958.png" alt="image-20221221212653958"></p>
+<center>有些时候，我们害怕改变</center>
+<center>但其实，我们只是需要一个理由罢了</center>
+</blockquote>
+<h2>COC</h2>
+<p><a href="https://github.com/neoclide/coc.nvim">COC</a>，全称为 <em><del>Call of Cthulhu</del></em> Conquer of Completion</p>
+<p>注意，安装COC要求node.js环境，<code>node</code> &gt;= <code>14.14</code></p>
+<p>同样放在opt文件夹里</p>
+<pre><code class="language-bash">git clone https://github.com/neoclide/coc.nvim.git
+</code></pre>
+<p>git完之后启动vim，查看coc能不能用</p>
+<pre><code class="language-bash">:CocInfo
+</code></pre>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/image-20221222154923472.png" alt="image-20221222154923472"></p>
+<p>网上一查，是没看清楚官方文档，不能直接clone master分支，要clone release分支</p>
+<pre><code class="language-bash">git clone --branch release https://github.com/neoclide/coc.nvim.git --depth=1
+</code></pre>
+<p>装的比master快10倍啊，装完之后</p>
+<pre><code class="language-bash">:packadd coc.nvim
+:CocStart
+:CocInfo
+</code></pre>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/image-20221222161652809.png" alt="image-20221222161652809"></p>
+<p>环境应该没问题了，开始配置</p>
+<p>说是配置，无非就是在coc的生态系统里下载插件，</p>
+<pre><code class="language-bash"># 下载插件
+:CocInstall xxx
+# 卸载插件
+:CocUninstall xxx
+</code></pre>
+<p>当然，你可以把要配置的放在一个coc会处理的全局变量里</p>
+<pre><code class="language-javascript">let g:coc_global_extensions = [&quot;coc-marketplace&quot;]
+</code></pre>
+<p>每次载入coc的时候如果没有有插件安装，它会自动帮你装上</p>
+<p>然后我罗列一下我需要Install的coc插件</p>
+<table>
+<thead>
+<tr>
+<th>插件名</th>
+<th>作用</th>
+<th>用法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>coc-marketplace</td>
+<td>检索其他插件，能fzf</td>
+<td><code>:CocList marketplace</code>，<code>&lt;C-j&gt;</code>和<code>&lt;C-k&gt;</code>上下</td>
+</tr>
+<tr>
+<td>coc-vimlsp</td>
+<td>补全 vimscript</td>
+<td>LSP，开了就有，这东西不认我的vim9script</td>
+</tr>
+<tr>
+<td>coc-tsserver</td>
+<td>补全 javascript 和 typescript</td>
+<td>开箱即用</td>
+</tr>
+<tr>
+<td>coc-pyright</td>
+<td>补全 python</td>
+<td><a href="https://github.com/fannheyward/coc-pyright">官方文档</a>，拆箱即用，意外的不报我不喜欢符号左右空格和用tab，哈哈哈哈哈。coc-python已经不维护了，不要用</td>
+</tr>
+<tr>
+<td>coc-sumneko-lua</td>
+<td>补全 lua</td>
+<td>没搞好</td>
+</tr>
+<tr>
+<td>coc-rls</td>
+<td>补全 rust</td>
+<td>到时候学rust的时候再配</td>
+</tr>
+<tr>
+<td>coc-html</td>
+<td>补全 html</td>
+<td>先不去管，到时候要用的时候再配</td>
+</tr>
+<tr>
+<td>coc-clangd</td>
+<td>补全 c/c++</td>
+<td>要装好clang，流氓软件一样的，装clang一定要装LLVM，暂时不C系了，先不装</td>
+</tr>
+<tr>
+<td>coc-java</td>
+<td>补全 java</td>
+<td>jdk版本17，要点配置，配置的时候记得看<a href="https://www.npmjs.com/package/coc-java">官方文档</a>，注意一下JAVA项目如果手动维护的话是非常麻烦的，虽然有了补全但还不是完全体</td>
+</tr>
+<tr>
+<td>coc-xml</td>
+<td>补全 xml，spring开发的时候用</td>
+<td>到时候再配</td>
+</tr>
+<tr>
+<td>coc-go</td>
+<td>补全 golang</td>
+<td>到时候再配</td>
+</tr>
+<tr>
+<td>coc-sql</td>
+<td>补全 sql</td>
+<td><a href="https://github.com/fannheyward/coc-sql">官方文档</a></td>
+</tr>
+<tr>
+<td>coc-sh</td>
+<td>补全 bash</td>
+<td><a href="https://github.com/josa42/coc-sh">官方文档</a></td>
+</tr>
+<tr>
+<td>coc-highlight</td>
+<td>当前相同的代码词高亮</td>
+<td><a href="https://www.npmjs.com/package/coc-highlight">官方文档</a></td>
+</tr>
+<tr>
+<td>coc-explorer</td>
+<td>文件管理系统，我以后一定会自己写一个的（真香</td>
+<td><code>:CocCommand explorer</code></td>
+</tr>
+<tr>
+<td>coc-translator</td>
+<td>给我翻译翻译什么叫惊喜</td>
+<td>记得看<a href="https://www.npmjs.com/package/coc-translator">官方文档</a>，engines参数调一个有道就行了</td>
+</tr>
+<tr>
+<td>coc-git</td>
+<td>应该显示当前行的修改状态吧</td>
+<td><a href="https://www.npmjs.com/package/coc-git">官方文档</a>，还没配过</td>
+</tr>
+</tbody>
+</table>
+<p>每次手动载入插件都很麻烦，就给我的mask里加了一层</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/image-20221222164007207.png" alt="image-20221222164007207"></p>
+<p>这个<a href="https://github.com/paradoxskin/mapChange.vim">mask</a>也是我写的插件，用来加载和切换配置都很方便，以后水一篇介绍吧</p>
+<p>配java的环境变量记得还要改JAVA_HOME的，别只改了个Path就结束了</p>
+<p>很多lsp插件都是装个协议，打开指定格式的文件的时候才会帮你下载服务器，装完之后最好先打开对应的文件测试一下管不管用，确实比自己配要方便的多啊，遇到问题是小概率事件</p>
+<p>下面放点我折腾两天下来的配置吧</p>
+<p><code>plugs.vim</code></p>
+<pre><code class="language-javascript">&quot;*****coc.nvim
+let g:coc_global_extensions = []
+let g:flagHLSame=0
+let g:coc_explorer_global_presets={
+ \ '.vim': {
+ \		'root-uri': $HOME .. &quot;/vimfiles&quot;,
+ \		'position': 'right'
+ \ }
+ \}
+&quot;let b:coc_suggest_disable=1
+
+&quot; useless: because of the source order
+&quot;hi CocHighlightText guifg=#00cc00 gui=underline
+au BufRead,BufNewFile * :let b:coc_suggest_disable=1
+
+function SwHLSame()
+    if g:flagHLSame==0
+        autocmd CursorHold * silent call CocActionAsync('highlight')
+        let g:flagHLSame=1
+    else
+        autocmd! CursorHold * 
+        let g:flagHLSame=0
+    end
+endfunction
+</code></pre>
+<p><code>coc-settings.json</code></p>
+<pre><code class="language-json">{
+    &quot;coc.preferences.extensionUpdateCheck&quot;: &quot;daily&quot;,
+    &quot;suggest.noselect&quot;: true,
+    &quot;suggest.enablePreselect&quot;: false,
+    &quot;coc.preferences.formatOnSaveFiletypes&quot;: [
+        &quot;json&quot;
+    ],
+    &quot;translator.engines&quot;: [
+        &quot;youdao&quot;
+    ],
+    &quot;java.configuration.runtimes&quot;: [
+        {
+            &quot;name&quot;: &quot;JavaSE-17&quot;,
+            &quot;path&quot;: &quot;C:/Program Files/Java/jdk-17.0.5&quot;,
+            &quot;default&quot;: true
+        }
+    ],
+    &quot;Lua.telemetry.enable&quot;: true,
+    &quot;suggest.autoTrigger&quot;: &quot;always&quot;,
+    &quot;suggest.completionItemKindLabels&quot;: {
+        &quot;function&quot;: &quot; \uf794 &quot;,
+        &quot;variable&quot;: &quot; \ue261 &quot;,
+        &quot;class&quot;: &quot; \uf503 &quot;,
+        &quot;keyword&quot;: &quot; \uf084 &quot;,
+        &quot;file&quot;: &quot; \uf15c &quot;,
+        &quot;folder&quot;: &quot; \uf74a &quot;,
+        &quot;snippet&quot;: &quot;{\uf9b1}&quot;,
+        &quot;text&quot;: &quot; \uf49e &quot;,
+        &quot;value&quot;: &quot; \u91c &quot;
+    },
+    &quot;diagnostic.signOffset&quot;: 1,
+    &quot;diagnostic.errorSign&quot;: &quot;\uf00d&quot;,
+    &quot;diagnostic.warningSign&quot;: &quot;\ufa35&quot;,
+    &quot;diagnostic.infoSign&quot;: &quot;\uf05a&quot;,
+    &quot;diagnostic.hintSign&quot;: &quot;\uf834&quot;,
+    &quot;diagnostic.displayByAle&quot;: false,
+    &quot;diagnostic.refreshOnInsertMode&quot;: false,
+    &quot;diagnostic.refreshAfterSave&quot;: false,
+    &quot;diagnostic.checkCurrentLine&quot;: true,
+    &quot;diagnostic.virtualText&quot;: true,
+    &quot;diagnostic.virtualTextPrefix&quot;: &quot;&gt;&gt;&gt;&quot;,
+    &quot;explorer.icon.enableNerdfont&quot;: true,
+    &quot;explorer.icon.customIcons&quot;: {}
+}
+</code></pre>
+<p>上面的<code>suggest.completionItemKindLabels</code>有些因为是用字符方式的，所以复制过来的时候乱码了，你只需要去coc-config.txt里面找这个词条就有所有项目（好像不全</p>
+<p><code>mask.vim</code></p>
+<pre><code class="language-javascript">    &quot;coc&quot;: [
+        &quot;packadd coc.nvim&quot;,
+        &quot;CocStart&quot;,
+        &quot;inoremap &lt;expr&gt; &lt;C-Space&gt; coc#refresh()&quot;,
+        &quot;inoremap &lt;expr&gt; &lt;Tab&gt; pumvisible() ? coc#pum#next(1) : \&quot;\&lt;Tab&gt;\&quot;&quot;,
+        &quot;inoremap &lt;expr&gt; &lt;S-Tab&gt; pumvisible() ? coc#pum#prev(1) : \&quot;\&lt;S-Tab&gt;\&quot;&quot;,
+        &quot;nnoremap &lt;Leader&gt;K :call CocActionAsync('doHover')&lt;CR&gt;&quot;,
+        # has some bug
+        &quot;nmap &lt;silent&gt; &lt;Leader&gt;rn &lt;Plug&gt;(coc-rename)&quot;,
+        &quot;nmap &lt;silent&gt; - &lt;Plug&gt;(coc-diagnostic-prev)&quot;,
+        &quot;nmap &lt;silent&gt; = &lt;Plug&gt;(coc-diagnostic-next)&quot;,
+        &quot;nmap &lt;silent&gt; &lt;Leader&gt;g &lt;Plug&gt;(coc-definition)&quot;,
+        &quot;nmap &lt;Leader&gt;tr &lt;Plug&gt;(coc-translator-p)&quot;,
+        &quot;vmap &lt;Leader&gt;tr &lt;Plug&gt;(coc-translator-pv)&quot;,
+        &quot;nnoremap &lt;Leader&gt;s :call SwHLSame()&lt;CR&gt;&quot;,
+        # switch the complete
+        &quot;nnoremap &lt;Leader&gt;q :let b:coc_suggest_disable=1-b:coc_suggest_disable&lt;CR&gt;&quot;,
+        &quot;nnoremap &lt;Leader&gt;tt :CocCommand explorer --quit-on-open&lt;CR&gt;&quot;,
+        &quot;nnoremap &lt;Leader&gt;tl :CocCommand explorer --position right --width 33&lt;CR&gt;&quot;,
+        &quot;nnoremap &lt;Leader&gt;tv :CocCommand explorer --preset .vim&lt;CR&gt;&quot;,
+        &quot;echo '[M] COC Loaded.'&quot;,
+    ],
+</code></pre>
+<p>下面看看效果吧</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/image-20221223171842237.png" alt="image-20221223171842237"></p>
+<center><b>补全效果</b></center>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/image-20221223171809110.png" alt="image-20221223171809110"></p>
+<center><b>错误提示</b></center>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/image-20221223172140326.png" alt="image-20221223172140326"></p>
+<center><b>文件浏览器</b></center>
+<h2>编译vim 和 闲话</h2>
+<p>感觉差不多了，再配下去要全职vimer了，还要提一嘴，如果你用的也是vim，并且是官网下载的gvim9.0的话，上面的错误信息你只会以popup窗口的形式展示，因为这个特性需要<code>vim:9.0.0067</code>才能用，而官网是<code>vim:9.0.0</code></p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/image-20221223172400229.png" alt="image-20221223172400229"></p>
+<p>你需要去github上下载最新的vim源码自己编译，编译说明src文件夹里面都有，照着说明来就行了，还有gvim默认都是用<code>C://windows/gvim.bat</code>打开的，编译完不要只改了Path里的路径，bat也改一下，记得用管理员权限</p>
+<p><em><del>为什么自己编译的GVIM中文支持这么差，还有乱码</del></em></p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/complieGvim.PNG" alt="complieGvim"></p>
+<center><b>体验了一把 gentoo 装软件的体验</b></center>
+<p>已经玩够了，差不多要收收心学后端了，又要学spring，又要字节青训学golang，还要教学妹点python的OI技巧</p>
+<p>明天就要回家了，家里人都🐏了，回家肯定要🐏了啊</p>
+<p>再吐槽一点点</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/ssds.png" alt="ssds"></p>
+<center><b>vimlsp不认识vim9script</b></center>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/YDYL5M@T3COCV3J5G%7B%7DFBY5.png" alt="YDYL5M@T3COCV3J5G{}FBY5"></p>
+<center><b>真的是要配置疯了，下午到凌晨</b></center>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/20221223172932.jpg" alt="20221223172932"></p>
+<center><b>你说的对，但是vim是一款...</b></center>
+<p>无所谓了，2022年过的真是不爽啊！</p>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>rust学习笔记 2</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<h2>内存管理</h2>
+<blockquote>
+<p>这里应该才是 rust 门槛的开始，前面的内容都是洒洒水就过了</p>
+<p>开始兴奋起来了！！！！！！！！！！<!--more--></p>
+</blockquote>
+<h3>数据的存放</h3>
+<p>存放在内存中的数据根据是否可以在编译时候预测大小可以分为两种：</p>
+<ul>
+<li>可预测大小数据</li>
+<li>不可预测大小数据</li>
+</ul>
+<p>可预测大小数据举几个例子：常量、静态变量、函数变量，不可预测大小的数据有来自键盘上的读取和从文件中读取的数据等</p>
+<p>可预测大小的数据有的被存放在静态内存区里，比如常量和静态变量；还有函数变量会存放在栈区。不可预测的数据管理起来是一件难事，使用的时候程序要向系统申请，我们管那部分内存区域为堆区</p>
+<h3>内存管理机制</h3>
+<p>每种语言都需要管理内存，不同的语言往往有不同的内存管理机制，下面罗列一些主流的内存管理机制：</p>
+<ul>
+<li>手动管理，需要开发者手动申请、释放内存空间，C 语言就是这样的管理方式</li>
+<li>运行环境管理，以 java 语言为代表，这种语言编写的程序会在虚拟机中运行，具有自动回收内存资源的功能，但是由于这种方式必须在程序运行的时候统计数据的使用信息，所以会降低程序的运行效率</li>
+<li>引用计数器管理，在编译和运行阶段，对所有数据对象引用进行计数，在某个数据对象的引用技术个数小于1时释放该数据对象</li>
+<li>所有权机制，rust 的内存管理机制，主流的自动内存管理机制中都有一个共同特点，那就是尽量不让开发者意识到数据的产生和释放，这添加了便携性，但不是必要的，开发者应该给内存管理适当的关注度（？</li>
+</ul>
+<h2>所有权机制</h2>
+<p>o ng所有权机制是 Rust 语言从语法层面做出的规定，旨在令编译阶段确定判断任何数据对象的生命周期，所有权有以下三条基本规则：</p>
+<ul>
+<li>每个数据对象必须由一个变量代表，称为其所有者</li>
+<li>一个数据对象只能同时被一个所有者拥有</li>
+<li>所有者不再可用时，数据对象的生命周期结束</li>
+</ul>
+<h3>生命周期</h3>
+<p>生命周期的概念是指变量可用的时间区间，因为程序按运行顺序通常是线性的，所以变量的生命周期是可以从代码层面来解读的，也就是说从代码的哪一行开始到哪一行结束，Rust 中的变量的生命周期也是和其他语言有所不同</p>
+<pre><code class="language-rust">{
+    // 声明前，变量无效（废话
+    let s = &quot;ssssss&quot;
+    // 声明后，到作用域结束前都有效
+}
+// 作用域结束，变量无效
+</code></pre>
+<p>上面的例子里，s 变量的生命周期就是在声明后到作用域结束前，这看上去很简单对吧，生命周期机制和所有权机制共同组成了 Rust 程序运行中的资源管理机制，后面会有更复杂的例子需要理解哦～</p>
+<ul>
+<li>转移 (Move)</li>
+</ul>
+<pre><code class="language-rust">fn main() {
+    let x = String::from(&quot;Some String&quot;);
+    let y = x;
+    println!(&quot;{}&quot;, y);
+    // x 的数据已经被转移到了 y 上，下面会报错
+    // println!(&quot;{}&quot;, x); }
+}
+</code></pre>
+<p>所有权的转移适用在<strong>没有实现复制</strong>方法的数据实体</p>
+<blockquote>
+<p>一个数据对象只能同时被一个所有者拥有</p>
+</blockquote>
+<p>当一个变量所代表的数据实体被赋值给另一个变量的时候，该数据实体的<strong>所有权就发生了变更</strong>，原有的变量不再能使用</p>
+<p>这个机制保障了数据实体在程序运行中始终只有一个变量代表，从而保障了数据实体本身的生命周期和变量生命周期挂钩，即使回收数据实体</p>
+<ul>
+<li>复制 (Copy)</li>
+</ul>
+<pre><code class="language-rust">fn main() {
+    let x = 1;
+    let y = x;
+    println!(&quot;{}&quot;, y);
+    println!(&quot;{}&quot;, x);
+}
+</code></pre>
+<p>和刚刚那段代码比较一下，你会发现这段代码不会发生报错，相比之下，两端代码的 x 的类型发生了变化，上面那段是 String, 这段是 i32，正如上面所说，没有实现复制方法的数据实体会被转移，而实现复制方法的数据实体会被复制，i32 类型的整数实现了自动的复制方法，实现了复制方法的数据实体在赋值时会自动复制一份数据给新的变量，常见可复制变量类型为 所有整数类型、布尔类型、所有浮点类型、字符类型、仅包含上述类型数据的元组</p>
+<ul>
+<li>引用和借用 (Reference &amp; Borrow)</li>
+</ul>
+<pre><code class="language-rust">fn main() {
+    let s1 = String::from(&quot;hello&quot;);
+    let s2 = &amp;s1;
+    println!(&quot;{} {}&quot;, s1, s2);
+}
+</code></pre>
+<p>这段代码和转移那段代码是有所不同的，这段代码不会报错是因为数据对象并没有转移，而是被引用了</p>
+<p>引用的本质是对变量所有权的借用，借用操作符号为 <code>&amp;</code>，这个概念类似 C 语言中的指针，借用的意义在于借用所有权，因为有时候一个变量可能有多个使用者，但是所有者只能有一个，所以除了所有者，其他变量只能通过借用实现对变量的使用，但是注意引用的生命周期必须在引用的数据实体周期范围以内</p>
+<ul>
+<li>垂悬引用 (Dangling References)</li>
+</ul>
+<p>如果一个引用的生命周期超过其引用源的生命周期，就称这种引用为垂悬引用，像失去悬挂物品的绳子，类似 C 语言中的空指针和野指针，垂悬引用在 Rust 中是<strong>不允许出现</strong>的，编译器会发现</p>
+<pre><code class="language-rust">// 报错代码
+fn main() {
+    let referce = dangle();
+}
+
+fn dangle() -&gt; &amp;String {
+    let s = String::from(&quot;hello&quot;);
+    &amp;s
+}
+</code></pre>
+<p>函数结束之后 s 的生命周期已经结束 &amp;s 就成了垂悬引用，编译器不允许通过</p>
+<h3>函数相关所有权</h3>
+<p>函数有<strong>参数</strong>和<strong>返回值</strong>，这两种变量也有所有权，在函数调用中参数的传递同样会影响变量的所有权，这种情况就有点复杂了</p>
+<pre><code class="language-rust">fn main() {
+    let s = String::from(&quot;hello&quot;);
+    give_str(s);
+    // 传入函数，s 的所有权被转移，变量失效
+
+    let x = 5;
+    give_int(x);
+    // 因为 x 是基本类型，变量依然有效
+}
+// 函数结束，x 被释放。但是 s 的所有权被转移，所以不用释放
+fn give_str(some_string: String) {
+    // some_string 获得传入参数的所有权
+    println!(&quot;{}&quot;, some_string);
+}
+// 函数结束，some_string 被释放
+
+fn give_int(some_int: i32) {
+    // some_int 获得传入参数的所有权
+    println!(&quot;{}&quot;, some_int);
+}
+// 函数结束，因为 some_int 是基本类型，所以无须释放
+</code></pre>
+<p>像极了每个变量都是装物品的箱子，然后数据对象就是里面的物品，传入参数的时候就是把物品从箱子里取出来，放到另一个箱子里，然后原来的箱子就废掉了</p>
+<p>这和其他大多数编程语言区别很大，Rust 之所以这样，是考虑了变量的管理问题，如果某个子函数获得了某个变量的，把它偷偷传入其他数据结构，那么这个变量的管理就陷入混乱了，所以就把所有权转移给那个子函数了</p>
+<p>如果不希望失去这个变量的所有权，就可以使用引用机制来实现</p>
+<pre><code class="language-rust">fn main() {
+    let s = String::from(&quot;hello&quot;);
+    give(&amp;s);
+    println!(&quot;from main: {}&quot;, s);
+}
+
+fn give(some_string: &amp;String) {
+    println!(&quot;from subfn: {}&quot;, some_string);
+}
+</code></pre>
+<p>自函数只借用了变量 s 的使用权，没有获得所有权，所以主函数在子函数之后还能拥有 s 的所有权</p>
+<p>以上是函数参数的所有权机制，以下为函数返回值的所有权说明例子</p>
+<pre><code class="language-rust">fn main() {
+    let s1 = give_me();
+    // s1 获得了函数返回值的所有权
+    let s2 = String::from(&quot;hello&quot;);
+    println!(&quot;s1 = {}&quot;, s1);
+    println!(&quot;s2 = {}&quot;, s2);
+    // s2 的所有权转移给了函数的参数
+    let s3 = take_back(s2);
+    // s3 获得了函数返回值的所有权
+    println!(&quot;s3 = {}&quot;, s3);
+    // s2 失效，下面的语句会报错
+    //println!(&quot;s3 = {}&quot;, s2);
+}
+// s3 被释放，s2 所有权被转移，无需释放，s1 被释放
+fn give_me() -&gt; String {
+    givegive_me()
+}
+
+fn givegive_me() -&gt; String {
+    let x = String::from(&quot;hello, world&quot;);
+    x
+    // 作为返回值所有权被转移出函数
+}
+
+fn take_back(some_string: String) -&gt; String {
+    // some_string 获得参数的所有权
+    some_string
+    // 作为返回值所有权被转移出函数
+}
+</code></pre>
+<p>仔细阅读上面两个例子，对函数的所有权机制一定会有所理解，释放的是数据对象，所以当所有权被转移的时候，对应的变量就失去了意义，所以作用域结束时被释放的变量一定会是某个数据对象的所有者</p>
+<h2>引用类型</h2>
+<p>在 Rust 中，引用是一种类型，代表数据实体的使用权，如何类型都有它的引用类型，包括引用类型本身</p>
+<pre><code class="language-rust">fn main() {
+    let a: i32 = 3;
+    let b: &amp;i32 = &amp;a;	// 对a的引用
+    let c: &amp;&amp;i32 = &amp;b;	// 对b的引用，也是对a的引用
+    let d: &amp;&amp;&amp;i32 = &amp;c;	// 同理
+    let e = [3, 4, 5];
+    let f: &amp;[i32] = &amp;x;	// 对数组的引用
+}
+</code></pre>
+<p>一般来说，引用类型往往用于借用无法被复制的数据对象的使用权，如果一个数据极其简单，比如 i32 等基础类型，往往不需要引用，直接传递对象的值</p>
+<h3>可变引用</h3>
+<p>变量有可变变量，对于可变变量的引用必然和普通变量的引用不同，在函数中传入一个可变变量的引用时要注意，如果形参和传入参数没有 <code>&amp;mut TYPE</code> 关键字的话会出现问题，因为传入的实参数据是可变，但是形参和传入参数中普通的引用符号不会获得目标的修改权，只能获得目标的使用权，所以无法修改，正确示范如下：</p>
+<pre><code class="language-rust">fn main() {
+    let mut s1 = String::from(&quot;String&quot;);
+    add_suffix(&amp;mut s1);
+    println!(&quot;{}&quot;, s1);
+}
+
+fn add_suffix(s: &amp;mut String) {
+    s.push_str(&quot;SUFFIX&quot;);
+}
+</code></pre>
+<ul>
+<li>一个可变变量被不可变借用，那个不可变引用的生命周期无法使用修改权</li>
+<li>如果一个变量被可变地借用，那个可变引用生命周期结束前不能存在如何其他借用</li>
+</ul>
+<h3>解引用</h3>
+<p>引用的概念和指针这么像，那么写一个经典的 swap 函数看看吧</p>
+<pre><code class="language-rust">// 错误代码
+fn swap(a: &amp;mut i32, b: &amp;mut i32) {
+    let t = a;
+    a = b;
+    b = t;
+}
+</code></pre>
+<p>这个程序是错误的，因为 <code>t = a</code> <code>a = b</code> <code>b = t</code> 这三条语句不是对 i32 类型赋值，而是在对 &amp;i32 类型进行赋值</p>
+<p>我们需要的是改变引用的值，这里要用到一个解引用符 <code>*</code>，是不是和指针很像，正确写法如下</p>
+<pre><code class="language-rust">fn swap(a: &amp;mut i32, b: &amp;mut i32) {
+    let t = *a;
+    *a = *b;
+    *b = t;
+}
+</code></pre>
+<p>下面是一个对可变变量的函数操作，如果没有 <code>*</code> 是行不通的</p>
+<pre><code class="language-rust">fn main() {
+    let mut x = 233;
+    change(&amp;mut x);
+    println!(&quot;{}&quot;, x);
+}
+
+fn change(x: &amp;mut i32) {
+    *x += 2;
+}
+</code></pre>
+<h2>切片</h2>
+<h3>字符串切片</h3>
+<p>和 python 的 <code>string[a:b]</code> 很像，注意的点是那个 <code>&amp;</code></p>
+<pre><code class="language-rust">fn main() {
+    let s: String = String::from(&quot;thisIsACutOfString&quot;);
+    let part1: &amp;str = &amp;s[0..4];
+    let part2: &amp;str = &amp;s[4..12];
+    let part3 = &amp;s[12..];
+    println!(&quot;{} = {} + {} + {}&quot;, s, part1, part2, part3);
+}
+</code></pre>
+<p>Rust 中字符串常量就是以字符串切片类型存在</p>
+<pre><code class="language-rust">let s: &amp;str = &quot;hello&quot;;
+</code></pre>
+<p>上面的 s 就是一个字符串切片类型的变量，字符串切片类型的数据是不可改变的</p>
+<p>如果要获取某个字符串的字符串切片，可以用以下方法：</p>
+<pre><code class="language-rust">let string = String::from(&quot;hello&quot;);
+let slice = string.as_str();
+
+let string = &quot;0123456789&quot;;
+let s1 = &amp;string[1..4]; // 123
+let s2 = &amp;string[5..]; // 56789
+let s3 = &amp;string[..4]; // 0123
+let s4 = &amp;string[..]; // 0123456789
+</code></pre>
+<h3>数组切片</h3>
+<p>和 python 很像，数组也有切片，和字符串的使用切片方法基本一致，<code>&amp;[i32]</code> 是对 i32 类型的数组的引用</p>
+<pre><code class="language-rust">fn main() {
+    let arr: [i32; 5] = [0, 1, 2, 3, 4];
+    let part: &amp;[i32] = &amp;arr[1..3]; // ..[1, 2]..
+}
+</code></pre>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

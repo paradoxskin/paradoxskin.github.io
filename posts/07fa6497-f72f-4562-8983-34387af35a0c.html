@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>R语言复习</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<p>明天要考试了，现在来梳理一下这学期学的R语言吧<!--more--></p>
+<h2>数据类型</h2>
+<ul>
+<li><strong>整数</strong></li>
+<li><strong>小数</strong></li>
+<li><strong>字符串</strong> 双引号和单引号一样</li>
+<li><strong>布尔类</strong><ul>
+<li><code>T</code>,<code>TRUE</code></li>
+<li><code>F</code>,<code>FALSE</code></li>
+</ul>
+</li>
+</ul>
+<h2>数据类型转换</h2>
+<p>判断类型</p>
+<pre><code class="language-R">#判断是否是数字 (整数+浮点数)
+is.numeric(x)
+is.character(x)
+is.logical(x)
+class(x)
+</code></pre>
+<p>类型转换</p>
+<pre><code class="language-R">as.numeric(x)
+as.character(x)
+as.logical(x)
+</code></pre>
+<h2>运算符号</h2>
+<table>
+<thead>
+<tr>
+<th>符号</th>
+<th>用法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>加法</td>
+<td><code>a + b</code></td>
+</tr>
+<tr>
+<td>减法</td>
+<td><code>a - b</code></td>
+</tr>
+<tr>
+<td>乘法</td>
+<td><code>a * b</code></td>
+</tr>
+<tr>
+<td>除法</td>
+<td><code>a / b</code></td>
+</tr>
+<tr>
+<td>整除</td>
+<td><code>a %/% b</code></td>
+</tr>
+<tr>
+<td>取模</td>
+<td><code>a %% b</code></td>
+</tr>
+<tr>
+<td>次方</td>
+<td><code>a ^ 2</code></td>
+</tr>
+<tr>
+<td>不等</td>
+<td><code>a != b</code></td>
+</tr>
+<tr>
+<td>且</td>
+<td><code>a &amp; b</code></td>
+</tr>
+<tr>
+<td>或</td>
+<td><code>a \| b</code></td>
+</tr>
+<tr>
+<td>非</td>
+<td><code>! b</code></td>
+</tr>
+<tr>
+<td>四舍五入</td>
+<td><code>round()</code></td>
+</tr>
+<tr>
+<td>取上整</td>
+<td><code>ceiling()</code></td>
+</tr>
+<tr>
+<td>取下整</td>
+<td><code>floor()</code></td>
+</tr>
+</tbody>
+</table>
+<h2>数据集</h2>
+<h3>向量</h3>
+<blockquote>
+<p>应该是R语言最常用的数据结构了</p>
+<p>同一个向量里，所有的数据类型都要一致</p>
+</blockquote>
+<p>赋值</p>
+<pre><code class="language-R">vec&lt;-c(1,2,3,4)
+</code></pre>
+<p>取值</p>
+<pre><code class="language-R">vec[3]
+# 3
+</code></pre>
+<p>取长度</p>
+<pre><code class="language-R">length(vec)
+</code></pre>
+<p>取出多个</p>
+<blockquote>
+<p>用另一个向量取出来</p>
+</blockquote>
+<pre><code class="language-R">vec[c(1,3,4)]
+# 1 3 4
+</code></pre>
+<p>快速获得一个连续的向量</p>
+<pre><code class="language-R">vec&lt;-1:20
+# 等价于
+vec&lt;-c(1,2,3,4 ... 19,20)
+
+vec&lt;-seq(1,50,2)
+# 等价于
+vec&lt;-c(1,3,5,7 ... 47,49)
+</code></pre>
+<p>向量运算</p>
+<blockquote>
+<p>向量运算是一一对应的运算，两个向量的长度要一样，或者是整数倍的关系(这样短的就能复制自己)</p>
+</blockquote>
+<pre><code class="language-R">a&lt;-c(1,2,3)
+b&lt;-c(4,5,6)
+a + b
+# c(1+4,2+5,3+6)
+a * b
+# c(1*4,2*5,3*6)
+a + 2
+# c(1*2,2*2,3*2)
+rank(vec)
+# 排名函数，升序，最小的是第1名
+</code></pre>
+<h3>因子 factor</h3>
+<blockquote>
+<p>用于存储非定量的多分类数据(性别...)</p>
+<p>目的是给这些没有大小、数值关系的数据排序</p>
+</blockquote>
+<pre><code class="language-R">x&lt;-c('中','优','良')
+sort(x)
+# 良 优 中 (用拼音来排序)
+x1&lt;-factor(x,levels=c('优','中','良'))
+sort(x1)
+# 优 中 良
+</code></pre>
+<h3>列表 list</h3>
+<blockquote>
+<p>把多个向量放在一起，多个向量间可以数据类型不同，甚至不止能放向量，想放啥放啥</p>
+</blockquote>
+<pre><code class="language-R">listSample&lt;-list(Student=c('Tom','Kobe'),Year=2017,Score=c(60,50),school=&quot;CGU&quot;)
+</code></pre>
+<p>取数据</p>
+<blockquote>
+<p>两种方法，一种是参数中的名字，另一种是用下标访问，下标要用两层括号</p>
+</blockquote>
+<pre><code class="language-R">listSample$Student
+listSampel[[1]]
+</code></pre>
+<h3>矩阵 matrix</h3>
+<blockquote>
+<p>感觉不会考，稍微记一下</p>
+</blockquote>
+<pre><code class="language-R">mx&lt;-matrix(c(1:6),nrow=3,ncol=2)
+</code></pre>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/mtrix.jpg" alt="mtrix"></p>
+<h3>数据框 data.frame</h3>
+<blockquote>
+<p>感觉是重点考察对象</p>
+<p>数据框是特殊的列表，要求所有向量的长度必须相等</p>
+</blockquote>
+<pre><code class="language-R">x&lt;-data.frame(A=c(1,2,3),B=c(1,2,3))
+colnames(x)
+# 列名 A B
+rownames(x)
+# 行名 1 2 3
+</code></pre>
+<p>取出</p>
+<blockquote>
+<p>数据框更像是一张数据库的数据表，创建时的参数都是一个个字段，而不是一条条记录</p>
+</blockquote>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/dtfrme.jpg" alt="dtfrme"></p>
+<pre><code class="language-R">data.frame[x,y]
+# 第x行第y个字段
+data.frame[y]
+# 第y个字段，其实等价data.frame[,y]
+data.frame[,y]
+# 第y列
+data.frame[x,]
+# 第x行
+</code></pre>
+<h3>字符串</h3>
+<blockquote>
+<p>正则表达式没什么好说的，知道^是开头，$是结尾就好了</p>
+</blockquote>
+<pre><code class="language-R">nchar(&quot;hello&quot;) #取字符串长度
+strsplit(xx,&quot;.&quot;) #类似python的&quot;&quot;.split()
+substr(xx,start,end) #指定起点和终点，不是长度
+toupper(x)
+tolower(x)
+paste(xx,yy,sep=&quot;.&quot;) #拼接字符串
+grep(regex,c(xx)) #返回向量中匹配的下标
+grepl(regex,c(xx)) #返回一个参数向量等长的向量，表示是否匹配
+</code></pre>
+<h2>语法</h2>
+<blockquote>
+<p>感觉解释型语言的语法都差不多，就是这个else必须在if的}同行让我有点反感</p>
+</blockquote>
+<h3>判断</h3>
+<pre><code class="language-R">if(cond1){
+    xxx
+} else if(cond2){
+    # 必须同行！！！
+    xxx
+} else{
+    # 必须同行！！！
+    xxx
+}
+# 行if
+ifelse(cond,A,B)
+#等价于 cond?A:B
+</code></pre>
+<h3>循环</h3>
+<p>for循环</p>
+<blockquote>
+<p>和python很相似，然后用花括号包起来，感觉没有c系有含金量</p>
+</blockquote>
+<pre><code class="language-R">for(x in c(xx)){
+    xxx
+}
+</code></pre>
+<p>while循环</p>
+<pre><code class="language-R">while(cond){
+    xxx
+}
+</code></pre>
+<h3>函数</h3>
+<blockquote>
+<p>R的函数感觉怪怪的，给一个变量赋值，把函数当成一个变量了，解释型语言都喜欢这么干吧</p>
+<p>值得注意的是return必须带上括号，变量作用范围就不用说了，和其他语言都差不多</p>
+</blockquote>
+<pre><code class="language-R">x&lt;-function(){
+    xxx
+    return(xxx)
+}
+</code></pre>
+<h2>画图</h2>
+<blockquote>
+<p>感觉是重头戏</p>
+</blockquote>
+<h3>par</h3>
+<blockquote>
+<p>设置之后图形的参数，有些参数只能由par来改</p>
+</blockquote>
+<p>参数列表</p>
+<table>
+<thead>
+<tr>
+<th>属性名</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bg</td>
+<td>背景色</td>
+</tr>
+<tr>
+<td>bty</td>
+<td>变量样式(o,l,7,c,u)</td>
+</tr>
+<tr>
+<td>cex</td>
+<td>缩放倍数,子目标有, axis , lab , main , sub</td>
+</tr>
+<tr>
+<td>col</td>
+<td>颜色,子目标有, axis , lab , main , sub</td>
+</tr>
+<tr>
+<td>font</td>
+<td>字体样式,1正常,2粗体,3斜体,4粗斜体</td>
+</tr>
+<tr>
+<td>family</td>
+<td>字体种类</td>
+</tr>
+<tr>
+<td>las</td>
+<td>坐标轴数表样式</td>
+</tr>
+<tr>
+<td>pch</td>
+<td>点的形状,0正方形,1圆形,2三角形,3加号,4叉,5菱形</td>
+</tr>
+<tr>
+<td>lty</td>
+<td>线条type,0不画线,1实线,2虚线,3点线</td>
+</tr>
+<tr>
+<td>lwd</td>
+<td>线条witdh</td>
+</tr>
+<tr>
+<td>str</td>
+<td>旋转角度,45就是45度，逆时针</td>
+</tr>
+<tr>
+<td><strong>mfrow</strong></td>
+<td>多图 c(a,b)，a * b</td>
+</tr>
+</tbody>
+</table>
+<h3>plot</h3>
+<blockquote>
+<p>设置坐标轴，参数是一堆坐标轴信息</p>
+</blockquote>
+<p>参数列表</p>
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>type</td>
+<td>p点图，l折线图</td>
+</tr>
+<tr>
+<td>main</td>
+<td>主标题</td>
+</tr>
+<tr>
+<td>sub</td>
+<td>副标题</td>
+</tr>
+<tr>
+<td>xlab</td>
+<td>x轴标题</td>
+</tr>
+<tr>
+<td>ylab</td>
+<td>y轴标题</td>
+</tr>
+<tr>
+<td>asp</td>
+<td>y/x的比</td>
+</tr>
+<tr>
+<td>xlim,ylim</td>
+<td>x轴和y轴的界限,c(min,max)</td>
+</tr>
+<tr>
+<td>col</td>
+<td>颜色</td>
+</tr>
+<tr>
+<td>cex</td>
+<td>倍率</td>
+</tr>
+<tr>
+<td>bg</td>
+<td>背景色</td>
+</tr>
+<tr>
+<td>frame.plot</td>
+<td>是否给图像加框</td>
+</tr>
+</tbody>
+</table>
+<h3>points(x,y,...)</h3>
+<blockquote>
+<p>加点</p>
+</blockquote>
+<h3>abline(a,b,h,v,reg,...)</h3>
+<ul>
+<li>a,截距</li>
+<li>b,斜率</li>
+<li>h,水平线纵坐标</li>
+<li>v,垂线横坐标</li>
+<li>reg,不知道</li>
+</ul>
+<h3>segments(x0,y0,x1,y1)</h3>
+<blockquote>
+<p>线段</p>
+</blockquote>
+<h3>rect(xleft,ybottom,xright,ytop,...)</h3>
+<blockquote>
+<p>左下角，右上角 定位矩形</p>
+<p>感觉不会考，不管了</p>
+</blockquote>
+<h3>text(x,y,&quot;xxx&quot;,...)</h3>
+<blockquote>
+<p>文本</p>
+</blockquote>
+<h3>mtext(&quot;xxx&quot;,side=3,...)</h3>
+<blockquote>
+<p>绘画框外绘制文本,side就选3吧</p>
+</blockquote>
+<h3>legend(x,y,legend,...)</h3>
+<blockquote>
+<p>图例</p>
+</blockquote>
+<h3>pie(x,...)</h3>
+<blockquote>
+<p>x是各个指标的百分比，然后指标的名字要自己names(x)&lt;-c(A,B,C,...)</p>
+</blockquote>
+<h3>例题之类的</h3>
+<blockquote>
+<p>5.设置par，绘制一页多张图。
+1）第一张图，不添加坐标轴
+2）添加自定义坐标轴，横坐标为字母。
+3）添加边框
+4）添加第二张图，不添加坐标轴
+5）添加自定义坐标轴，横坐标为字母，颜色为红色</p>
+</blockquote>
+<pre><code class="language-R">op=par()
+par(mfrow=c(1,2))
+plot(1:10,type=&quot;l&quot;,xlab=&quot;&quot;, ylab=&quot;&quot;,axes=F)
+axis(side=1,at=1:10,labels=LETTERS[1:10])
+box()
+plot(1:10,type=&quot;l&quot;,xlab=&quot;&quot;, ylab=&quot;&quot;,axes=F)
+axis(side=1,at=1:10,labels=LETTERS[1:10],col.axis = &quot;red&quot;)
+</code></pre>
+<blockquote>
+<p>3.绘制底图。要求
+1）添加一个矩形
+2）填充线密度设置为8根
+3）填充线倾斜度设置为15度
+4）灰色填充
+5）矩形边框设置为红色
+6）将矩形边框加粗
+7）给整个图加一个粗度为3的外边框</p>
+</blockquote>
+<pre><code class="language-R">plot(5,type=&quot;n&quot;)
+rect(1,1, 3,3)
+rect(3,3, 6,6,density = 8)
+rect(3,3, 6,6,density = 8,angle = 15)
+rect(1,7, 4,9,col=&quot;grey&quot;)
+rect(1,7, 4,9, col=&quot;grey&quot;, border=&quot;red&quot;)
+rect(1,7, 4,9, col=&quot;grey&quot;, border=&quot;red&quot;, lwd=3)
+box(lwd=3)
+</code></pre>
+<blockquote>
+<ol>
+<li>随机产生10个数,对这个10数构成的向量进行绘画。要求：
+1）添加标签。x轴为“随机数横轴”，y轴为“随机数纵轴”，标题为“可视化练习”
+2）设置图标颜色为红色。
+3）更改图标类型为圆形
+4）更改图标大小为3倍大小
+5）更改类型为划线
+6）更改线条宽度为3倍
+7）更改线条类型为虚线
+8）限制y轴大小为0.3到0.8之间
+9）不画边框</li>
+</ol>
+</blockquote>
+<pre><code class="language-R">data=runif(10)
+plot(data,xlab=&quot;随机数横轴&quot;,ylab=&quot;随机数纵轴&quot;,main=&quot;可视化练习&quot;)
+plot(data,col=&quot;red&quot;)
+plot(data,col=&quot;red&quot;,pch=16)
+plot(data,col=&quot;red&quot;,pch=16,cex=3)
+plot(data,type=&quot;l&quot;)
+plot(data,type=&quot;l&quot;,lty=4)
+plot(data,type=&quot;l&quot;,lty=4,ylim=c(0.3,0.8),frame.plot=&quot;F&quot;)
+</code></pre>
+<h2>dplr</h2>
+<blockquote>
+<p>需要library(tidyverse)</p>
+<p>这个模块类似sql啊</p>
+</blockquote>
+<h4>filter筛选</h4>
+<blockquote>
+<p>筛选出一个子集，第一个参数是数据框，之后是表达式</p>
+</blockquote>
+<pre><code class="language-R">filter(data,cond1,cond2)
+# 条件1和条件2是与关系
+filter(data,cond1|cond2)
+# 这是或关系，不想管先后运算顺序就用括号吧
+</code></pre>
+<h3>arrange重排</h3>
+<blockquote>
+<p>不选择行，而是改变行的顺序，按照关键字排序，默认是升序，用desc可以降序</p>
+</blockquote>
+<h3>select选择</h3>
+<blockquote>
+<p>这些dplr里的函数用法都差不多</p>
+<p>第一个参数是数据集，之后的参数是要选择出来的列关键字，可以用冒号选连续，也可用减号去掉列</p>
+</blockquote>
+<pre><code class="language-R"># 选择year到day中间的所有列
+select(flights,year:day)
+# 不选择year到day中间的列
+select(flights,-(year:day))
+</code></pre>
+<h2>stringr包</h2>
+<blockquote>
+<p>很多方法不是R语言自带的吗，为什么要再来一遍，只讲讲正则表达式吧</p>
+</blockquote>
+<h3>str_view(vector,regex)</h3>
+<blockquote>
+<p>这个和grep是反一下的，输入的向量参数是在前面的，grep是反过来的</p>
+<p>然后这个结果是打开一个网页显示筛选结果，而不是在命令行里输出</p>
+</blockquote>
+<pre><code class="language-R">x&lt;-c(&quot;apple&quot;,&quot;banana&quot;,&quot;pear&quot;)
+str_view(x,&quot;an&quot;)
+</code></pre>
+<hr>
+<blockquote>
+<p>现在是考后复盘时间</p>
+</blockquote>
+<p>完全没有考画图的知识点</p>
+<p>全是一些基础数据结构的题目</p>
+<p>向量负下标的作用</p>
+<p>数据框增加列</p>
+<p>最难的应该是字符频次统计，不会</p>
+<p>应该是当时有关红楼梦的实验题，当时因为觉得正则表达式是重点，所以没仔细看</p>
+<p>不考画图大概是画图都是纯记忆</p>
+<p>后面还要写论文，那时候就要用到画图了</p>
+<p>还要写论文，真麻烦啊</p>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

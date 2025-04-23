@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>git 学习笔记 10</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<h2>远端仓库-github</h2>
+<blockquote>
+<p>赶紧终结了这本书吧，这本书获取了我太多的指纹了（x</p>
+<!--more-->
+</blockquote>
+<p>感觉 github 其实没什么好说的，就记录下一些细节吧</p>
+<h3>上传项目</h3>
+<p>上传项目分为两种，一种是新项目，另一种是现存的项目</p>
+<p>在新建完一个仓库之后，仓库页面会提示你一些 shell 指令，上面的一部分为 <code>create a new repository on the command line</code> ，顾名思义就是创建一个新的项目，下面那部分正如英文的意思 <code>push an existing repository from the command line</code> 上传一个已存在的仓库</p>
+<pre><code class="language-bash"># 以下为新建仓库的代码
+echo &quot;# respp&quot; &gt;&gt; README.md
+git init
+git add README.md
+git commit -m &quot;first commit&quot;
+git branch -M main
+git remote add origin git@github.com:paradoxskin/respp.git
+git push -u origin main
+# 以下为上传已存在仓库的代码
+git remote add origin git@github.com:paradoxskin/respp.git
+git branch -M main
+git push -u origin main
+</code></pre>
+<p>其实可以忽略那句 <code>git branch -M main</code>，这句话的作用就是把当前分支的名字改成 main，之前都是默认使用 master 的，后来 github 就主张使用 main 当作主分支了，其实只是名字区别而已，使用 master 并不会有什么实质性的影响。我们不难发现两个步骤相比上面的步骤只是初始创建一个 commit 而已，而这两个步骤的最后几步是一样的</p>
+<pre><code class="language-bash">git remote add origin git@github.com:paradoxskin/respp.git
+</code></pre>
+<p>这条命令要分段来看，<code>remote</code> 表示这条命令是和远端相关的操作，<code>add</code> 是指添加字段，<code>origin</code> 是一个变量名，后面那串就是给这个变量名赋的值，事实上并不是一定要用 <code>origin</code> 的，如果从服务器上 clone 下来，默认的名称就是 origin，这只是一个惯例，使用 <code>ggst</code> 也是可以的（罪恶装备</p>
+<pre><code class="language-bash">git push -u origin main
+</code></pre>
+<p>这一步做了以下几件事</p>
+<ol>
+<li>把 main 分支的内容推向 origin 位置</li>
+<li>在 origin 远端服务器上，如果 main 不存在，就创建一个名为 main 的分支</li>
+<li>如果服务器上存在 main 分支，就会移动服务器上 main 分支的位置，使它指向当前最新的进度上</li>
+<li>设置 upstream</li>
+</ol>
+<p>当然，这个命令同样不是一定要这么执行的，可以做一点变形，比如远端节点为 ggst, 我们想把 may 推上去，那么就可以使用如下命令</p>
+<pre><code class="language-bash">git push -u ggst may
+</code></pre>
+<p>这之后我们的 github 上就不再是那个指南页面了</p>
+<p>下面解释一下命令</p>
+<p><code>push</code> 指令专门用来将本地仓库推到远端仓库</p>
+<p><code>-u</code> 表示 <code>upstream</code>，upstream 表示上游，看上去这个名词很难理解，其实只是另一个分支的名称而已，在 git 中每个分支都能设置一个上游，他会追踪某个分支，一般都是追踪远端服务器上的某个分支，但是要设置本地端的其他分支也可以，如果设置了 upstream, 下次执行 <code>git push</code> 指令的时候就会用它来当默认值，如果没有设置上游，那么每次 <code>git push</code> 都必须 <code>git push origin main</code></p>
+<h3>和远端服务器不同的分支名</h3>
+<p><code>git push origin main</code> 其实也是一个简写，写全为 <code>git push origin main:main</code>，意思为把本地的 main 推上去，之后在服务器上更新 main 分支，现在如果你想把本地的 master 推上远端服务器，但是创建(更新也是可以的)一个名为 cat 的分支可以用这个指令 <code>git push origin master:cat</code></p>
+<h3>pull 下载</h3>
+<p>与 <code>git push</code> 相反， <code>git pull</code> 是用来从远端仓库拉取代码到本地更新，但是事实上 <code>git pull</code> 包括了两步，<code>git fetch + git merge</code>，拉取代码的步骤正是 <code>git fetch</code>，但是为什么需要 <code>git merge</code> 呢？那是因为在 <code>git fetch</code> 之后，本地的分支并没有跟着新加的 commit 移动，而远端仓库的文件相比于本地更加新，所以需要 <code>git merge</code> 来合并本地分支和远端分支，下面画个图展示展示</p>
+<ul>
+<li><code>git fetch</code> 之前：</li>
+</ul>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/before.png" alt="before"></p>
+<ul>
+<li><code>git fetch</code> 之后：</li>
+</ul>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/after.png" alt="after"></p>
+<ul>
+<li><code>git merge</code> 之后：</li>
+</ul>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/aftmerge.png" alt="aftmerge"></p>
+<p>前面说过，合并方式除了 <code>git merge</code> 之外还有 <code>git rebase</code>，确实是存在使用 <code>git rebase</code> 的 <code>git pull -rebase</code>，和前面 <code>git rebase</code> 的优势相同，都是可以节约 <code>merge</code> 导致的额外 commit</p>
+<h3>push 失败</h3>
+<p>多人开发过程中，如果多人同时使用同一个分支，那么难免会遇到 push 失败的情况，这是因为 commit 是有先后的，当先 push 的人 push 之后远端仓库变成了和先 push 的人一样的状态，而后 push 的人的本地还是最早的版本，这样 push 之后就和远端仓库的历史记录发生冲突，所以就发生了错误，从而导致 push 失败，那么要如何解决呢，第一种方法是 先拉再推，在 push 前先 pull 一下，同步下远端，这里最好用 <code>git pull -rebase</code>，而第二种方法就有点不讲道理，直接简单粗暴地 <code>git push -f</code> 就能强行覆盖掉云端仓库的代码</p>
+<h3>从服务器上获取仓库</h3>
+<p>之前的 push 和 pull 都是有一个前提条件，那就是本地已经存在了这个项目，如果你在 github 上看到了某个项目，想下载来看看，那么就可以用 <code>git clone</code> 来复制到本地，点击 Code 按钮，复制 https 或者 ssh 链接，之后找个位置使用指令</p>
+<pre><code class="language-bash">$ git clone git@github.com:paradoxskin/respp.git
+</code></pre>
+<p>默认会用仓库名当作文件夹名，如果你想 clone 下来之后存储到不同名称的目录中，只要在后面加上目录名即可</p>
+<pre><code class="language-bash">$ git clone git@github.com:paradoxskin/respp.git ppser
+</code></pre>
+<p>当然 clone 的不止有代码，还有项目的整个历史记录、分支、标签等，直接 download zip 可是没有历史记录的哦</p>
+<p>clone 的功能和 pull 功能很相似，区别就是当你没有项目的时候才能用 clone, 有项目就用 pull</p>
+<h2>PullRequest</h2>
+<p>上面都是 github 的基础知识了，学会就可以基本的开发了</p>
+<p>github 上有很多开源项目，如果你看上一个有趣的项目，你想帮作者添加点新功能，然后联系作者让他给你权限，想想看，如果你是原作者，你会愿意把权限给他吗？</p>
+<p>而 github 上就有一个不用给权限的功能，那就是 PR (Pull Request)</p>
+<ol>
+<li>先把项目 fork 到自己的仓库下</li>
+<li>因为算是自己的仓库了，所以自己拥有仓库的所有权，可以随意改动</li>
+<li>改完后，用自己的账号 push 上去</li>
+<li>发起 PR, 让作者知道你做了什么，让他看看</li>
+<li>作者觉得没问题，就会将你的修改合并到他的项目中去</li>
+</ol>
+<p>这是一件很有开源精神的事情（我还没做过</p>
+<p>当然除了开源项目之外，企业内部的项目也适合使用发送 PR 的方式来开发，开发过程中，通常会挑选一个固定的分支作为可以上线的正式版本，当多人参与同一个项目的时候，为了防止事故影响正式版本，就可以通过 PR 的方式来进行开发</p>
+<h3>更新 fork 项目进度</h3>
+<p>如果在发送 PR 前，其他人的 PR 已经被接受了，那么就会发生和上文中无法 push 类似的情况，这时候解决的方法也有两种，第一种是把 fork 过来的项目删掉，再 fork 一次（</p>
+<p>技术含量不高，但是很有用，也有很多人在用</p>
+<p>第二种就有含金量了，使用 <code>git remote add xxx 原仓库链接</code> 之后可以使用 <code>git fetch xxx</code> 来拉取代码到本地，之后 <code>git merge xxx/master</code> 即可合并到最新进度，提一嘴，<code>git remote -v</code> 可以看到本地 remote 的所有信息</p>
+<h3>删除远端分支</h3>
+<p>一种方法是从网页上删除，这种方法很常规，另外还有一种从本地删除的方法，比如我想删除远端仓库的 cat 分支，那么可以用 <code>push</code> 指令来删除</p>
+<pre><code class="language-bash">$ git push origin :cat
+</code></pre>
+<p>然后本地仓库就把空的内容给推到了远端分支的 cat 分支上，所以是变相的删除了这个分支</p>
+<h3>git push -f 使用的时机</h3>
+<p>直接说结论，第一个可以使用的时机是整理历史记录，因为太乱所以决定大刀阔斧整顿一下，然后 rebase 了之后就 push -f，但记得和队友说一下，第二个可以使用的时机是只用在自己的分支上，只要不影响到其他人就好</p>
+<p>github 为了防止有人不小心 push -f 闯了大祸就增加了一个保护功能，可以在网页中找到</p>
+<p>当然被覆盖了其实也可以挽救，直接回到之前的进度，再次 <code>git push -f</code> 即可</p>
+<h2>补丁</h2>
+<p>github 很方便，但是没有 github 的时候人们是用什么来更新的呢？</p>
+<p>答案是补丁（patch）</p>
+<p>指定两条 commit 就可以轻松的做出从A到B的补丁文件（不包括A）</p>
+<pre><code class="language-bash">$ git format-patch startSHA1..endSHA1
+</code></pre>
+<p>使用补丁文件很简单</p>
+<pre><code class="language-bash">$ git am patch-dir/*
+</code></pre>
+<blockquote>
+<p>终于结束了这一章啊，最后还有一章 git flow, 我看看有没有必要学，如果没必要的话就到这里为止了</p>
+<p>时间不够用不够用不够用不够用不够用啊啊啊啊啊啊啊啊啊啊</p>
+</blockquote>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

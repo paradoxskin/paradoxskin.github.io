@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>JS 闭包</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<h2>闭包</h2>
+<blockquote>
+<p>我在写信息管理系统的前端页面，决定使用 jquery 来实现前后端分离，具体的方法是在前端 script 里面使用 ajax 来异步带着数据访问后端，然后根据后端返回的 json 来渲染前端的页面，至于我为什么会遇到闭包这个东西呢？听我慢慢道来 ...</p>
+<!--more-->
+</blockquote>
+<p>当时写的代码是传给后端 token，然后后端根据 token 对应的用户的权限返回要加载的选项卡，后端功能很好实现，直接这么写就行了</p>
+<pre><code class="language-go">token, isOk := c.GetPostForm(&quot;token&quot;)
+if !isOk {
+    c.JSON(200, map[string]interface{}{
+        &quot;msg&quot;: &quot;fail&quot;,
+    })
+    return
+}
+if !service.CheckToken(&amp;token) {
+    c.JSON(200, map[string]interface{}{
+        &quot;msg&quot;: &quot;fail&quot;,
+    })
+    return
+}
+if service.CheckRoot(&amp;token) {
+    c.JSON(200, map[string]interface{}{
+        &quot;msg&quot;: &quot;ok&quot;,
+        // TODO
+    })
+    return
+}
+infoBacks := []pojo.InfoBack{{
+    ButtonId: &quot;info&quot;,
+    ObjUrl: &quot;/info&quot;,
+    ButtonName: &quot;个人信息&quot;,
+}, {
+    ButtonId: &quot;room&quot;,
+    ObjUrl: &quot;/room&quot;,
+    ButtonName: &quot;寝室&quot;,
+}, {
+    ButtonId: &quot;clean&quot;,
+    ObjUrl: &quot;/clean&quot;,
+    ButtonName: &quot;卫生检查&quot;,
+}, {
+    ButtonId: &quot;break&quot;,
+    ObjUrl: &quot;/break&quot;,
+    ButtonName: &quot;报修&quot;,
+}, {
+    ButtonId: &quot;lost&quot;,
+    ObjUrl: &quot;/lost&quot;,
+    ButtonName: &quot;失物招领&quot;,
+},
+                            }
+c.JSON(200, map[string]interface{}{
+    &quot;msg&quot;: &quot;ok&quot;,
+    &quot;infos&quot;: infoBacks,
+})
+</code></pre>
+<p>实现接口之后我就把视线转到前端了，先 F12 里的 console 里测试了下，可以接收到 json 数据，然后就开始写 js 了，大致思路的根据传回的数据，遍历所有元素然后创建 li 标签加按钮，最后把创建出来的按钮绑定上 click 事件的函数</p>
+<p>初版代码是这样的</p>
+<pre><code class="language-html">&lt;script charset=&quot;utf-8&quot;&gt;
+    $(function() {
+        $(&quot;#quit&quot;).click(function() {
+            var token = localStorage.getItem(&quot;token&quot;);
+            localStorage.removeItem(&quot;token&quot;);
+            var tks={&quot;token&quot;:token}
+            $.post(
+                &quot;/quit&quot;,
+                tks,
+                function() {
+                    location.assign(&quot;/login&quot;);
+                }
+            );
+        });
+        var token = localStorage.getItem(&quot;token&quot;);
+        $.post(
+            &quot;/index&quot;,
+            {&quot;token&quot;: token},
+            function(data) {
+                var indexs = data
+                for(var i = 0; i &lt; data.infos.length; i++) {
+                    $(&quot;#menu&quot;).append(&quot;&lt;li class=\&quot;nav-item\&quot;&gt;&lt;button class=\&quot;my-2 btn btn-secondary btn-block w-100\&quot; type=\&quot;button\&quot; id=\&quot;&quot; + data.infos[i].button_id + &quot;\&quot;&gt;&quot; + data.infos[i].button_name + &quot;&lt;/button&gt;&lt;/li&gt;&quot;);
+                    $(&quot;#&quot; + data.infos[i].button_id).click(function() {
+                        $.get(
+                            indexs.infos[i].obj_url,
+                            function() {
+                                console.log(&quot;6&quot;)
+                            }
+                        )
+                    });
+                }
+                // TODO
+            }
+        );
+    });
+&lt;/script&gt;
+</code></pre>
+<p>既然是初版代码，那必然是有问题的，运行结果是标签渲染出来了，但是按钮按下去无事发生，console 里没显示 6，后端的日志也没有显示 404 的 get 请求（那些端口我都没写好</p>
+<p>可喜可贺的是我在 console 里仔细看了下发现了在按下按钮之后他报错了，说<code>indexs.infos[i] is undefined</code> ，然后我大概知道了是怎么一回事，绑定函数的过程不包括执行，所以再次运行的时候它是独立出来运行的，这时候 i 就不见了，所以就报错了</p>
+<p>那么怎么解决这个问题呢？凭我的经验肯定不能解决这种问题，借助了强大的搜索引擎，我找到了和我遇到类似问题的人 <a href="https://blog.csdn.net/qq_38712081/article/details/81665379">🔗</a></p>
+<p>下面是能够 work 的代码</p>
+<pre><code class="language-html">&lt;script&gt;
+function(data) {
+    var indexs = data;
+    for(var i = 0; i &lt; data.infos.length; i++) {
+        $(&quot;#menu&quot;).append(&quot;&lt;li class=\&quot;nav-item\&quot;&gt;&lt;button class=\&quot;my-2 btn btn-secondary btn-block w-100\&quot; type=\&quot;button\&quot; id=\&quot;&quot; + data.infos[i].button_id + &quot;\&quot;&gt;&quot; + data.infos[i].button_name + &quot;&lt;/button&gt;&lt;/li&gt;&quot;);
+        (function(i) {
+        $(&quot;#&quot; + data.infos[i].button_id).click(function() {
+            $.get(
+                indexs.infos[i].obj_url,
+                function() {
+                    console.log(&quot;6&quot;)
+                }
+            )
+        });})(i)
+    }
+}
+&lt;/script&gt;
+</code></pre>
+<blockquote>
+<p>一个人同时写前后端真的挺累的，不过成就感倒是有的，web 也就这回事</p>
+</blockquote>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

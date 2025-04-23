@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>rust学习笔记 6</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<h2>特性</h2>
+<p>特性（Trait）是对方法集合的抽象，类似于 java 中的接口，特性是类型的行为规范<!--more-->，它宏观地对类型的功能做出要求，一次实现对多类别在特定情况下的使用统一化</p>
+<h3>定义特性</h3>
+<p>关键字是 <code>trait</code></p>
+<pre><code class="language-rust">trait &lt;特性名称&gt; {
+    &lt;方法...&gt;
+}
+</code></pre>
+<p>下面是对比较大小特性的定义</p>
+<pre><code class="language-rust">trait Comparable {
+    fn greater(&amp;self, b: &amp;Self) -&gt; bool;
+    fn less(&amp;self, b: &amp;Self) -&gt; bool;
+    fn equals(&amp;self, b: &amp;Self) -&gt; bool;
+}
+</code></pre>
+<p><code>&amp;Self</code> 表示的是和自己相同的类型</p>
+<h3>实现特性</h3>
+<p>实现特性的语法是通过 <code>impl</code> 语句块，在此基础上加点东西</p>
+<pre><code class="language-rust">impl &lt;特性名&gt; for &lt;实现特性的类&gt; {
+    &lt;实现的函数/方法...&gt;
+}
+</code></pre>
+<p>下面演示一个圆结构体的 Comparable 特性</p>
+<pre><code class="language-rust">struct Circle {
+    radius: f64,
+    center: (f64, f64),
+}
+
+impl Comparable for Circle {
+    fn greater(&amp;self, b: &amp;Circle) -&gt; bool {
+        self.radius &gt; b.radius
+    }
+
+    fn less(&amp;self, b: &amp;Circle) -&gt; bool {
+        self.radius &lt; b.radius
+    }
+
+    fn equals(&amp;self, b: &amp;Circle) -&gt; bool {
+        self.radius == b.radius
+    }
+}
+
+fn main() {
+    let c1 = Circle {
+        radius: 10.0,
+        center: (1.0, 2.0),
+    };
+
+    let c2 = Circle {
+        radius: 11.0,
+        center: (1.0, 2.0),
+    };
+
+    println!(&quot;c1 &gt; c2 ? {}&quot;, c1.greater(&amp;c2));
+    println!(&quot;c1 &lt; c2 ? {}&quot;, c1.less(&amp;c2));
+    println!(&quot;c1 = c2 ? {}&quot;, c1.equals(&amp;c2));
+}
+</code></pre>
+<p>使用 <code>impl</code> 块实现特性时要注意以下几点：</p>
+<ul>
+<li>同一个类可以实现多个特性</li>
+<li>每一个 impl 块只能实现一个特性</li>
+<li>如果一个 impl 块用于实现某个特性，这个 impl 块中不能出现不属于所实现特性的方法定义</li>
+</ul>
+<h3>默认特性</h3>
+<p>特性在定义的时候允许直接定义方法作为实现中没有实现的方法的默认替代品，有点继承的感觉</p>
+<pre><code class="language-rust">trait Printable {
+    fn print(&amp;self);
+
+    fn println(&amp;self) {
+        self.print();
+        println!(&quot;[END]&quot;);
+    }
+}
+
+struct Text {
+    content: String
+}
+
+impl Printable for Text {
+    fn print(&amp;self) {
+        print!(&quot;{}&quot;, self.content);
+    }
+}
+
+fn main() {
+    let text = Text {
+        content: String::from(&quot;This is a piece of text.&quot;),
+    };
+    text.println();
+}
+</code></pre>
+<h3>特性作参数</h3>
+<p>如果需要把特性作为一种参数类型出现在函数的参数列表中，在函数调用参数对象时，不必得知参数的具体类型，而能调用各种实现了该特性的类型的具体方法，由于不需要知道参数是什么类型的，所以无法使用参数的其他属性和方法</p>
+<pre><code class="language-rust">fn &lt;函数名&gt;(object: impl &lt;特性名称&gt;) -&gt; &lt;返回&gt; {
+    ...
+}
+</code></pre>
+<p>下面演示一个基于 Comparable 的选择排序：</p>
+<pre><code class="language-rust">trait Comparable {
+    fn greater(&amp;self, b: &amp;Self) -&gt; bool;
+    fn less(&amp;self, b: &amp;Self) -&gt; bool;
+    fn equals(&amp;self, b: &amp;Self) -&gt; bool;
+}
+
+fn select_sort(array: &amp;mut [&amp;impl Comparable]) {
+    for i in 0..array.len() {
+        let mut k = i;
+        for j in (i + 1)..array.len() {
+            if array[j].less(&amp;array[k]) {
+                k = j;
+            }
+        }
+        if k != i {
+            let t = array[k];
+            array[k] = array[i];
+            array[i] = t;
+        }
+    }
+}
+
+impl Comparable for f64 {
+    fn greater(&amp;self, b: &amp;f64) -&gt; bool {
+        *self &gt; *b
+    }
+
+    fn less(&amp;self, b: &amp;f64) -&gt; bool {
+        *self &lt; *b
+    }
+
+    fn equals(&amp;self, b: &amp;f64) -&gt; bool {
+        *self == *b
+    }
+}
+
+fn main() {
+    let fa = [1.0, 4.0, 5.0, 2.0, 3.0];
+    let mut ra = [&amp;fa[0], &amp;fa[1], &amp;fa[2], &amp;fa[3], &amp;fa[4]];
+    select_sort(&amp;mut ra);
+    for f in ra {
+        println!(&quot;{}&quot;, f);
+    }
+}
+</code></pre>
+<p><code>&amp;mut [&amp;impl Comparable]</code> 是新的语法点，<code>impl Comparable</code> 表示实现了这个特性</p>
+<p>这个引用数组 ra 是不是有点小丑？我是不懂这种语法有什么用，看的头晕:dizzy_face:</p>
+<h3>泛型特性参数</h3>
+<p>其实是用来简写</p>
+<pre><code class="language-rust">fn function(a: impl SomeTrait, b: impl SomeTrait, c: impl SomeTrait) {
+    ...
+}
+</code></pre>
+<p>为</p>
+<pre><code class="language-rust">fn function&lt;T: SomeTrait&gt;(a: T, b:T, c:T) {
+    ...
+}
+</code></pre>
+<p>是不是干净很多，但是使用的前提是这三个参数的具体类型一样，当这三个参数的具体类型不同时，不能使用这个语法</p>
+<h3>特性叠加</h3>
+<p>参数需要同时实现多个特性</p>
+<pre><code class="language-rust">fn function(a: impl TraitA + TraitB)
+</code></pre>
+<p>复杂的实现关系可以使用 <code>where</code> 关键字优化</p>
+<pre><code class="language-rust">fn function(a: impl A + B, b: impl B + C) -&gt; i32
+// 简化为
+fn function&lt;T, U&gt;(a: T, b: U) -&gt; i32
+    where	T: Display + Clone,
+            U: Clone + Debug
+</code></pre>
+<h3>特性做返回值</h3>
+<p>特性作为返回值的时候，可以返回同种实现了这个特性可的类型的对象，什么是同种？意思就是：</p>
+<p>下面这段代码是无法通过编译的，虽然 i32 和 f64 都实现了 A，但是类型不一样，所以不能这样返回</p>
+<pre><code class="language-rust">trait A {}
+
+impl A for i32 {}
+impl A for f64 {}
+
+fn give() -&gt; impl A {
+    let a: i32 = 233;
+    let b: f64 = 233;
+    if xxx {
+        return a;
+    }
+    return b;
+}
+</code></pre>
+<h3>有条件的实现方法</h3>
+<p>有一个泛型 <code>A&lt;T&gt;</code> 和一个特性 B，现在需要 A 实现一个方法 d, 前提是 A 的泛型 T 实现了特性 B, 请问怎么写</p>
+<p>答案是：</p>
+<pre><code class="language-rust">struct A&lt;T&gt;;
+
+trait B {}
+
+impl&lt;T: B &gt; A&lt;T&gt; {
+    
+}
+</code></pre>
+<h2>文件 I/O</h2>
+<blockquote>
+<p>会用就行，和大多数语言一样</p>
+</blockquote>
+<pre><code class="language-rust">use std::fs;
+use std::fs::File;
+use std::io::Read; // 读入必要的use
+use std::io::Write; // 写入必要的use
+use std::fs::OpenOptions;
+
+fn main() {
+    // 直接读文本
+    let text = fs::read_to_string(&quot;tmp&quot;).unwrap();
+    print!(&quot;{}&quot;, text);
+
+    // 直接读二进制
+    let binary = fs::read(&quot;tmp&quot;).unwrap();
+    let text = String::from_utf8(binary).unwrap();
+    println!(&quot;text&quot;);
+
+    // 打开文件读取为File类型
+    let mut file = File::open(&quot;tmp&quot;).unwrap();
+    // File类型直接读为字符串
+    let mut text = String::new();
+    file.read_to_string(&amp;mut text);
+    // File类型读为二进制
+    let mut binary = Vec::&lt;u8&gt;::new();
+    file.read_to_end(&amp;mut binary).unwrap();
+    let text = String::from_utf8(binary).unwrap();
+
+    // 使用数组读File
+    let mut file = File::open(&quot;tmp&quot;).unwrap();
+    let mut binary: [u8; 5] = [0_u8; 5];
+    file.read(&amp;mut binary).unwrap();
+    // 数组转为Vec
+    let text = String::from_utf8(Vec::from(binary)).unwrap();
+
+    // 逐字读
+    let mut file = File::open(&quot;tmp&quot;).unwrap();
+    let mut buffer = [0_u8];
+    let mut binary = Vec::&lt;u8&gt;::new();
+    loop {
+        let count = file.read(&amp;mut buffer).unwrap();
+        if count == 0 {
+            break;
+        }
+        binary.push(buffer[0]);
+    }
+    let text = String::from_utf8(binary).unwrap();
+    println!(&quot;{}&quot;, text);
+
+    // 创建文件 need use std::io::Write
+    let mut file = File::create(&quot;ttmp&quot;).unwrap();
+    file.write(b&quot;this is ttmp&quot;).unwrap();
+
+    // 追加模式
+    let mut file = OpenOptions::new()
+        .append(true)
+        .open(&quot;ttmp&quot;)
+        .unwrap();
+    file.write(b&quot;[suffix]&quot;);
+}
+</code></pre>
+<p>最后一个追加模式的输入方法其实就是自定义模式的一个 append 模式，自定义模式下能使用 write, read, append 模式</p>
+<p>除此之外还有</p>
+<pre><code class="language-rust">fn truncate(&amp;mut self, bool) -&gt; &amp;mut Self // 清除现有文件内容并打开
+fn create(&amp;mut self, bool) -&gt; &amp;mut Self // 如果存在就打开，没有就创建
+fn create_new(&amp;mut self, bool) -&gt; &amp;mut Self // 如果存在就可恢复错误，必须搭配 write 或者 append 使用
+</code></pre>
+<p>除了写文本，还能写二进制文件</p>
+<pre><code class="language-rust">use std::fs::File;
+use std::io::{Write, Read};
+
+// 写二进制文件
+fn write() {
+    const PI: f64 = 3.1415926535;
+    let mut file = File::create(&quot;PI.bin&quot;).unwrap();
+    file.write(&amp;PI.to_ne_bytes()).unwrap();
+}
+
+// 读二进制文件
+fn read() {
+    let mut file = File::open(&quot;PI.bin&quot;).unwrap();
+    let mut buffer = [0_u8; 8];
+    file.read(&amp;mut buffer).unwrap();
+    
+    let data = f64::from_ne_bytes(buffer);
+    println!(&quot;{}&quot;, data);
+}
+
+fn main() {
+    write();
+    read();
+}
+</code></pre>
+<p>另外是创建目录</p>
+<pre><code class="language-rust">use std::fs;
+
+fn main() {
+    // 读取目录
+    let dir = fs::read_dir(&quot;/&quot;).unwrap();
+    for item in dir {
+        let entry = item.unwrap();
+        println!(&quot;{}&quot;, entry.file_name().to_str().unwrap());
+    }
+
+    // 创建目录
+    fs::create_dir(&quot;./data&quot;).unwrap();
+    // 递归创建目录
+    fs::create_dir_all(&quot;./data/1/2&quot;).unwrap();
+    // 删除文件
+    fs::File::create(&quot;./hellooo&quot;).unwrap();
+    fs::remove_file(&quot;./hellooo&quot;).unwrap();
+    // 删除空目录
+    fs::remove_dir(&quot;./data&quot;).unwrap();
+    // 删除非空目录
+    fs::remove_dir_all(&quot;./data&quot;).unwrap();
+}
+</code></pre>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

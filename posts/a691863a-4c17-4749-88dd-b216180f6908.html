@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Enumeration使用</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<h1>Enumeration</h1>
+<blockquote>
+<p>用惯了cpp的STL，感觉java的数据结构非常麻烦，不仅前面还写一堆东西，还有各种方法名，所以简单的记一下，这次碰到的enumeration</p>
+</blockquote>
+<!--more-->
+<p><code>import java.util.Enumeration</code></p>
+<p>它其实不是一个数据结构，只是一个接口，这个接口只有两个方法，</p>
+<p>一个是查看容器中是否还剩东西 <code>hasMoreElements()</code></p>
+<p>一个是取出下一个东西 <code>nextElement()</code></p>
+<pre><code class="language-java">java.util.Enumeration&lt;String&gt; enum = xxx;
+while(enum.hasMoreElements()){
+    String x = enum.nextElement();
+    xxxx;
+}
+</code></pre>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

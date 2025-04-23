@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>rust学习笔记 4</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<h2>错误处理</h2>
+<p>rust 中的错误处理不同与其他语言中的 try 机制</p>
+<p>先来<!--more-->了解一下程序运行中的主要会遇到的错误，主要分为可恢复和不可恢复两种错误，可恢复比较常见的是访问文件失败，这类错误一般都是开发者能考虑到的，程序应该具备遇到这种错误的应对方法，防止程序停止运行，不可恢复比如访问数组的时候下标越界的，一旦发生就是能停止执行了（我寻思 python 中是可以被 try 的）</p>
+<p>不可恢复：</p>
+<pre><code class="language-rust">fn get_int() -&gt; usize {
+    10
+}
+
+fn main() {
+    let a = [1, 2, 3];
+    println!(&quot;{}&quot;, a[get_int()]);
+}
+</code></pre>
+<p>这段程序是可以通过编译的，但是一运行就会报错，虽然这是肉眼可见的错误，但是编译器就是没发现（编译器也不是很聪明嘛</p>
+<ul>
+<li>panic! 宏</li>
+</ul>
+<p>模拟不可恢复的报错，强制退出程序</p>
+<pre><code class="language-rust">fn main() {
+    panic!(&quot;nononono&quot;); // 程序退出
+    println!(&quot;hello&quot;);
+}
+</code></pre>
+<p>至于可恢复错误，rust 并没有其他语言那样的 try 语法，在 rust 中，函数的返回值只有两种：正常的值和错误，这一点是通过 rust 强大的枚举类来完成的，这个枚举类叫 Result 类</p>
+<h3>Result 类</h3>
+<p>下面是 Result 类的源码：</p>
+<pre><code class="language-rust">pub enum Result&lt;T, E&gt; {
+    /// Contains the success value
+    #[lang = &quot;Ok&quot;]
+    #[stable(feature = &quot;rust1&quot;, since = &quot;1.0.0&quot;)]
+    Ok(#[stable(feature = &quot;rust1&quot;, since = &quot;1.0.0&quot;)] T),
+
+    /// Contains the error value
+    #[lang = &quot;Err&quot;]
+    #[stable(feature = &quot;rust1&quot;, since = &quot;1.0.0&quot;)]
+    Err(#[stable(feature = &quot;rust1&quot;, since = &quot;1.0.0&quot;)] E),
+}
+</code></pre>
+<p>我是看不懂，反正就是有两个枚举项 Ok 和 Err，这两个枚举项各有一个属性，如果枚举项是 Ok 就代表结果正常，是程序的正常返回值，如果是 Err 则表示发生了错误，枚举项的属性包含异常信息的对象</p>
+<blockquote>
+<p>Rust 的枚举类设计的太牛了！</p>
+</blockquote>
+<p>让后就可以用 <code>match</code> 语法来匹配错误和正常值了</p>
+<pre><code class="language-rust">fn divide(x: f64, y: f64) -&gt; Result&lt;f64, &amp;'static str&gt; {
+    if y == 0.0 { // 0 != 0.0
+        Result::Err(&quot;divided by 0&quot;)
+    }
+    else {
+        Result::Ok(x / y)
+    }
+}
+
+fn main() {
+    let c = divide(1.0, 0.0);
+    match c {
+        Ok(value) =&gt; {
+            println!(&quot;{}&quot;, value);
+        },
+        Err(err) =&gt; {
+            println!(&quot;{}&quot;, err);
+        }
+    }
+}
+</code></pre>
+<p>不懂那些 <code>#[]</code> 是用来干嘛的（单独从功能上讲这东西开发者是不是可以自己写？</p>
+<p>就不是和 <code>try</code> 那种发生错误的时候进错误判断，而是在发生错误前判断（这也太不像正常语言该有的错误处理了！</p>
+<p>如果你希望在发生 Result::Err 的时候停止运行程序，就可以使用 <code>unwrap()</code> 方法或者 <code>expect(err_text)</code> 方法</p>
+<pre><code class="language-rust">// unwrap
+let c = divide(1.0, 0.0).unwrap();
+println!(&quot;{}&quot;, c);
+// expect
+let d = divide(1.0, 0.0).expect(&quot;错误错误错误&quot;);
+</code></pre>
+<p>有时候，错误信息是需要传递的（像之前写的 go 后端代码错误信息，一层层往回传到 controller 层</p>
+<pre><code class="language-rust">// 平方根
+fn sqrt(x: f64) -&gt; Result&lt;f64, &amp;'static str&gt; {
+    if x &lt; 0.0 {
+        return Result::Err(&quot;don't have sqrt&quot;);
+    }
+    return Result::Ok(x.sqrt());
+}
+// 判断质数
+fn is_prime(x: i32) -&gt; Result&lt;bool, &amp;'static str&gt; {
+    let res = sqrt(x as f64);
+    match res {
+        Ok(value) =&gt; {
+            if x == 2 {
+                return Result::Ok(true);
+            }
+            let t = (value + 1.0).ceil() as i32;
+            for i in 2..t {
+                if x % i == 0 {
+                    return Result::Ok(false);
+                }
+            }
+            return Result::Ok(true);
+        },
+        Err(err) =&gt; {
+            return Result::Err(err);
+        }
+    }
+}
+</code></pre>
+<p>如果传递的错误信息相同，那么可以不这么麻烦，可以直接用 <code>?</code> 来传递错误，它的作用是如果发生错误，就直接把错误信息返回了，如果没有问题就直接把正确值取出来：</p>
+<pre><code class="language-rust">fn is_prime(x: i32) -&gt; Result&lt;bool, &amp;'static str&gt; {
+    let res = sqrt(x as f64)?; // 传递
+    if x == 2 {
+        return Result::Ok(true);
+    }
+    let t = (res + 1.0).ceil() as i32;
+    for i in 2..t {
+        if x % i == 0 {
+            return Result::Ok(false);
+        }
+    }
+    return Result::Ok(true);
+}
+</code></pre>
+<h3>错误类型</h3>
+<p><code>Result&lt;T, E&gt;</code> 枚举类中的 E 指的是 Error 类型或者其他衍生类型，使用 <code>.kind()</code> 方法可以取出 Error 类型的种类，在 rust 的标准库中关于文件处理的相关操作是经典的容易出现的异常的部分</p>
+<pre><code class="language-rust">use std::io;
+use std::io::Read;
+use std::fs::File;
+
+fn read_text_from_file(path: &amp;str) -&gt; Result&lt;String, io::Error&gt; {
+    let mut f = File::open(path)?;
+    let mut s = String::new();
+    f.read_to_string(&amp;mut s)?;
+    Ok(s)
+}
+
+fn main() {
+    let str_file = read_text_from_file(&quot;hello.txt&quot;);
+    match str_file {
+        Ok(s) =&gt; println!(&quot;{}&quot;, s),
+        Err(e) =&gt; {
+            match e.kind() {
+                io::ErrorKind::NotFound =&gt; {
+                    println!(&quot;file not found&quot;);
+                },
+                io::ErrorKind::PermissionDenied =&gt; {
+                    println!(&quot;need permission&quot;);
+                },
+                _ =&gt; {
+                    println!(&quot;other error&quot;);
+                }
+            }
+        }
+    }
+}
+</code></pre>
+<h2>Null</h2>
+<p>Null 通常指 0、空指针、空引用，主要用途是描述变量的可行域以为表示的默认的值，不指向任何数据实体，因为它的未指向特性，开发者不允许对它进行任何操作，否则会出错，由于程序运行时变量值的不确定性，编译器无法保证编译阶段不出现空指针引起的异常</p>
+<p>由于 null 引起的缺陷，有一些语言尝试抛弃 null, 但都没有成功，其实 null 有存在的道理，错误并不在与 null，而是对 null 的滥用，现代的编程语言采用了另一种解决方法——在保留 null 机制下，变量默认情况下不可以为 null</p>
+<p>rust 中任何变量的值都不能为 null, 如果变量可能存在一个类似于 null 的值，可以使用 option 枚举类</p>
+<p>以下是 Option 类的定义</p>
+<pre><code class="language-rust">pub enum Option&lt;T&gt; {
+    /// No value.
+    #[lang = &quot;None&quot;]
+    #[stable(feature = &quot;rust1&quot;, since = &quot;1.0.0&quot;)]
+    None,
+    /// Some value of type `T`.
+    #[lang = &quot;Some&quot;]
+    #[stable(feature = &quot;rust1&quot;, since = &quot;1.0.0&quot;)]
+    Some(#[stable(feature = &quot;rust1&quot;, since = &quot;1.0.0&quot;)] T),
+}
+</code></pre>
+<p>以下是一个使用用例：</p>
+<pre><code class="language-rust">fn index_of(arr: &amp;[i32], em: i32) -&gt; Option&lt;usize&gt; {
+    let mut i: usize = 0;
+    while i &lt; arr.len() {
+        if arr[i] == em {
+            return Some(i);
+        }
+        i += 1;
+    }
+    return None;
+}
+
+fn main() {
+    let arr = [1, 2, 3, 4, 5];
+    let index = index_of(&amp;arr, 8);
+    if let Some(i) = index {
+        println!(&quot;{}&quot;, i);
+    }
+    else {
+        println!(&quot;not found&quot;);
+    }
+}
+</code></pre>
+<p>Option 和 Result 一样支持 <code>unwrap</code> 和 <code>expect</code> 方法</p>
+<pre><code class="language-rust">let index = index_of(&amp;arr, 8).unwrap();
+println!(&quot;{}&quot;, index);
+
+let index = index_of(&amp;arr, 8).expect(&quot;not found&quot;);
+println!(&quot;{}&quot;, index);
+</code></pre>
+<blockquote>
+<p>下一章是关于工程文件的，比较重要，还是新开一篇吧</p>
+</blockquote>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

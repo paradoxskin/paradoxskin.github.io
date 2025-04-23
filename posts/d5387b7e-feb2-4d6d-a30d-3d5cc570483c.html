@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>手柄别闲着</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<h1>手柄别闲着</h1>
+<blockquote>
+<p>廉价的复古手柄一直插着电脑, 之前都没太注意, 今天看到了, 就寻思能不能折腾一翻, 结果还真给折腾成了 ()</p>
+</blockquote>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/65b53577.jpg" alt="复古的廉价手柄/廉价的复古手柄"></p>
+<p>这个手柄之前用来玩<code>Mednaffe</code>的 GBA 游戏, 还想用来直播来着, 对了, 我写了一个基于无头浏览器的直播TUI弹幕工具, 要不要也来一篇(不要).</p>
+<h2>1. 思路</h2>
+<p>想起之前装了一个软件, 可以显示调试X11窗口的工具, 但是名字想不起来了, 这确实是我目前使用习惯的一个痛点, 除了做笔记, 另外也没想到什么好的办法.</p>
+<p>第一反应当然是问 GPT:</p>
+<blockquote>
+<p>- Linux下x11有一个软件可以在一个测试窗口里输入, 然后终端里会显示当前的xevent, 那个软件叫什么</p>
+<p>- Linux下用于测试和显示X11事件的软件是<code>xev</code>。<code>xev</code>创建一个窗口，并且会在终端中报告该窗口中发生的所有X事件，如按键、鼠标移动、窗口聚焦等。这对于开发者和系统管理员来说是一个非常有用的工具，用于调试和理解X窗口系统中的事件处理。要使用<code>xev</code>，通常只需在终端中输入<code>xev</code>命令即可。</p>
+<p>󰔓</p>
+</blockquote>
+<p>在<code>xev</code>窗口里测试了下手柄按键, 不出所料, 无事发生, 这说明手柄的事件与键盘不同, 不会发起一个<code>XEvent</code>, 我现在也不太明白<code>Xlib</code>这套东西的具体细节, 到底会不会被<code>wayland</code>替代呢?</p>
+<p>然后我又问GPT:</p>
+<blockquote>
+<p>- 有办法捕获手柄的输入吗</p>
+<p>- 有:</p>
+<ol>
+<li>jtest/evtest</li>
+<li>udev</li>
+<li>写程序读取/dev/input</li>
+<li>使用软件</li>
+</ol>
+</blockquote>
+<p><code>pacman</code>可以直接安装<code>evtest</code>, 试了一下确实可以识别手柄输入, 但是我们当然最终目的是用程序实现</p>
+<blockquote>
+<p>- 有c语言的库支持读取手柄事件吗</p>
+<p>- 有:</p>
+<ol>
+<li>SDL</li>
+<li>GLFW</li>
+<li>linux的evdev</li>
+<li>SFML</li>
+</ol>
+</blockquote>
+<p>没错, 除了<code>evdev</code>, 其他都是用来写游戏用的, 那么如此喜欢游戏的我, 理所当然地选择了<code>evdev</code>.</p>
+<p>然后直接给了我一个demo</p>
+<pre><code class="language-c">#include &lt;fcntl.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;linux/input.h&gt;
+
+int main() {
+    int fd;
+    struct input_event ev;
+    // 替换为你的设备文件路径
+    fd = open(&quot;/dev/input/eventX&quot;, O_RDONLY);
+    if (fd &lt; 0) {
+        perror(&quot;Failed to open device&quot;);
+        return -1;
+    }
+    while (1) {
+        read(fd, &amp;ev, sizeof(struct input_event));
+        printf(&quot;Type: %d, Code: %d, Value: %d\n&quot;, ev.type, ev.code, ev.value);
+    }
+    close(fd);
+    return 0;
+}
+</code></pre>
+<p>经过我的插拔实验, 发现我的手柄设备为<code>/dev/input/event14</code>, 修改之后惊奇的发现居然真可以, 而且还发现和键盘事件不同, 按下按键的时候不会持续发送信号, 按下到松起过程中无论按下的时长, 都是相同事件, 由<code>type</code>, <code>code</code>, <code>value</code>可以定位到按键, 比较有趣的是十字轴, 上和下是同一个<code>code</code>, 而上的<code>value</code> 为<code>0</code>, 下的<code>value</code>为255, 回中的时候有一个<code>127</code>的信号, -&gt;<code>0-127-255</code>.</p>
+<p>到这里我们完全可以自定义想干什么事了, 但是当我拔出手柄的时候就一直输出<code>Type: 0, Code: 0, Value: 0</code>了, CPU占用巨高. 拔出设备之后设备文件应该是被删除了, 但是read到了一堆<code>0</code>, 我们加点简单的判断, 再在外面加一个大循环, 就能实现简单的巡检了</p>
+<pre><code class="language-c">while (1) {
+    fd = open(&quot;/dev/input/event14&quot;, 0);
+    if (fd &lt; 0) {
+        usleep(10000000);
+        continue;
+    }
+    int last = 0;
+    int now = 100;
+    while (1) {
+        read(fd, &amp;ev, sizeof(struct input_event));
+        now = ev.type + ev.code + ev.value;
+        if (last == 0 &amp;&amp; now == 0) break;
+        printf(&quot;Type: %d, Code: %d, Value: %d\n&quot;, ev.type, ev.code, ev.value);
+        last = now;
+    }
+}
+</code></pre>
+<p>可以在无法连接和连上的时候用<code>notify-send</code>来发送通知, 那个<code>usleep</code>的单位居然是微秒(汗)...</p>
+<h2>2. 脑洞</h2>
+<p>现在我们总共有</p>
+<ul>
+<li>上/下/左/右</li>
+<li>A/B/X/Y/L/R</li>
+<li>start/select</li>
+</ul>
+<p>12个按键可以自定义</p>
+<blockquote>
+<p>当然还有组合键可以自定义, 不过我才懒的写</p>
+</blockquote>
+<p>首先, 上和下肯定是用来调整音量的, 这没得抢!</p>
+<p>然后左右用来切换桌面标签比较合理, 之前写了跳转相邻的标签的函数, 之前还想和切换显示屏的快捷键换一下来着...</p>
+<blockquote>
+<p>到这里我们已经可以确定要和<code>dwm</code>联动了</p>
+</blockquote>
+<p>其他几个按键随便分配几个得了, 随便绑几个<code>dwm</code>函数得了</p>
+<h2>3. 折腾</h2>
+<p>要联动<code>dwm</code>, 肯定意味着又要动源码了()</p>
+<p>思路模仿一下按键, <code>dwm</code> 的按键机制之前研究VNC输入的时候探索过, 用一个特殊的按键来取消所有<code>dwm</code>的快捷键, 要不要水一篇来着(又来!). 写在<code>config.h</code>里的<code>keys[]</code>会在<code>dwm</code>初始化的时候用<code>XGrabKey</code>绑定上对应制定的函数和参数, 这就涉及到<code>X11</code>的通信了, 什么<code>window</code>, <code>client</code>的概念就都要扯出来了, 就不扯了哈.</p>
+<p>那我们能不能把手柄按键也绑定上处理函数呢, 答案是不行, 因为按下手柄按键这个动作, 压根不会产生<code>XEvent</code>, 怎么<code>XGrabKey</code>...</p>
+<p>我们再看一下我们有什么, 我们有一个死循环, 可以检测设备数据, 然后识别出按键后进行处理, 关键就是这是一个循环, 有两条思路, 一个思路是把检测事件放在<code>dwm</code>的单次循环中, 一个是创建另外一个线程, 用来监听手柄输入, 然后调用dwm函数. 然而看一下这段<code>dwm</code>的源码</p>
+<pre><code class="language-c">void
+run(void)
+{
+    XEvent ev;
+    /* main event loop */
+    XSync(dpy, False);
+    while (running &amp;&amp; !XNextEvent(dpy, &amp;ev))
+        if (handler[ev.type])
+            handler[ev.type](&amp;ev); /* call handler */
+}
+</code></pre>
+<p>懂了吧, <code>dwm</code>的运行是阻塞的, 只管处理<code>XEvent</code>, 那么自然就没有选项了, 然后知道了<code>linux</code>源码里实现多线程的库一般是<code>pthread</code>, 我都没写过<code>c</code>的多线程, 然后经过一顿暴改, 改的很骚, 直接把<code>dwm</code>的<code>Key</code>类型造抄过来</p>
+<pre><code class="language-c">typedef struct {
+    unsigned int type;
+    unsigned int code;
+    unsigned int value;
+    void (*func)(const Arg *);
+    const Arg arg;
+} GP;
+
+typedef struct {
+    unsigned int mod;
+    KeySym keysym;
+    void (*func)(const Arg *);
+    const Arg arg;
+} Key;
+</code></pre>
+<p>非常的优雅</p>
+<pre><code class="language-c">static const GP gps[] = {
+    { 3, 1, 0,   spawn, SHCMD(&quot;~/.scripts/volup.sh&quot;)},
+    { 3, 1, 255, spawn, SHCMD(&quot;~/.scripts/voldown.sh&quot;)},
+    { 3, 0, 0,   goprevvis, {0}},
+    { 3, 0, 255, gonextvis, {0}},
+};
+</code></pre>
+<p>然而, 残酷的现实告诉我, 折腾不可能这么快, 在我刚测试完声音调节的时候, 已经想开香槟的时候, 发现切换左右的时候, 虽然功能是正常的, 但是状态栏的颜色开始乱跳, 这怎么能忍!</p>
+<p>我怀疑是多线程导致绘制冲突了, 然后我问了下GPT</p>
+<blockquote>
+<p>- 如果我在dwm源码中使用多线程会不会不太好</p>
+<p>- 在 <code>dwm</code> 源码中引入多线程需要谨慎考虑，因为这可能违背了 <code>dwm</code> 的设计哲学和原始意图。<code>dwm</code> 以其简洁性、高效性和单线程架构而著称，这些特点使得其代码易于理解和维护。在 <code>dwm</code> 中引入多线程可能会导致以下几个问题：</p>
+<ul>
+<li>xxx</li>
+<li><strong>设计哲学冲突</strong>: <code>dwm</code> 的设计哲学强调简单和高效。多线程可能会与这种哲学相冲突，尤其是如果多线程的引入并没有显著改善性能或功能。</li>
+<li>xxx</li>
+</ul>
+</blockquote>
+<p>看到 设计哲学冲突 的时候我感觉自己像犯了罪, 但是我都写到这了, 总要写完吧()</p>
+<p>直接给自己的猜想确症了, 那么smart boy, 你能想到解决方案吗?</p>
+<p>Bingo! 不用线程调函数, 而是用线程发起<code>XEvent</code>, 显而易见的非常不优雅()</p>
+<p>又经过一翻折腾, <code>直接XEvent失败 -&gt; 使用XTest可以发送 -&gt; 试图自定义键码失败 -&gt; 直接用绑定的按键</code>, 终于把这东西写完了, 然后我开了给新分支存这个代码, 取名为<a href="https://github.com/paradoxskin/dwm/commits/b7f9e140915aa1ca03f65aa24efe6e78f4e53c26/"><code>suck</code></a>, 不动<code>master</code>, 因为仔细分析一下就可以知道, 这部分的代码完全可以分离出来. 于是建了一个<a href="https://github.com/paradoxskin/gamepadcon">新仓库</a>放分离出来的代码</p>
+<blockquote>
+<p>显然这个方法不是很优雅, 那是因为我还欠缺对<code>X11</code>的理解, 深入学习之后应该还有优雅的实现方法. 但是我至少折腾出来了~</p>
+</blockquote>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/65b54895.jpg" alt="贫穷的快乐"></p>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

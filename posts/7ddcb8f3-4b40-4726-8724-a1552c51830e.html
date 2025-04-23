@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>qmk 固件 tap dance</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<h2>Tap Dance</h2>
+<blockquote>
+<p>又开始折腾键盘的起因是我想把机械键盘拿去公司<!--more-->，然后选择带AP2-红轴去，然后闲着没事在 github 上搜了一下 annepro，结果搜到一个叫open anne pro的小组</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/image-20230708101528290.png" alt="image-20230708101528290"></p>
+<p>起初以为是官方的固件维护小组，后来去google了下，发现这个小组是非官方的，并且可以完成对AP2的qmk固件刷入，看的我直接心动了，虽然AP2的原厂固件已经算自由，用了keychron之后AP2给我最大的膈应就是tap层，AP2的tap层真是只有tap，只能按一下算一下，但是开源固件的tap可以先tap一下，然后按住，就可以一直算tap了</p>
+<p><a href="https://openannepro.github.io/">给AP2大换血</a></p>
+</blockquote>
+<blockquote>
+<p>虽然自定义的还算舒服，但是使用预置的按键实现tap的时候还是有一定限制，比如说LT只能hold指定一个layer，tap指定一个basic key，MT的前者为一个mod key，没有 basic key 和 basic key的，所以我就搜索了相关的内容，发现了tap dance这个东西（虽然这东西官方文档里有写www</p>
+</blockquote>
+<h3>预置函数</h3>
+<ul>
+<li><p><code>ACTION_TAP_DANCE_DOUBLE(kc1, kc2)</code>，tap 一次 kc1，tap 两次 kc2</p>
+</li>
+<li><p><code>ACTION_TAP_DANCE_DUAL_ROLE(kc, layer)</code>，tap 一次 kc，tap 两次等效为 <code>TO(layzer)</code></p>
+</li>
+</ul>
+<blockquote>
+<p>TO(layer), Turns on <code>layer</code> and turns off all other layers, except the default layer</p>
+<p>Don’t forget to add a way back to another layer when using this, as you  might get stuck on the target layer if you forget to do so. You can plug out your keyboard and plug it back in to revert to your default layer,  but it’s better to avoid the hassle by including a <code>TO(layer)</code> key on the target layer.</p>
+<p>这个是什么？待试验</p>
+</blockquote>
+<p>这两个预置函数能满足大多数使用需求，但是肉眼可见，有一定局限性，就是只能发送 basic keycodes，不够自定义，不过想要全自定义也不是很难（貌似能实现ctrl和alt与基本按键的嵌套，不过</p>
+<h3>概念</h3>
+<ul>
+<li><p>Tapping term，默认的tapping term是200ms，它代表如果你在200ms内松开按键就视作为tap，超过就视作为hold，<strong>它同样也意味着如果你在上一次 tap 的 200ms 内再次 tap 会给 tap 计数器 + 1</strong>，下图第二幅为tap两次的情况。你可以通过在 <code>config.h</code> 里 <code>#define TAPPING_TERM 300</code> 来修改这个时间<img src="https://thomasbaart.nl/wp-content/uploads/2018/12/TapDance_TappingTerm-1-1024x421.png" alt="https://thomasbaart.nl/wp-content/uploads/2018/12/TapDance_TappingTerm-1-1024x421.png"></p>
+</li>
+<li><p>ANSI vs ISO，ANSI的全称为 American National Standards Institute，ISO的全称为International Organization for Standardization，区别在于键位的布局和形状上，查看图片一目了然，我一直用的都是ANSI，都不知道ISO布局，事实上不管什么比例的键盘使用ISO的人都占少数，但是这种回车还是蛮美观的，不过回车的距离相对来说远了点，所以不大好用<img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/isovsansi.png" alt="isovsansi"></p>
+</li>
+</ul>
+<center>ISO & ANSI</center>
+<h3>自定义！</h3>
+<ul>
+<li><p><code>ACTION_TAP_DANCE_FN(fn)</code>，当你在输入完 tap 之后的 <code>TAPPING_TERM</code> 毫秒之后，将调用参数里的函数，下图中演示为两次，实际输入中不一定要输入两次，可以输入更多次数（<img src="https://thomasbaart.nl/wp-content/uploads/2018/12/TapDance_TappingTerm_FN-1024x229.png" alt="img">当然，这个fn是有要求的，<span id="mark">要求为 <code>void your_function_name(qk_tap_dance_state_t *state, void *user_data)</code></span>，在这个函数里，你可以通过 <code>state-&gt;count</code> 获取到按下按键的次数，你可以用 <code>ACTION_TAP_DANCE(function_name)</code> 注册到按键上</p>
+</li>
+<li><p><code>ACTION_TAP_DANCE_FN_ADVANCED(on_each_tap_fn, on_dance_finish_fn, on_dance_reset_fn)</code>，这个函数可以让你在每次 tap 的时候都执行 <code>on_each_tap_fn</code>，然后最后输入完毕之后再调用 <code>on_dance_finish_fn</code>，重置状态之后调用 <code>on_dance_reset_fn</code><img src="https://thomasbaart.nl/wp-content/uploads/2018/12/TapDance_TappingTerm_FN_Advanced-1024x248.png" alt="img">每个函数参数都是可选项，可以用 <code>NULL</code> 用来表示不需要再某个函数调用函数，函数要求和<a href="#mark">上面一样</a>，在按下按键的一瞬间，<code>on_each_tap_fn</code> 被调用，而不是在按键松开的时候被调用它，当 tap dance 结束时，<code>on_dance_finished_fn</code> 被调用，当以下情况时 tap dance 会被结束：</p>
+<ul>
+<li><code>TAPPING_TERM</code> 里有其他按键被按下，函数会被调用，其中 <code>state-&gt;interrupted</code> 会变成 <code>true</code></li>
+<li><code>TAPPING_TERM</code> 里没有任何按键被按下</li>
+</ul>
+<p><img src="https://thomasbaart.nl/wp-content/uploads/2018/12/TapDance_TappingTerm_FN_Advanced_Interrupt-1024x286.png" alt="img"></p>
+<p>最后，tap dance 被重置，调用 <code>on_dance_reset_fn</code>，一个按键在以下情况下会被 reset：</p>
+<ul>
+<li><code>on_dance_finished_fn</code> 执行结束</li>
+<li><code>state-finished</code> 被设置成 <code>true</code>，你可以在 <code>on_each_tap_fn</code> 中这么干，这样 <code>on_dance_finished_fn</code> 就会被跳过，直接去调用 <code>on_dance_reset_fn</code></li>
+</ul>
+<p>你能用 <code>on_each_tap_fn</code> 跳过 <code>on_dance_finished_fn</code> 但是没法跳过 <code>on_dance_reset_fn</code></p>
+</li>
+<li><p><code>ACTION_TAP_DANCE_FN_ADVANCED_TIME(on_each_tap_fn, on_dance_finished_fn, on_dance_reset_fn, tap_specific_tapping_term)</code>，可以让你在之前的基础上设置局部的 <code>TAPPING_TERM</code></p>
+</li>
+</ul>
+<h3>使用示范</h3>
+<p>使用 tap dance 的步骤基本一致：</p>
+<ol>
+<li>确保在你的 <code>rules.mk</code> 里面开启了 <code>TAP_DANCE_ENABLE</code> ，<code>TAP_DANCE_ENABLE=yes</code> ，如果你没有 <code>rules.mk</code> 文件，可以在 <code>keymap.c</code> 的目录下创建它，里面只需要写上一行文本 <code>TAP_DANCE_ENABLE=yes</code> 即可</li>
+<li>为 tap dance 的按键们定义按键名的枚举项，你可以用自己喜欢的名字命名，作者喜欢用 <code>TD_</code> 因为这样让他知道这是一个tap dance，当你定义好了之后就可以用 <code>TD(tap dance的按键名)</code> 来绑定到按键上了</li>
+<li>如果你想要使用上述的几个自定义函数，那么你需要在注册他们之前定义好这些函数</li>
+<li>使用 <code>tap_dance_actions[]</code> 来注册 tap dance 的序列</li>
+</ol>
+<p>下面是具体的实例</p>
+<h4>双击</h4>
+<p>双击是最简单的 tap dance，我们来写一下Q和W的双击，把下面这段写进你的 <code>keymap.c</code> 里</p>
+<pre><code class="language-c">// Tap Dance declarations
+enum {
+    TD_Q_W,
+};
+
+// Tap Dance definitions
+tap_dance_action_t tap_dance_actions[] = {
+    // Tap once for Escape, twice for Caps Lock
+    [TD_Q_W] = ACTION_TAP_DANCE_DOUBLE(KC_Q, KC_W),
+};
+
+// Add tap dance item to your keymap in place of a keycode
+const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
+    // ...
+    TD(TD_Q_W)
+    // ...
+};
+</code></pre>
+<p>官方文档给的例子很好，建议<a href="https://docs.qmk.fm/#/feature_tap_dance?id=examples">直接参考官方的</a></p>
+<h3>我的</h3>
+<p>我主要实现以下功能：</p>
+<ul>
+<li>L5#1 要能做到 tap 时为 <code>&lt;C-e&gt;</code> (用来snippet) ，hold 时候为普通的 <code>&lt;Ctrl&gt;</code></li>
+<li>L5#2 tap 时为 <code>&lt;c-s&gt;</code>，hold 时为普通 Fn2</li>
+<li>数字键双击hold为fn层（？不确定，感觉不稳，还是之后用锁吧</li>
+</ul>
+<p>主要参考官方的第三个例子(ctrl cv)</p>
+<p>切换方案，tap和hold的分界线还是太不明显了，这个调节起来相当困难，所以把前两条改成TD，但是貌似不支持 MO()，所以之后再说，妈的睡了！</p>
+<blockquote>
+<p>实际上上面提到的五个函数有几个更改过名字了，但是功能一致，一切一官方文档为准</p>
+</blockquote>
+<hr>
+<blockquote>
+<p>参考：</p>
+<ul>
+<li><a href="https://thomasbaart.nl/2018/12/13/qmk-basics-tap-dance/">QMK Basics: Tap dance, or how to let a key do more with one, two, three</a></li>
+<li><a href="https://docs.qmk.fm/#/feature_tap_dance?id=tap-dance-a-single-key-can-do-3-5-or-100-different-things">Tap Dance: A Single Key Can Do 3, 5, or 100 Different Things</a></li>
+<li><a href="https://www.reddit.com/r/olkb/comments/lpea1h/qmk_tapdance_help/">QMK tapdance help</a></li>
+</ul>
+</blockquote>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

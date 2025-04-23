@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>学习vim 第1章</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<h1>第一章 开始VIM</h1>
+<p>在这章节里，你会学习如何用不同的方法在终端启动VIM，当我写这篇指南的时候我正使用着Vim8.2。如果你用Neovim或者更老的Vim版本，应该问题不大，但是<!--more-->要注意可能有一些指令会无法使用。</p>
+<h2>安装</h2>
+<p>我不会太详细地介绍如何在一台机子上安装VIM。幸亏绝大多数以Unix为核心的电脑都自带了VIM。如果没有自带，大多数发行版也都有一些介绍如何安装VIM。</p>
+<p>以下是下载信息，一个是VIM的官方下载网站，还有一个是VIM的官方github</p>
+<p>1.<a href="https://www.vim.org/download.php">VIM网站</a>
+2.<a href="https://github.com/vim/vim">VIM github</a></p>
+<h2>VIM指令</h2>
+<p>现在你已经装上了VIM，在terminal中运行下面这句代码:</p>
+<pre><code class="language-shell">vim
+</code></pre>
+<p>你应该看到了一个介绍的屏幕。这就是你编辑文本的地方。不像其他文本编辑器和IDE，VIM是一个模式编辑器。如果你想要打&quot;hello&quot;这个单词，你需要先按下i键转换到插入模式，具体按键是<code>ihello&lt;Esc&gt;</code>。</p>
+<h2>退出VIM</h2>
+<p>有多种方式退出VIM，其中最常用的命令就是输入<code>:quit</code>
+当然你可以用缩写版本的命令<code>:q</code>。这个命令是在命令行模式(另一个VIM模式)下输入的行命令。如果你在普通模式下按下<code>:</code>，光标会移动到屏幕的底部，在那里你可以输入一些命令。你会在第15章节学习到命令行模式。如果你在插入模式按下<code>:</code>，那么你就会得到冒号的字符。这种情况下你需要按下<code>&lt;Esc&gt;</code>来回到普通模式。没错，在插入模式下按下<code>&lt;Esc&gt;</code>能让你回到普通模式。</p>
+<h2>保存一个文件</h2>
+<p>如果你想要保存做出的修改，请输入指令<code>:write</code>
+你同样可以用它的缩写版本<code>:w</code>。如果这是一个新的文件，你需要给它一个名字。让我们给它取个<code>file.txt</code>，只需要运行这条指令<code>:w file.txt</code>
+如果你想保存然后退出，你可以组合<code>:w</code>和<code>:q</code>指令：<code>:wq</code>
+如果你不想保存，添加强制执行符<code>!</code>，执行<code>:q!</code>
+还有其他方式去退出VIM，但这些指令已经足够你的日常使用了。</p>
+<h2>帮助</h2>
+<p>接下来我会向你介绍非常多的VIM帮助界面。你可以输入指令<code>:h {some-command}</code>(<code>:h</code>更短)来获取帮助。你可以在<code>:h</code>后跟上一个话题，或者是一个指令的名字 作为参数。比如说，我想学习多种方式退出VIM，输入<code>:h write-quit</code>
+那我是怎么知道要搜索&quot;write-quie&quot;的呢？其实我并不需要知道，我只是按下<code>:h</code>，然后输入&quot;quit&quot;，然后按<code>&lt;Tab&gt;</code>。VIM显示相关的关键词供你选择。如果你想找什么东西(我希望VIM可以做到)，只需要按下<code>:h</code>，输入一些关键词，然后<code>&lt;Tab&gt;</code>。</p>
+<h2>打开一个文件</h2>
+<p>当你想要在terminal的VIM中打开一个叫做 hello1.txt 的文件时，运行</p>
+<pre><code class="language-shell">vim hello1.txt
+</code></pre>
+<p>你也可以一次性打开多个文件:</p>
+<pre><code class="language-shell">vim hello1.txt hello2.txt hello3.txt
+</code></pre>
+<p>VIM会在不同的buffers里，不知道buffers是啥？别担心，你会在下一节里面学到buffers。</p>
+<h2>命令行参数</h2>
+<p>你可以在命令行终端里在<code>vim</code>后面加不同的参数和选项。</p>
+<p>比如你想要看一下你用的vim是什么版本的，运行</p>
+<pre><code class="language-shell">vim --version
+</code></pre>
+<p>它会告诉你VIM的版本 和 用<code>+</code>和<code>-</code>标记所有可用的功能和不可用的功能。在这份指南中，要求启用某些功能。比如，你会在后面一些章节里用<code>:history</code>浏览VIM的命令行历史。但你的VIM需要有<code>+cmdline_history</code>(或者<code>+cmdline_hist</code>?)才能这么玩。你刚刚安装的VIM很有可能具备所有必要性的功能，特别是从那些热门站点下载的。</p>
+<p>很多在命令行终端能执行的命令同样可以在VIM中执行，比如上面那条查看VIM版本命令，你可以</p>
+<pre><code class="language-shell">:version
+</code></pre>
+<p>如果你想打开<code>hello.txt</code>的同时想要执行一个指令，你可以在<code>vim</code>指令后加上<code>+{cmd}</code>参数。</p>
+<p>在VIM里，你可以用<code>:s</code>命令来替换文本(<code>:subsitute</code>的缩写)。如果你想要打开<code>hello.txt</code>的同时把所有的&quot;pancake&quot;单词替换成&quot;bagel&quot;单词，运行</p>
+<pre><code class="language-shell">vim +%s/pancake/bagel/g hello.txt
+</code></pre>
+<p>这条命令同样可以被堆起来用</p>
+<pre><code class="language-shell">vim +%s/pancake/bagel/g +%s/bagel/egg/g +%s/egg/donut/g hello.txt
+</code></pre>
+<p>VIM会把所有的&quot;pancake&quot;替换成&quot;bagel&quot;，然后把所有的&quot;bagel&quot;替换成&quot;egg&quot;，然后把所有的&quot;egg&quot;替换成&quot;donut&quot;(你将会在后面的章节里学到替换操作)。</p>
+<p>你同样可以用<code>c</code>选项来替换掉<code>+</code></p>
+<pre><code class="language-shell">vim -c %s/pancake/bagel/g +%s/bagel/egg/g +%s/egg/donut/g hello.txt
+vim -c %s/pancake/bagel/g hello.txt
+</code></pre>
+<h2>打开多个窗口</h2>
+<p>你可以用<code>o</code>和<code>O</code>分别在VIM中水平和垂直分屏。</p>
+<p>你想在VIM中打开两个水平分开的窗口，运行</p>
+<pre><code class="language-shell">vim -o2
+</code></pre>
+<p>打开五个水平分开的窗口，运行</p>
+<pre><code class="language-shell">vim -o5
+</code></pre>
+<p>打开五个水平分开的窗口，最前面两个是hello1.txt和hello2.txt</p>
+<pre><code class="language-shell">vim -o5 hello1.txt hello2.txt
+</code></pre>
+<p>然后下面是垂直分开的三个指令</p>
+<pre><code class="language-shell">vim -O2
+vim -O5
+vim -O5 hello1.txt hello2.txt
+</code></pre>
+<h2>关闭</h2>
+<p>如果在编辑中想要关闭VIM，你可以按下<code>Ctrl-z</code>。你同样可以用<code>:stop</code>和<code>:suspend</code>命令。当你想要打开之前关闭的VIM，在命令行终端里输入<code>fg</code>(仅限Linux)。</p>
+<h2>睿智地启动VIM(Starting Vim the Smart Way</h2>
+<p>你可以在<code>vim</code>命令后面加一些不同的指令和参数，就像其他终端命令一样。命令行指令(+{cmd})是其中一种参数。当你通过这篇指南学到了更多的命令，看看你能不能将这个运用在启动上。VIM作为一个终端命令，你可以用其他终端命令来组合<code>vim</code>。如果说你可以用<code>ls -l|vim -</code>把<code>ls</code>的输出重定向到 Vim 中。(<code>vim -</code>是输入重定向 <code>ctrl-z</code>是<code>EOF</code></p>
+<p>想学更多VIM的终端指令，试试<code>man vim</code>。想学更多VIM的，就跟着<code>:help</code>指令一起继续读下去把~</p>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

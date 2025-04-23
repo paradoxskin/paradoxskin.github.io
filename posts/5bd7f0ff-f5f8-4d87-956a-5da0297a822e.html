@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>rust 俄罗斯方块</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<h2>前言</h2>
+<p>五一期间在家闲着无聊，就想用学这么多天的 rust 写一个程序玩玩<!--more-->，前段时间刚看了俄罗斯方块的电影，对那个<code>[]</code> 作为方块的程序很感兴趣，刚好接触到了 <a href="https://docs.rs/termion/latest/termion/">termion</a> 这个第三方库，就开始折腾了</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/oldestTetris.jpg" alt="oldestTetris"></p>
+<p>rust 其实不适合写游戏</p>
+<p>但是游戏本质很简单，就是一个一直运行的程序，显示画面给玩家，玩家做出控制，程序根据玩家给出的指示做出动作，仅此而已</p>
+<p>说白了就是开发应用程序，只不过开发出来的应用程序没什么用处，只是满足无聊的人，你情我愿，浪费时间罢了</p>
+<p>但是游戏也可以做的有自己的艺术风格，为了实现艺术追求而做游戏，像 风之旅人、sable 等都很有自己的美术特色。但是这显然不是当前主流游戏所提倡的，游戏早就不是游戏开发者实现自我追求的净土，而是商业竞争的另一片市场，赚钱是首要任务，这也是独立游戏开发需要面对的平衡，胎死腹中 还是 众望所归</p>
+<p>我们所处的就是现实，现状就是最好的结论</p>
+<h2>准备工作</h2>
+<p>一个最基础的俄罗斯方块包含，地图、当前下落方块、计分板这三个内容，其中下落的方块要完成旋转、下落、碰撞判断等玩家操作的指令，</p>
+<p>俄罗斯方块有7种，按照不同方块的外形分别被称为 ZSOTLJI 块</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/tetris7packs.jpg" alt="tetris7packs"></p>
+<p>既然是游戏，那么就需要绘制游戏画面，我们要在命令行上绘制画面，就需要先了解如何绘制，命令行有两种模式，一种是规范模式(canonical mode)，也就是逐行处理命令，只有当用户输入回车之后才会开始执行，另一种是原始模式(raw mode)，程序可以读取用户输入的每个字符</p>
+<p>显然我们需要进入到原始模式中，而第三方库 termion 正好能做到，除此之外，termion 还能：</p>
+<ul>
+<li>移动光标</li>
+<li>处理输入事件</li>
+<li>为文本设置样式、颜色</li>
+<li>清屏</li>
+</ul>
+<p>等</p>
+<p>具体使用我就不介绍了，可以看 <a href="https://github.com/redox-os/termion/tree/master/examples">github 的 example</a>，基本功能都能实现</p>
+<p>还需要知道现代俄罗斯方块的一个随机生成方块的机制，7-packs，简而言之就是每 7 块下落的方块里包含各类方块各一个，这个可以用洗牌算法实现，常用的是 <a href="https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle">Fisher-Yates</a></p>
+<p>最后一点就是方块之间的旋转，玩过现代方块的都知道，旋转在如今已经被改良了，对战块里有能造成强大增益伤害的 T-Spin 机制，当然，我们不需要去实现那种，要是实现起来又是巨大的工作量，我们使用的旋转是这样的</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/645a3bce.png" alt="645a3bce"></p>
+<p>大概就这么点准备工作就可以写出一款俄罗斯方块了</p>
+<h2>思路</h2>
+<p>先来想一想一个俄罗斯方块的基本思路：</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/tetris_init.png" alt="tetris_init"></p>
+<p>游戏的初始化时先生成一包方块，好像没必要在这里生成，但是迟早要生成的就无所谓了，然后把终端模式变为原始模式，然后要开始监听键盘，值得一提的是，默认的监听是阻塞式的，这意味着如果使用的是默认，那么程序就会一直处于挂起状态，直到玩家有操作输入才会响应，显然不符合游戏里的读取键盘事件，所以要使用非阻塞式的，然后就正式进入了 Game Loop</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/tetrisgameloop.png" alt="tetrisgameloop"></p>
+<p>Game Loop 的写法其实是来源于之前在 pico-8 上的游戏开发经验，里面有三个主函数，<code>_init()</code> <code>_update()</code> <code>_draw()</code> ，每帧里面，都会依次执行 _update 和 _draw，所以这里就照搬过来了，我问过 gpt, 这其实就是最早低性能游戏的逻辑，这种游戏逻辑还有优化的空间，比如说并发线程之类的</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/tetrisupdate.png" alt="tetrisupdate"></p>
+<p>为什么不把键盘监听放这里呢？因为那个监听的机制是一个处理队列，你输入了之后每帧读取一次操作，也就是说两次的操作是需要用同一个 stdin 的，如果使用新建的 stdin 由于每帧的事件太短，没有阻塞是没法相应键盘事件的，所以我不想给 update 传参，就没这么做（懒）</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/drawtetris.png" alt="drawtetris"></p>
+<p>这就没什么好说的了</p>
+<p>下面放代码了嗷，自己读代码也是一项重要的能力，我才不要每行都讲呢</p>
+<p><a href="https://github.com/paradoxskin/term_tetris">github</a></p>
+<h2>最终</h2>
+<p>最后算是忍着生理和心理上的厌恶把它写完了，我实在是想优化它，一开始的结构没有想好，但是理想的模型要怎么设计我也没法完整地想出来，只有一个简单的雏形</p>
+<p>比如说，因为绘制是一件很耗资源的事情，我不应该每次 Clear::All 再全部重新绘制，而是应该只绘制那些被改变了的点，我想这也是为什么我运行程序的时候，我的轻薄本电脑风扇狂转的原因了。这里可以用两个相同的 Vec&lt;Vec&lt;...&gt;&gt; 来记录前后的地图，然后遍历对比就知道哪些是需要重新绘制，那些没必要再去绘制了，虽然看上去实现很容易，为什么没有去这么做呢？因为我的绘制是将地图作为已固定的方块，而非显示的方块，也就是说我当前下落的方块，是独立于地图的，如果需要地图来显示绘制画面的花，那么下落过程会是一件需要改动很多代码的事，如果重构的话，我会选择地图独立于绘制地图，地图和当前下落的方块绘制到绘制地图上，而不是直接绘制到终端里，这样分层处理一定程度能在代码逻辑上独立字符绘制和方块处理</p>
+<p>另外的点就是，没有游戏机里那种手感，不知道为什么，没法边移动边旋转，可能是因为监听事件不是独立线程的缘故。除此之外，还可以加点什么预览下几个方块的功能和 hold 功能，我都是懒得做所以没做，后面如果没事干想重写代码可以加上</p>
+<h2>后言</h2>
+<p>挺喜欢 rust 这门语言的，但是可惜暂时国内没法拿它作为我的饭碗，只能作为业余爱好写写东西（已经写了一个自己定制的日历（低情商：功能很少；高情商：可拓展性很强），enigma机写了一半不想写了，还有 eva 终里的那个游戏机我也想还原），时间也仿佛在告诉我该妥协了，但我相信语言都是相通的，像旅游一样，要到当地感受人文气息，才能有所触动，只是看看图片是没法引起共鸣的，只有尝试使用过不同的语言文化才能理解人们为什么如此评价它，只有专精下去，才能有所收获，浮于表面永远不是一个好的选项，仔细想想为什么我讨厌 java, 主要是网上的评价，在独立环境下编译麻烦，即使这门语言已经烂大街了，但是从原理方面讲解它编译相关学习资料少，多的是没什么营养的实用主义，vim 不好写 java，需要使用更庞大的 IDE... 但是这些都只是偏见，我并没有真正感受过 java 的文化，也许是时候放下这些陈建和幼稚的想法，去感受它了 ☕</p>
+<blockquote>
+<p>「独步天下，吾心自洁，无欲无求，如林中之象 。」 - ghost in shell II</p>
+</blockquote>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>rust学习笔记 5</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<h2>工程组织</h2>
+<p>什么是软件？</p>
+<p>软件是由众多包含<!--more-->二进制程序的文件以及它们的配置文件组成的，其中有源代码编译生成的只有二进制程序文件，这类文件根据用途的不同分为：</p>
+<ul>
+<li>静态链接库：在编译、构建软件过程中提供编译所需要的二进制程序</li>
+<li>可执行程序：程序执行的入口，可以被计算机用户直接调用</li>
+<li>动态链接库：主要为运行中的程序提供部分程序支持，可以被运行中的程序调用</li>
+</ul>
+<p>rust 中有三个重要的组织概念：</p>
+<ul>
+<li>箱（Crate）：对二进制文件的抽象</li>
+<li>包（Package）：箱的非空集合</li>
+<li>模块（Module）：树状的开发结构，一个 <code>.rs</code> 源文件就是一个模块</li>
+</ul>
+<h3>模块</h3>
+<p>模块可以层层包含，如下是一段关于法治国家的程序：国家 nation 包含政府 government、议会 congress 、法院 court ，分别掌管 行政 govern 、立法 legislate 、司法 judicial</p>
+<pre><code class="language-rust">mod nation {
+    mod government {
+        fn govern() {}
+    }
+
+    mod congress {
+        fn legislate() {}
+    }
+
+    mod court {
+        fn judicial() {}
+    }
+
+}
+</code></pre>
+<p>rust 的域分隔符号是 <code>::</code>，如果要调用行政函数 govern 可以这样：<code>nation::government::govern()</code>，也可以用完整路径表示 <code>crate::nation::goverment::govern()</code></p>
+<blockquote>
+<p>完整的路径由 crate 开始，由于默认情况下，模块中的元素是 private 的，不能被外部访问，所以一般是不能像上面那样直接访问的</p>
+</blockquote>
+<h2>访问权</h2>
+<p>访问权就是规定了某个元素是否能被其所处域以外的函数使用的控制机制</p>
+<p>和其他语言类似，rust 中也有 public 和 private 两种访问权，rust 中的 private 和 go 一样是默认的，go 中首字母大写是 public, 而 rust 中 <code>pub</code> 关键字代表了 public</p>
+<h3>模块访问权</h3>
+<pre><code class="language-rust">mod nation {
+    mod government {
+        mod hello {
+            pub fn xx() {}
+        }
+        fn govern() {}
+    }
+
+    pub mod congress {
+        pub fn legislate() {
+            a();
+        }
+        fn a() {
+            legislate();
+        }
+    }
+
+    mod court {
+        fn judicial() {
+            super::congress::legislate();
+            // super::government::hello::xx(); 无法访问到
+        }
+    }
+
+}
+fn main() {
+    nation::congress::legislate();
+}
+</code></pre>
+<p>上面的代码是可以通过编译的，注意 20 行的 <code>super</code> 代表上级模块，仔细观察可能就能领悟其中的奥妙</p>
+<h3>结构体访问权</h3>
+<pre><code class="language-rust">mod house {
+    pub struct Breakfast {
+        pub toast: String,
+        fruit: String,
+
+    }
+
+    impl Breakfast {
+        pub fn summer(toast: &amp;str) -&gt; Breakfast {
+            Breakfast {
+                toast: String::from(toast),
+                fruit: String::from(&quot;apple&quot;),
+            }
+        }
+    }
+}
+
+fn main() {
+    let mut meal = house::Breakfast::summer(&quot;黑麦&quot;);
+    println!(&quot;this is a {}吐司&quot;, meal.toast);
+    meal.toast = String::from(&quot;小麦&quot;);
+    println!(&quot;this is a {}吐司&quot;, meal.toast);
+    // println!(&quot;this is a {}&quot;, meal.fruit); 无法访问
+}
+</code></pre>
+<p>这段结构体写在了一个模块里，想从 main 函数里使用它就必须申明为 public 的</p>
+<p>结构体默认状态下访问权也是私有的，仅能被其声明处同层次的元素访问，结构体的字段也是，如果想被模块外的元素访问，必须声明公共访问权，这就是为什么不能打印水果的原因</p>
+<p>以上都是抄原文的，其实既然 <code>.rs</code> 就是一个模块的话就会好理解一点，模块内能随意访问，而源文件和源文件之间要想沟通就需要申明访问权</p>
+<h3>枚举类访问权</h3>
+<pre><code class="language-rust">mod a_module {
+    pub enum Person {
+        King {
+            name: String
+        },
+        Queen
+    }
+}
+
+fn main() {
+    let person = a_module::Person::King { name: String::from(&quot;Blue&quot;) };
+    if let a_module::Person::King { name } = person {
+        println!(&quot;Name is {}&quot;, name);
+    }
+}
+</code></pre>
+<p>枚举项的属性<strong>不同</strong>于结构体的字段需要单独声明公共所有权，只要访问到枚举类，就能访问到其枚举项的属性</p>
+<h2>use</h2>
+<p>有点类似 C++ 中的 <code>use namespace</code> 或者是 python 中的 <code>import xxx as yyy</code></p>
+<pre><code class="language-rust">mod nation {
+    pub mod goverment {
+        pub fn govern() {}
+    }
+    pub fn govern() {}
+}
+
+use nation::goverment::govern as p;
+use nation::govern;
+
+fn main() {
+    govern();
+    p();
+}
+</code></pre>
+<p>use 可以有效解决模块路径过长的问题，有时候如果存在两个相同的名称，且同样需要导入，这时候可以使用关键字 <code>as</code> 添加别名（line 9）</p>
+<p>use 还可以和 pub 关键字一起使用，我虽然没试过，但是我感觉这会有冲突，这个语法存在的意义是什么？</p>
+<blockquote>
+<p>草，书上的例子已经过不了编译了</p>
+<p>下面是过不了编译的！</p>
+<pre><code class="language-rust">mod nation {
+  pub mod goverment {
+      pub fn govern() {}
+  }
+  pub use goverment::govern as p;
+}
+</code></pre>
+</blockquote>
+<p>要这样</p>
+<pre><code class="language-rust">mod nation {
+    pub mod goverment {
+        pub fn govern() {}
+    }
+    pub use self::goverment::govern as p;
+}
+
+fn main() {
+    nation::p();
+}
+</code></pre>
+<p>我还是不知道这有什么存在的意义（？</p>
+<h2>标准库</h2>
+<p>终于到了激动人心的技术爆炸时刻！</p>
+<p>调用标准库很简单</p>
+<pre><code class="language-rust">use std::f64::consts::E;
+
+fn main() {
+    println!(&quot;{}&quot;, std::f64::consts::PI);
+    println!(&quot;{}&quot;, E);
+}
+</code></pre>
+<p>更多有趣的标准库详情，请前往<a href="https://doc.rust-lang.org/stable/std/all.html">官方标准库字典</a></p>
+<h2>多源文件</h2>
+<p>前面提到过，每个 <code>.rs</code> 文件就是一个模块，多个源文件之间的协作就是建立在模块的基础之上</p>
+<p>编辑两个文件</p>
+<pre><code class="language-rust">// c15.rs
+mod c15_2;
+
+fn main() {
+    println!(&quot;c15&quot;);
+    c15_2::output();
+}
+</code></pre>
+<pre><code class="language-rust">// c15_2.rs
+pub fn output() {
+    println!(&quot;calling from c15-2&quot;);
+}
+</code></pre>
+<p>不知道 lsp 为啥提示我报错，说找不到 <code>c15_2.rs</code>，但是能过编译...</p>
+<p>可能是我程序放的路径问题吧</p>
+<h2>Cargo</h2>
+<p>Cargo 是 rust 的构建系统和包管理器，开发者用 Cargo 来管理 rust 工程和获取工程所需要的依赖库</p>
+<p>当 rustup 安装 rust 的编译工具时，cargo 就被安装了，cargo 是一个命令行程序（狂喜）</p>
+<h3>新建工程</h3>
+<p><code>cargo new greeting</code> 或者 <code>cargo init greeting</code> 可以在当前目录下新建一个子目录 greeting，包括以下文件结构</p>
+<pre><code> greeting/
+   ├── Cargo.toml
+   └── src/
+       └── main.rs
+</code></pre>
+<p><code>src/</code> 是源文件目录，其中包含一个主源程序 <code>main.rs</code>, <code>Cargo.toml</code> 是 Cargo 在当前工程中的配置文件，里面包含了当前工程的名称、作者、版本和依赖项等信息，甚至帮你 <code>git init .</code> 了</p>
+<p>greeting 工程就是前面所说的 包</p>
+<pre><code class="language-bash">$ cat Cargo.toml
+[package]
+name = &quot;greeting&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+</code></pre>
+<p>还可以用 <code>cargo new xxx --lib</code> 创建一个库工程（不生成 main.rs 而是 lib.rs）</p>
+<h3>构建工程</h3>
+<pre><code class="language-bash">$ cargo build # 构建工程，生成一个 target 文件夹
+$ cargo run # 上面的基础上，直接运行生成的二进制文件
+$ cargo doc # 根据代码中的说明文档注释生成电子文档
+</code></pre>
+<p>除此之外，cargo 还有很多用法，<a href="https://doc.rust-lang.org/cargo/commands/index.html">详情</a></p>
+<h3>第三方包</h3>
+<p>Cargo.toml 文件的 <code>dependencies]</code> 之后可以添加第三方库，格式为<code>&lt;库名称&gt; = &quot;版本号&quot;</code>，一条一行</p>
+<p>之后在需要用的地方 <code>extern crate xxx;</code> 即可使用对应包的东西了</p>
+<p>下面示范一下导入一个随机包</p>
+<pre><code class="language-toml"># Cargo.toml
+
+[package]
+name = &quot;greeting&quot;
+version = &quot;0.1.0&quot;
+edition = &quot;2021&quot;
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rand = &quot;0.8.5&quot;
+</code></pre>
+<pre><code class="language-rust">// main.rs
+
+extern crate rand;
+
+fn main() {
+    for _ in 0..9 {
+        let i: i32 = rand::random();
+        println!(&quot;{}&quot;, i);
+    }
+}
+</code></pre>
+<p>值得一提的是，如果没有下载对应的依赖就引入，lsp 的 <code>rust-analyizer</code> 会掉线，最好在写完依赖之后先 <code>cargo run</code> 一下 hello, world 下载完依赖，不然你就没补全了</p>
+<blockquote>
+<p>一晚上搞定，感觉 Cargo 还挺人性化的，不像 go, <code>go mod init</code> 不能自动 <code>git init .</code> ，Cargo 不仅 <code>git init .</code> 了，还直接把生成文件夹给 ignore 了 :heart:</p>
+</blockquote>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

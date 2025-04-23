@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>git 学习笔记 3</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<h3>修改提交记录</h3>
+<blockquote>
+<p>程序员心情不好，不小心在Commit里骂了客户，要怎么消掉？</p>
+</blockquote>
+<p>总共有四种方法：</p>
+<ol>
+<li>把整个<code>.git</code>文件删了！<!--more-->（不建议）</li>
+<li>使用<code>git rebase</code>来改动历史记录</li>
+<li>用<code>git reset</code>命令把commit删除，整理之后在重新commit</li>
+<li>使用<code>--amend</code>参数改动最后一次的commit</li>
+</ol>
+<p>这里采用第四种方法，第二种和第三种方法会在后面陆续介绍，至于第一种方法，大多数情况都不会使用，不要轻易使用这种方法，造成的影响不可忽略</p>
+<p><strong>使用 <code>--amend</code> 参数进行<code>Commit</code></strong></p>
+<p>我们来看一下原来的 Commit 记录</p>
+<pre><code class="language-bash">$ git log --oneline
+431cb79 (HEAD -&gt; master) WTF
+af3323f first commit
+</code></pre>
+<p>我们发现最后一条 Commit 信息的 WTF 好像不是特别友好，以免客户困扰，我们来修改一下</p>
+<pre><code class="language-bash">$ git commit --amend -m &quot;Win Till Fail&quot;
+[master e41a824] Win Till Fail
+ Date: Wed Jan 4 00:36:12 2023 +0800
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 gogo.cpp
+$ git log --oneline
+e41a824 (HEAD -&gt; master) Win Till Fail
+af3323f first commit
+</code></pre>
+<p>这样我们就把 WTF 改成 Win Till Fail了！</p>
+<p>你如果细心一点会发现前后两次 Commit 的SHA-1的值发生了变化：<code>431cb79</code> -&gt; <code>e41a824</code>，两次Commit 的时间和文件内容都是相同的，看起来 Commit 并没有变化，但是Commit的信息不同导致生成的确实是新生成的Commit，其实这一点我在上一篇笔记里的最后也提到了，但当时没有仔细看，以为Commit的时间会变化，事实上时间是不变的，所以甚至如果你的Commit信息相同，SHA-1 的值也会发生变化</p>
+<p><strong>可以改动更早的记录吗</strong></p>
+<p>可以，要用到 <code>rebase</code> 命令来处理，以为 <code>--amend</code> 参数只能处理最后的 Commit，<code>rebase</code>命令后面会讲</p>
+<blockquote>
+<p>⚠  虽然只是修改了信息，但也算是改动了一次历史记录，所以尽量不要在已经 Push 出去之后再改动，否则会给别人造成困扰</p>
+</blockquote>
+<h3>追加文件到最后一次提交</h3>
+<blockquote>
+<p>刚刚完成的 Commit，但是发现还有一个文件忘记 <code>add</code> 了，又不想为了这个文件再 commit 一次</p>
+</blockquote>
+<p>如果你愿意的话当然可以再commit一次，<del>这样就能少记一点东西了</del>，一般有两种方法来完成这件事情</p>
+<ol>
+<li>使用 <code>git reset</code> 命令把最后一次的Commit删除，加入新文件之后再重新Commit</li>
+<li>使用 <code>--amend</code> 参数进行 Commit</li>
+</ol>
+<p>按照这个书的节奏，我们先介绍第二种方法，第一种会在后面介绍</p>
+<p>下面这个例子我们信息里填的是 add 1.c and 2.c 但是我们的 2.c 忘记 <code>add</code> 了</p>
+<pre><code class="language-bash">$ git commit -m &quot;add 1.c and 2.c&quot;
+[master 26d2497] add 1.c and 2.c
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 1.c
+$ git status
+On branch master
+Untracked files:
+  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+        2.c
+
+nothing added to commit but untracked files present (use &quot;git add&quot; to track)
+</code></pre>
+<p>接下来的流程其实和修改上一次 Commit 的信息很相似，甚至和一般的 commit 流程很相似</p>
+<pre><code class="language-bash">$ git add 2.c
+$ git commit --amend --no-edit
+[master c1bb84f] add 1.c and 2.c
+ Date: Wed Jan 4 00:55:15 2023 +0800
+ 2 files changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 1.c
+ create mode 100644 2.c
+$ git status
+On branch master
+nothing to commit, working tree clean
+</code></pre>
+<p><code>--no-edit</code> 表示不修改提交的信息，当然如果你同时还需要修改提交的信息也是可以的，<code>-m &quot;xxx&quot;</code>就行了，我下面是不想再打前面的字，所以让git帮我打开Vim编辑</p>
+<pre><code class="language-bash">$ touch 3.c
+$ git add 3.c
+$ git commit --amend
+[master a31b723] add 1.c and 2.c and 3.c
+ Date: Wed Jan 4 00:55:15 2023 +0800
+ 3 files changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 1.c
+ create mode 100644 2.c
+ create mode 100644 3.c
+$ git log --oneline
+a31b723 (HEAD -&gt; master) add 1.c and 2.c and 3.c
+2578146 Win Till Fail
+af3323f first commit
+</code></pre>
+<p>体会到了 <code>--amend</code> 的方便了吧，但是还是要<strong>在 <code>commit</code> 前谨慎一点</strong>，一旦<code>Push</code> 出去了就很难收回来了</p>
+<blockquote>
+<p>⚠  同样的，这是对历史记录的改动，所以尽量不要在已经 Push 出去之后再改动，否则会给别人造成困扰</p>
+</blockquote>
+<h3>提交空文件夹</h3>
+<p>平时使用的时候你可能会遇到新建了一个文件夹，git 不帮你提交的情况</p>
+<pre><code class="language-bash">$ mkdir iAmADir
+$ git status
+On branch master
+nothing to commit, working tree clean
+</code></pre>
+<p>这是因为 git 在计算、产生对象的时候是根据 文件的内容 来计算的，所以只是加入文件夹不加文件的话，git 认为工作区并没有发生变化，<strong>Git是无法提交空文件夹的</strong></p>
+<p>那如果我想要提交怎么办呢？很简单，只需要在那个文件夹里随便放个空的文件就可以了，建议用隐藏文件，这样 git 就知道这里有一个文件夹了</p>
+<pre><code class="language-bash">$ touch iAmADir/.keep
+$ git status
+On branch master
+Untracked files:
+  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+        iAmADir/
+
+nothing added to commit but untracked files present (use &quot;git add&quot; to track)
+</code></pre>
+<p>之后的流程就和一般的 <code>commit</code> 流程一样了</p>
+<h3>忽略部分文件</h3>
+<blockquote>
+<p>一般我们不希望一些文件跟着源文件一起交上去，比如密码配置文件之类的</p>
+</blockquote>
+<p>你应该也知道这里要说的是什么知识了，git 提供 <code>.gitignore</code> 文件，你可以在这个文件里设置规则，只要匹配到的文件都会被 git 自动忽略掉，如果项目里没有这个文件，那么就需要我们手动添加它</p>
+<pre><code class="language-bash">$ touch .gitignore
+# 或者直接写一条规则进去
+$ echo &quot;iAmADir/*&quot; &gt; .gitignore
+</code></pre>
+<p>这样 git 就会把 <code>iAmADir</code> 里的所有文件都忽略掉了</p>
+<pre><code class="language-bash">$ git status
+On branch master
+Untracked files:
+  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+        .gitignore
+
+nothing added to commit but untracked files present (use &quot;git add&quot; to track)
+</code></pre>
+<p>下面是一些规则参考，并不是正则表达式</p>
+<pre><code class="language-bash"># 忽略 secret.yml 文件
+secret.yml
+
+# 忽略 config 目录下的 datebase.yml 文件
+config/datebase.yml
+
+# 忽略掉 db 目录下的所有后缀是 .sqlite3 的文件
+db/*.sqlite3
+
+# 忽略掉所有后缀是 .tmp 的文件
+*.tmp
+
+# 你甚至可以忽略掉 .gitignore 文件 但一般不会怎么做
+.gitignore
+</code></pre>
+<p>只要<code>.gitignore</code>文件存在，本地仓库就会按照这个规则来忽略文件，哪怕你忽略了<code>.gitignore</code> 或者没有上传到服务器上，但一般还是建议把这个文件 <code>commit</code> 进项目里上传，这样所有开发的人都可以共享到这个规则</p>
+<p>如果你不知道自己用的工具或者语言通常会忽略那些文件，那么你可以看<a href="https://github.com/github/gitignore">这里</a>，上面整理了一份常见的 <code>.gitignore</code> 文件</p>
+<p><strong>可以忽略这个忽略添加文件吗？</strong></p>
+<p>是可以的，你只需要用 <code>-f</code> 强制 <code>add</code> 就行了</p>
+<pre><code class="language-bash">$ git add -f ./iAmADir/.keep
+$ git status
+On branch master
+Changes to be committed:
+  (use &quot;git restore --staged &lt;file&gt;...&quot; to unstage)
+        new file:   iAmADir/.keep
+</code></pre>
+<p><strong>为什么忽略了还会显示？</strong></p>
+<p>那是因为 <code>.gitignore</code> 的作用只会对规则适用后的文件产生作用，如果你的那个文件在指定规则前就已经被 git 接手，那么之后制订的规则就对它无效，那么如何把之前逃过的文件都移除呢，只需要用<code>git rm --cached</code> 就可以他们都移除了</p>
+<p><strong>清除忽略的文件</strong></p>
+<p>只需要在 <code>git clean</code> 后面加上 <code>-X</code> 参数就可以了</p>
+<pre><code class="language-bash">$ git clean -X
+# f是强制删除的意思
+$ git clean -fX
+</code></pre>
+<h3>查看特定文件的提交记录</h3>
+<p><code>git log</code> 除了能看整个项目的提交记录，还能对特定文件的提交记录就行查看，只需要在 <code>git log</code> 后面跟上那个文件名就可以了</p>
+<pre><code class="language-bash">$ git log 1.c
+commit c9e9a479b62176eb3832d23869a5c3b507841a9e (HEAD -&gt; master)
+Author: lol &lt;233@qq.com&gt;
+Date:   Wed Jan 4 01:50:20 2023 +0800
+
+    modfiy 1.c again
+
+commit 3061d40cd908018feef6c43f0712fe28770f1238
+Author: lol &lt;233@qq.com&gt;
+Date:   Wed Jan 4 01:49:38 2023 +0800
+
+    modfiy 1.c
+
+commit a31b723100193e714dc809f0a8c95683b75daf03
+Author: lol &lt;233@qq.com&gt;
+Date:   Wed Jan 4 00:55:15 2023 +0800
+
+    add 1.c and 2.c and 3.c
+</code></pre>
+<p>加上参数 <code>-p</code> 可以看到每次提交具体干了什么事情</p>
+<pre><code class="language-bash">$ git log -p 1.c
+commit c9e9a479b62176eb3832d23869a5c3b507841a9e (HEAD -&gt; master)
+Author: lol &lt;233@qq.com&gt;
+Date:   Wed Jan 4 01:50:20 2023 +0800
+
+    modfiy 1.c again
+
+diff --git a/1.c b/1.c
+index 4b5fa63..7082e89 100644
+--- a/1.c
++++ b/1.c
+@@ -1 +1,3 @@
+-hello, world
++print(233)
++hello,world!
++
+
+commit 3061d40cd908018feef6c43f0712fe28770f1238
+Author: lol &lt;233@qq.com&gt;
+Date:   Wed Jan 4 01:49:38 2023 +0800
+
+    modfiy 1.c
+
+diff --git a/1.c b/1.c
+index e69de29..4b5fa63 100644
+--- a/1.c
++++ b/1.c
+@@ -0,0 +1 @@
++hello, world
+
+commit a31b723100193e714dc809f0a8c95683b75daf03
+Author: lol &lt;233@qq.com&gt;
+Date:   Wed Jan 4 00:55:15 2023 +0800
+
+    add 1.c and 2.c and 3.c
+
+diff --git a/1.c b/1.c
+new file mode 100644
+index 0000000..e69de29
+</code></pre>
+<p>格式可以有点复杂，<code>+</code> 号表示新增，<code>-</code> 号表示删除</p>
+<h3>谁写的这行代码</h3>
+<blockquote>
+<p>网站怎么挂了？！这行代码是谁写的！</p>
+</blockquote>
+<p>经常会出现这种情况，git 提供指令 <code>git blame</code> 帮你找出这个人</p>
+<blockquote>
+<p>blame</p>
+<blockquote>
+<p>v. 责怪，归咎于；怨，怪</p>
+<p>n. 责备，过错，罪责</p>
+</blockquote>
+<p>取名取得很对</p>
+</blockquote>
+<pre><code class="language-bash">$ git blame 1.c
+c9e9a479 (lol 2023-01-04 01:50:20 +0800 1) print(233)
+c9e9a479 (lol 2023-01-04 01:50:20 +0800 2) hello,world!
+c9e9a479 (lol 2023-01-04 01:50:20 +0800 3)
+</code></pre>
+<p>可以看到某行代码是那次提交加上的，人名，时间，代码全都有，背锅的人想逃都逃不掉</p>
+<p>如果要查的文件太大了，可以用参数 <code>-L</code> 只查指定几行</p>
+<pre><code class="language-bash">$ git blame -L 1,1 1.c
+c9e9a479 (lol 2023-01-04 01:50:20 +0800 1) print(233)
+$ git blame -L 2,3 1.c
+c9e9a479 (lol 2023-01-04 01:50:20 +0800 2) hello,world!
+c9e9a479 (lol 2023-01-04 01:50:20 +0800 3)
+</code></pre>
+<blockquote>
+<p>很多时候，<code>git blame</code> 抓到的 &quot;凶手&quot; 大多数都是自己</p>
+</blockquote>
+<h3>不小心把文件或者目录删除了</h3>
+<blockquote>
+<p><code>rm</code> 是一个强大而恐怖的命令，使用的时候非常小心，不要在状态不好的时候使用，会造成不可挽回的损失，可以连 Git 都救不回来</p>
+</blockquote>
+<p>人总有犯错的时候，不管什么原因，如果是在 git 中不小心把文件或者目录给删除了，都是可以挽救回来的，这也是使用版本管理系统最主要的原因之一，我们故意用<code>rm</code> 删点文件</p>
+<pre><code class="language-bash">$ rm *.c
+$ ls -al
+total 4
+drwxr-xr-x 4 paradox paradox 160  1月 4日 02:18 .
+drwxrwxrwt 9 root    root    200  1月 4日 00:35 ..
+-rw-r--r-- 1 paradox paradox   0  1月 4日 00:35 a.cpp
+-rw-r--r-- 1 paradox paradox   0  1月 4日 00:35 f.cpp
+drwxr-xr-x 8 paradox paradox 280  1月 4日 02:18 .git
+-rw-r--r-- 1 paradox paradox  21  1月 4日 01:32 .gitignore
+-rw-r--r-- 1 paradox paradox   0  1月 4日 00:35 gogo.cpp
+drwxr-xr-x 2 paradox paradox  60  1月 4日 01:18 iAmADir
+$ git status
+On branch master
+Changes not staged for commit:
+  (use &quot;git add/rm &lt;file&gt;...&quot; to update what will be committed)
+  (use &quot;git restore &lt;file&gt;...&quot; to discard changes in working directory)
+        deleted:    1.c
+        deleted:    2.c
+        deleted:    3.c
+
+no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)
+</code></pre>
+<p>我们发现三个 <code>c</code> 的文件已经被我们删除了，这时候如果我们想要把 <code>1.c</code> 给挽救回来，就可以用 <code>git checkout</code> 命令</p>
+<pre><code class="language-bash">$ git checkout 1.c
+Updated 1 path from the index
+$ ls
+1.c  a.cpp  f.cpp  gogo.cpp  iAmADir
+</code></pre>
+<p>我们发现文件回来了！</p>
+<p>如果我们想让所有文件都回来只需要用 <code>.</code> 来指定全部文件</p>
+<pre><code class="language-bash">$ git checkout .
+Updated 2 paths from the index
+$ ls
+1.c  2.c  3.c  a.cpp  f.cpp  gogo.cpp  iAmADir
+</code></pre>
+<p>全都回来了！</p>
+<p>这个技巧不仅可以将删除的文件挽救回来，当改动某个文件后悔的时候，也可以用来<strong>还原那个文件</strong></p>
+<pre><code class="language-bash">echo &quot;lol&quot; &gt; 2.c
+$ cat 2.c
+lol
+$ git checkout 2.c
+Updated 1 path from the index
+$ cat 2.c
+$
+</code></pre>
+<p>我们发现 <code>2.c</code> 已经变回原来的空文件了</p>
+<blockquote>
+<p>⚠ 并不是所有情况下都能恢复被删除的文件，因为整个 git 的记录都是放在根目录下的 <code>.git</code> 文件夹里，如果这个文件夹被删除了，就意味着所有的历史记录都被删除了，那么删除的文件就无法恢复了，所以 <code>.git</code> 文件夹是不能乱删的</p>
+</blockquote>
+<p><strong>git是怎么挽救文件的</strong></p>
+<p><code>git checkout</code> 在后面关于分支的内容还会出现，它可以用来切换分支，但如果后面跟的是文件名或者路径的时候，git 就不会切换分支，而是把文件从 <code>.git </code> 目录里面复制一份到当前的工作目录</p>
+<p>更精确地说，这个命令会把<strong>暂存区</strong>中的内容拿来覆盖工作目录中的内容</p>
+<pre><code class="language-bash">$ echo &quot;hello&quot; &gt; 2.c
+$ git add 2.c
+$ echo &quot;45&quot; &gt; 2.c
+$ cat 2.c
+45
+$ git checkout 2.c
+Updated 1 path from the index
+$ cat 2.c
+hello
+</code></pre>
+<p>我们并没有提交 <code>echo &quot;hello&quot; &gt; 2.c</code> 的这个改动，但是 <code>checkout</code> 之后的 <code>2.c</code> 的数据是 <code>hello</code> 而不是空值，所以 <code>checkout</code> 是<strong>默认</strong>把暂存区的文件拿过来覆盖的，而不是仓库</p>
+<p><code>checkout</code> 是可以加参数的，下面的命令能让两个版本以上的文件来覆盖</p>
+<p>但是注意，这<strong>同时也会更新暂存区</strong></p>
+<pre><code class="language-bash">$ git checkout HEAD~2 2.c
+Updated 1 path from 840e90e
+$ cat 2.c
+$
+</code></pre>
+<blockquote>
+<p>现在只做到了这本书的第59页，总共有200多页，进度只有百分之二十五吧</p>
+<p>但是后面的内容应该会讲的很快</p>
+<p>学下来收获颇丰，学完之后做一个命令的整理，把常用的命令都提出来</p>
+<p>到时候还可以再学习一下 lazygit ，做一个教程介绍，毕竟懒点好</p>
+</blockquote>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

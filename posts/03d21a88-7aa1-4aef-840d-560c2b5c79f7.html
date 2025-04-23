@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>rust学习笔记 1</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<blockquote>
+<p>我多多少少也学了不少语言了，按顺序来：Lua -&gt; Python -&gt; VB -&gt; C -&gt; C++ -&gt; Java -&gt; Go -&gt; html/js/css，其他还有杂七杂八的非主流<!--more-->语言也多多少少了解过有点，虽然都不算特别精通，毕竟还没有工作，所以都是了解基本的语法，没有那些能理解每种语言痛点的觉悟，不能提取每种语言的哲学。各种语言中都有相通的地方，理解了这些相通的地方之后，学习一门新的语言就都不难，一般流程都是学完基本的语法之后熟悉一些第三方库即可，这次学习 rust 并不是跟风啊，我也不知道这个邪教语言好在哪里，也不指望有什么 rust 岗位，只是觉得总该学一门来写以后爱好的项目，其实 C 是一个很好的选择，但我不想现在去深入，然后是 Linus 允许使用 rust 写 linux 内核，我就开始对这门语言有点好奇了</p>
+</blockquote>
+<h2>胡言乱语</h2>
+<p>rust 语法风格类似 javascript, 编译结果类似 C，编译出的程序高效，有 cargo 包管理</p>
+<p>rust 的应用领域：</p>
+<ul>
+<li>命令行（可执行文件）</li>
+<li>web：编译成 WebAssembly, javascript 替代品，速度提升很大</li>
+<li>服务器程序</li>
+<li>嵌入式</li>
+</ul>
+<h2>manjaro 配置环境</h2>
+<p>我忘了怎么装 rust 的了，记起来了再说，好像是装了 rustup</p>
+<ul>
+<li><p><a href="https://www.rust-lang.org/zh-CN/tools/install">官网说明</a></p>
+</li>
+<li><p>要装 gcc, gdb</p>
+</li>
+<li><p>参考 <a href="https://wiki.archlinux.org/title/Rust">archwiki</a></p>
+</li>
+<li><p>coc 的 lsp 插件：coc-rust-analyzer</p>
+</li>
+</ul>
+<h2>Hello, world</h2>
+<p>rust 的文件后缀名为 <code>.rs</code></p>
+<pre><code class="language-rust">fn main() {
+    println!(&quot;Hello, world!&quot;);
+}
+</code></pre>
+<p>写完之后编译，运行</p>
+<pre><code class="language-bash">$ rustc hello.rs
+$ ./hello
+Hello, world!
+</code></pre>
+<h2>命令行程序相关</h2>
+<h3>格式化输出</h3>
+<p>格式化使用的是和 python 里的 format 类似的 <code>{}</code></p>
+<pre><code class="language-rust">fn main() {
+    let a = 12;
+    println!(&quot;Hello, {}!&quot;, a);
+}
+</code></pre>
+<p>可以指定使用后面跟着的第几个</p>
+<pre><code class="language-rust">fn main() {
+    let a = 12;
+    println!(&quot;Hello, {0}{1}{2}!&quot;, a, a, a);
+}
+</code></pre>
+<p>如果你想要输出 <code>{}</code> 的话就可以使用以下语句输出</p>
+<pre><code class="language-rust">println!(&quot;{{}}&quot;);
+</code></pre>
+<h3>详细输出</h3>
+<pre><code class="language-rust">#[derive(Debug)]
+
+struct Rect {
+    width: u32,
+    height: u32,
+}
+
+fn main() {
+    let rect = Rect{ width: 30, height: 50 };
+    println!(&quot;{:?}&quot;, rect);
+    println!(&quot;{:#?}&quot;, rect);
+}
+</code></pre>
+<p>最上面那一行是必要的</p>
+<h3>输入</h3>
+<p>直接输出：</p>
+<pre><code class="language-rust">use std::io::stdin;
+
+fn main() {
+    let mut str_buf = String::new();
+    stdin().read_line(&amp;mut str_buf).unwrap();
+    println!(&quot;Your input line is \n{}&quot;, str_buf);
+}
+</code></pre>
+<p>从输入中读取两个整数，完成求和</p>
+<pre><code class="language-rust">use std::io::stdin;
+
+fn main() {
+    let mut str_buf = String::new();
+    stdin().read_line(&amp;mut str_buf).unwrap();
+    let sp: Vec&lt;&amp;str&gt; = str_buf.as_str().split(' ').collect();
+    let a = sp[0].trim().parse::&lt;i32&gt;().unwrap();
+    let b = sp[1].trim().parse::&lt;i32&gt;().unwrap();
+    println!(&quot;{} + {} = {}&quot;, a, b, a + b);
+}
+</code></pre>
+<p>语法看上去可能有点奇怪，之后应该会具体讲解</p>
+<h3>从命令读取参数</h3>
+<pre><code class="language-rust">fn main() {
+    let args = std::env::args();
+    for arg in args {
+        println!(&quot;{}&quot;, arg);
+    }
+}
+</code></pre>
+<h2>语法</h2>
+<h3>变量赋值</h3>
+<pre><code class="language-rust">let a = 123;
+let b = 4.3;
+let c: i32 = 132;
+</code></pre>
+<p>第一行的赋值方式是编译器在编译的时候自动根据 123 的值将 a 识别成 i32，类似 go 中的海象符，区别是加一个 javascript 中的 <code>let</code></p>
+<p>rust 中的类型是强制的，下面这段代码会报错</p>
+<pre><code class="language-rust">let a = 123;
+let b = 4.5;
+println!(&quot;{}&quot;, a + b);
+</code></pre>
+<p>a 是 i32 类型的变量，b 是 f64 类型的变量，在 C 语言中就会在这时候将 int 转换成 float 类型进行计算，但是 rust 中就不允许</p>
+<p>另外还有一个与众不同的地方 <strong>变量在默认状态下不可以被赋值改变</strong>，这是因为在大量的编程实践中，人们发现开发者往往会用变量存储一个不可变的值，仅仅是为了将这个值存储一下以供他用，但这些不可变的变量往往极大地影响并发程序中对变量的使用，因此 rust 默认状态下保护了所有的变量</p>
+<p>变量也不必在定义之后立即赋值，但是它默认状态下只能赋值一次</p>
+<pre><code class="language-rust">let a;
+a = 456;
+</code></pre>
+<p>如果你想要一个可以改变的变量值，就可以使用 <code>mut</code> 关键字声明</p>
+<pre><code class="language-rust">fn main() {
+    let mut a = 123;
+    a = a + 3;
+    println!(&quot;{}&quot;, a);
+}
+</code></pre>
+<p>同一个变量名可以被多次赋值，这和可变变量赋值的性质有点不一样，它是可以改变类型的，有点像 python 中的变量，这一行为被称为<strong>重影</strong></p>
+<pre><code class="language-rust">let x = 32;
+let x = x + 4;
+let x = &quot;233&quot;;
+</code></pre>
+<h3>常量赋值</h3>
+<pre><code class="language-rust">const HELLO: i32 = 233;
+</code></pre>
+<p>虽然看上去 <strong>不可变量</strong> 的概念和常量十分相似，但是实际上是有所不同的：</p>
+<ul>
+<li>常量声明必须指定类型</li>
+<li>常量必须在定义时赋值</li>
+<li>常量可以在函数内外声明，但是使用 let 声明的变量只能在函数内使用</li>
+</ul>
+<h2>静态变量</h2>
+<p>静态变量类似全局变量，在 C 语言中，全局变量就是指放在程序内存的静态区中，不随函数的调用或结束而存在或消亡，只在进程开始的时候被创建，进程结束的时候被回收，而静态变量就是这样的东西，但是静态变量的概念不等于全局变量，静态变量是可以在函数中声明的，在 rust 中可以使用如下的方法声明一个静态变量，<code>static</code> 替换掉了原来 <code>let</code> 的位置</p>
+<blockquote>
+<p>let 声明的变量只能在函数内使用</p>
+</blockquote>
+<pre><code class="language-rust">static VAR: i32 = 123;
+fn main() {
+    static VAR2: i32 = 233;
+    println!(&quot;{}&quot;, VAR);
+    println!(&quot;{}&quot;, VAR2);
+}
+</code></pre>
+<p>和常量的声明类似，静态变量声明的时候必须指定类型和初始值，但是静态变量可以像普通变量一样加上 <code>mut</code> 关键字变成可变静态变量</p>
+<pre><code class="language-rust">static mut VAR: i32 = 123;
+</code></pre>
+<p>然而对静态变量赋值依然是被认为不安全的行为，如果在多线程程序中，同时有两个线程对这个变量进行操作，就会出现不可预测的情况，所以 rust 不允许直接改变静态变量的值，甚至无法直接调用一个可变的静态变量，如果一定要写这种程序的话你可以在一个不安全的环境里操作和使用这些可变的静态变量</p>
+<pre><code class="language-rust">static mut VAR: i32 = 123;
+fn main() {
+    unsafe {
+        VAR = VAR + 3;
+        println!(&quot;{}&quot;, VAR);
+    }
+}
+</code></pre>
+<p>这是一个不安全的程序</p>
+<h2>数据类型</h2>
+<h3>整数</h3>
+<p>分为有符号和无符号，u 开头表示无符号，后面的数字理所当然的是位长度，后面是 <code>size</code> 的数据位长度取决于处理器的架构，如果是 32 位处理器的 <code>isize</code> 和 <code>usize</code> 类型就是 32 位</p>
+<pre><code class="language-rust">let x: i8 = 8;
+let x: i16 = 16;
+let x: i32 = 32;
+let x: i64 = 64;
+let x: i128 = 128;
+let x: isize = 64;
+let x: u8 = 8;
+let x: u16 = 16;
+let x: u32 = 32;
+let x: u64 = 64;
+let x: u128 = 128;
+let x: usize = 64;
+</code></pre>
+<p>还有进制相关的</p>
+<pre><code class="language-rust">let x = 233_333;	// 十进制
+let x = 0xfffff;	// 十六进制
+let x = 0o77777;	// 八进制
+let x = 0b11100;	// 二进制
+let x = b'A';		// 字节，只能为 u8 型
+</code></pre>
+<p>整数型中间的 <code>_</code> 只是用来方便代码阅读的分隔符</p>
+<h3>浮点数</h3>
+<p>支持两种浮点型，f32 和 f64，64位浮点数的精度更高</p>
+<pre><code class="language-rust">let x: f32 = 3.6;
+let x: f64 = 4.5;
+</code></pre>
+<h3>布尔</h3>
+<p>rust 中的 boolean 类型和 python 中的类似，但是不用大写</p>
+<pre><code class="language-rust">let a = true;
+let b = false;
+</code></pre>
+<p>在 C 语言中，true 等价于 非0 值，而 false 等价于 0, 但是 rust 中这个规则不适用 :anger:</p>
+<h3>运算</h3>
+<pre><code class="language-rust">let sum = 5 + 10;
+let dif = 4.3 - 2.1;
+let pro = 3 * 20;
+let quo = 5.4 / 2.2;
+let rem = 43 % 5;
+</code></pre>
+<p>rust 中的整数不允许 <code>++</code> 和 <code>--</code> 运算，和 python 一样只支持 <code>+=</code> 这种符号，因为前者容易让开发者在开发过程中更难意识到变量的值发生了变化</p>
+<p>除了这些基本的运算之外，rust 的浮点数还自带了很多数学运算函数</p>
+<pre><code class="language-rust">fn main() {
+    let x: f64 = 3.0;
+    println!(&quot;{}&quot;, x.sin());
+    println!(&quot;{}&quot;, x.cos());
+    println!(&quot;{}&quot;, x.tan());
+    println!(&quot;{}&quot;, x.sqrt());
+    println!(&quot;{}&quot;, x.powi(3));	// 幂函数
+    println!(&quot;{}&quot;, x.ln());		// 对数
+}
+</code></pre>
+<h3>字符</h3>
+<pre><code class="language-rust">let en: char = 'U';
+let zh: char = '你';
+</code></pre>
+<p>rust 中的 char 类型大小为 4 字节，代表 Unicode 标量值，所以它可以支持很多符号，但是还是推荐使用字符串存储 UTF-8 文字，中文的编码引起的报错可能是 gbk 编码导致的</p>
+<h3>字符串</h3>
+<p>rust 中有两种字符串，一种是 <code>&amp;str</code> 和 <code>String</code>，由于这本书在这一章节并没有说清楚他们之间的关系，所以这里就记一下简单的用法</p>
+<pre><code class="language-rust">fn main() {
+    let string = String::from(&quot;Some string&quot;);
+    let mut string = String::from(&quot;&quot;);
+    string.push('a');
+    string.push_str(&quot;QWER&quot;);
+    string.len();
+    let a = String::from(&quot;nihao&quot;);
+    let b = String::from(&quot;nihao&quot;);
+    let rs = a.eq(&amp;b);
+    let s: String = string::from(&quot;RUNOOB&quot;);
+    let ch: char = s.chars().nth(2).unwrap();
+    let sub: &amp;str = &amp;s[0..3];
+}
+</code></pre>
+<p><code>&amp;str</code> 在一般情况下比 <code>String</code> 更实用，不需要把字符串当作可编辑数据对象的时候，可以有限选择使用 <code>&amp;str</code> 作为数据类型</p>
+<h3>元组</h3>
+<pre><code class="language-rust">fn main() {
+    let tup = (500, 6.4, 1);
+    let tup2: (i32, f64) = (233, 2.33);
+    let (a, b) = tup2;
+    println!(&quot;{} {} {} {} {}&quot;, tup.0, tup.1, tup.2, a, b);
+}
+</code></pre>
+<p>元组中的存储允许数据类型不一样，元组可以帮助函数返回多个值</p>
+<h3>数组</h3>
+<p>不同于元组，数组中所有的数据类型必须一致，而且两者的使用方式不同，rust 中的数组不同于 python, 不是一个链表，不能灵活拓展，必须有固定长度，指定数组长度的时候不能使用变量，数组的长度必须在编译时就确定</p>
+<pre><code class="language-rust">fn main() {
+    // 创建数组
+    let a = [1, 2, 3, 4, 5];
+    let b: [i64; 3] = [1, 2, 3];
+    let c = [3; 5]; // &lt;-&gt; let c = [3, 3, 3, 3, 3];
+    // 从数组中取出数字
+    let first = c[0];
+    let second = c[1];
+    let third = c[2];
+    // 改变数组中的数字需要数组是 mut
+    let mut a = [1, 2, 3];
+    a[0] = 2;
+    // 获取数组长度
+    println!(&quot;{}&quot;, c.len())
+}
+</code></pre>
+<h2>注释</h2>
+<p>rust 的注释方式和 c、java 等主流语言中相同</p>
+<pre><code class="language-rust">// 行
+
+/* 
+ * 行
+ * 行
+ * 行
+ */
+</code></pre>
+<p>除了这些常规的注释之外，rust 还允许开发者编写说明文档注释，表明函数的用途，使用方法是使用 <code>///</code></p>
+<pre><code class="language-rust">/// add two number
+/// - a + b
+/// # For example:
+/// ```
+/// let x = ad(1, 2);
+/// ```
+
+fn ad(a: i32, b: i32) -&gt; i32 {
+    return a + b;
+}
+
+fn main() {
+    println!(&quot;{}&quot;, ad(1, 3));
+}
+</code></pre>
+<p>这样就对 ad 这个函数进行了说明</p>
+<blockquote>
+<p>差不多该换一个文档写笔记了吧（？</p>
+</blockquote>
+<h2>函数</h2>
+<p>rust 中的函数声明规则为</p>
+<pre><code class="language-rust">fn 函数名(参数: 参数类型, ...) -&gt; 返回值类型 {
+    ...
+}
+</code></pre>
+<blockquote>
+<p>为什么用 <code>-&gt;</code> 这种符号？</p>
+</blockquote>
+<p>下面是一个简单的例子</p>
+<pre><code class="language-rust">fn f(a: i32, b: i32) -&gt; (i32, i32) {
+    return (a + b, b - a);
+}
+</code></pre>
+<p>rust 并不是不强制分号，而是分号是区分语句(Statement)和表达式(Expression)的标志</p>
+<p>如果一行代码有分号，那么它就是一条语句，如果一行代码没有分号，那么它就是表达式</p>
+<pre><code class="language-rust">233 // 表达式
+1 + 2 // 表达式
+let a = 1 + 2; // 语句
+</code></pre>
+<p>没有返回值就无法成为一个表达式，赋值语句没有返回值，所以如果一条赋值语句没有分号，那它不会成为表达式，而是会被编译器报错，表达式这个概念在 rust 中非常重要</p>
+<p>在函数中，可以直接用 return 返回值，也可以不用 return, 在最后一行使用一行表达式，返回表达式的值</p>
+<pre><code class="language-rust">fn f(a: i32, b: i32) -&gt; (i32, i32) {
+    (a + b, b - a)
+}
+</code></pre>
+<p>上面这个函数和刚刚开始举的例子是一样的效果</p>
+<p>函数表达式的概念是用 <code>{}</code> 包裹的包含语句以表达式结尾的语句块，不支持 return</p>
+<pre><code class="language-rust">let z = {
+    let a = 233;
+    let b = 2333;
+    a + b
+};
+</code></pre>
+<p>上面的 <code>a</code> 和 <code>b</code> 都是临时变量，<code>z</code> 的值就是 <code>233 + 2333</code></p>
+<p>在大多数脚本语言中，函数也是可以被赋值的，rust 中也有类似的功能</p>
+<pre><code class="language-rust">fn f1() {
+    println!(&quot;1&quot;);
+}
+
+fn f2() {
+    println!(&quot;2&quot;);
+}
+
+fn main() {
+    let mut fc: fn();
+    fc = f1;
+    fc(); // f1();
+    fc = f2;
+    fc(); // f2();
+}
+</code></pre>
+<h3>Lambda</h3>
+<p>闭包 居然和 Lambda、匿名函数 是同一个意思，用来快捷地传递函数，广泛应用于异步编程</p>
+<p>rust 中 Lambda 表达式的写法是 <code>|参数, ...| -&gt; 返回值类型 { 函数体 }</code></p>
+<pre><code class="language-rust">let a = || 12;
+let b = |x: i32| x + 1;
+let c = |x: i32| -&gt; i32 { x + 1};
+</code></pre>
+<p>以上三行都是正确的 Lambda 表达式，返回类型编译器是可以自动推断的，所以有时候可以省略不写，但还是推荐写最下面的那种，出错的概率会小一点</p>
+<p>虽然 Lambda 支持自动判断类型，但是普通函数还是必须要指定类型的，公开的函数一定要有可见的声明</p>
+<h2>条件语句</h2>
+<h3>if</h3>
+<p>语法和 go 类似，if 不用括号括起来（但是也可以用括号括起来</p>
+<pre><code class="language-rust">fn main() {
+    if 1 == 2 {
+        println!(&quot;wtf&quot;);
+    }
+    else if 2 == 3 {
+        println!(&quot;wtf&quot;);
+    }
+    else {
+        println!(&quot;so damn right&quot;);
+    }
+}
+</code></pre>
+<p>就是也和 go 一样，条件必须是 boolean 类型的，不能像 c 那样自由地用 1 和 0 来判断</p>
+<h3>行 if</h3>
+<p>也叫<strong>三元运算符</strong>，不同于 c 中的 <code>a ? b : c</code></p>
+<p>rust 中的三元运算符和 python 中的类似 <code>if 条件 { true执行 } else { false执行 }</code></p>
+<pre><code class="language-rust">fn main() {
+    let a = 3;
+    let number = if a &gt; 0 { 2 } else { 0 };
+    println!(&quot;{}&quot;, number);
+}
+</code></pre>
+<p>还支持 <code>else if</code></p>
+<pre><code class="language-rust">let number = if a &gt; 0 { 2 } else if a == 0 { 1 } else { 0 };
+let score = 86;
+let branch = if score &gt; 90 {
+    &quot;great&quot;
+}
+else if score &gt; 80 {
+    &quot;good&quot;
+}
+else if score &gt; 70 {
+    &quot;normal&quot;
+}
+else {
+    &quot;bad&quot;
+};
+</code></pre>
+<p>这不就是把 if 折过来吗（？</p>
+<p>函数表达式的返回值类型必须相同</p>
+<blockquote>
+<p>经过 go 的洗礼，我发现我好像有点看不习惯 <code>}</code> 和 <code>else</code> 不同行了，希望之后能改回原来的观念</p>
+</blockquote>
+<h3>match</h3>
+<p>和 switch 语句差不多，所有语句都要列出</p>
+<pre><code class="language-rust">fn main() {
+    let op = 3;
+    match op {
+        0 =&gt; {
+            println!(&quot;{}&quot;, op);
+        }
+        2 | 3 | 4 =&gt; {
+            println!(&quot;is 2 or 3 or 4&quot;);
+        }
+        _ =&gt; {
+            println!(&quot;other&quot;);
+        }
+    }
+    let y = 3;
+    let x = match y {
+        1 =&gt; 2,
+        2 =&gt; 3,
+        3 =&gt; 4,
+        _ =&gt; 5,
+    };
+    println!(&quot;{}&quot;, x);
+}
+</code></pre>
+<p>match 的语法特点不止这些，官网有更详细的说明，<a href="https://rustwiki.org/zh-CN/reference/expressions/match-expr.html">链接</a></p>
+<h2>循环</h2>
+<p>rust 中有三种循环 while、for、loop</p>
+<h3>while</h3>
+<p>和 C 的 while 类似，语法都是 <code>while 循环条件 {...}</code></p>
+<pre><code class="language-rust">fn main() {
+    let mut x = 0;
+    while x &lt; 5 {
+        println!(&quot;{}&quot;, x);
+        x += 1;
+    }
+}
+</code></pre>
+<h3>for</h3>
+<p>现在的脚本语言，像 python 那样的，一般都会用 <code>foreach</code> 那样的循环，rust 和 python 一样，直接用 <code>foreach</code> 替代了传统的 for 循环，所以 rust 中没法使用像 C 语言中那种 for 循环了</p>
+<pre><code class="language-rust">fn main() {
+    // 输出 1,2,3,4
+    for i in 1..5 {
+        println!(&quot;{}&quot;, i);
+    }
+    // 迭代器
+    let l = [20, 10, -2, 30, 60];
+    for i in l.iter() {
+        println!(&quot;{}&quot;, i);
+    }
+    // 下标
+    for i in 0..l.len() {
+        println!(&quot;l[{}] is {}&quot;, i, l[i]);
+    }
+    // 啥都不输出
+    for i in 4..-1 {
+        println!(&quot;{}&quot;, i);
+    }
+}
+</code></pre>
+<blockquote>
+<p>go 是把 while 给删了，只用 for 这一点上 rust 和 go 是完全相反的改动</p>
+<p>以免忘了 go 的语法，记一下 go:</p>
+<pre><code class="language-go">for i := 0; i &lt;= 10; i++ {
+    ...
+}
+// while true {...}
+for ;; {
+    ...
+}
+</code></pre>
+</blockquote>
+<h3>loop</h3>
+<p>一直循环，<code>while true {...}</code> 的替代品，原来 while-true 写法并不优雅，loop 循环中必须要有 break语句，不然编译器是不会允许通过的，而 loop 也是三种循环中唯一一种支持函数表达式的循环</p>
+<pre><code class="language-rust">fn main() {
+    let mut x = 1;
+    loop {
+        println!(&quot;{}&quot;, x);
+        if x == 100 {
+            break;
+        }
+        x += 1;
+    }
+
+    x = 0;
+    let s = ['a', 'b', 'c'];
+    let y = loop {
+        if s[x] == 'b' {
+            break x;
+        }
+        x += 1;
+    };
+    println!(&quot;{}&quot;, y);
+}
+</code></pre>
+<blockquote>
+<p>这篇笔记暂时完结在这里吧，接下去的内容新开一篇笔记，总结一下，就是粗糙的过了一下基本语法：输入输出、赋值、变量类型、数据类型、注释、函数、判断、循环</p>
+<p>接下来还有一堆 rust 的知识点需要学习</p>
+<p>学这么多语言有很大概率会搞混啊，所以记一记还是很有必要的</p>
+</blockquote>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

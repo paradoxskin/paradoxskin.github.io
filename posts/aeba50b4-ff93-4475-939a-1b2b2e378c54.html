@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>Educational Codeforces Round 112(Div.2) 题解</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<p>D题好像可以做一做，挖个坑以后做好了来填(doge</p>
+<blockquote>
+<p>结果你还是没补</p>
+</blockquote>
+<hr>
+<h1>Educational Codeforces Round 112(Div.2)</h1>
+<h2>题目列表</h2>
+<p>1.<a href="#a">A</a>
+2.<a href="#b">B</a>
+3.<a href="#c">C</a></p>
+<hr>
+<blockquote>
+<p>这几篇题解都是我从自己的CSDN里搬来的，不然显得我没打过ACM www<!--more--></p>
+</blockquote>
+<h3><span id='a'>1.A</span></h3>
+<p><a href="https://codeforces.com/contest/1555/problem/A">原题链接</a></p>
+<h4>题目大意</h4>
+<p>有三种方案做蛋糕，15分钟做6块蛋糕、20分钟做8块蛋糕、25分钟做10块蛋糕，输入人数，求做出大于等于人数的蛋糕数的最短时间。</p>
+<h4>解题思路</h4>
+<p>看上去像是背包贪心，但发现这三种方法的性价比是一样的。由找规律发现由6，8，10可以组成大于等于6的所有偶数，所以答案就出来了。我刚刚开始做的时候没有去找规律，认为选择一种方案会影响整体最优解，于是求了下6，8，10的最小公倍数，这样就可以避免这种影响了，于是我打了个离线表，一交wa了，小丑竟是我自己，赛后看数据是121的时候我的程序输出了315，显然认为最小公倍数就不受影响的思路是错误的，6 8 10是可以组合出122的...</p>
+<h4>AC代码</h4>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+//int d[120]={0, 15, 15, 15, 15, 15, 15, 20, 20, 25, 25, 30, 30, 35, 35, 40, 40, 45, 45, 50, 50, 55, 55, 60, 60, 65, 65, 70, 70, 75, 75, 80, 80, 85, 85, 90, 90, 95, 95, 100, 100, 105, 105, 110, 110, 115, 115, 120, 120, 125, 125, 130, 130, 135, 135, 140, 140, 145, 145, 150, 150, 155, 155, 160, 160, 165, 165, 170, 170, 175, 175, 180, 180, 185, 185, 190, 190, 195, 195, 200, 200, 205, 205, 210, 210, 215, 215, 220, 220, 225, 225, 230, 230, 235, 235, 240, 240, 245, 245, 250, 250, 255, 255, 260, 260, 265, 265, 270, 270, 275, 275, 280, 280, 285, 285, 290, 290, 295, 295, 300};
+int main(){
+    int t;
+    scanf(&quot;%d&quot;,&amp;t);
+    int n;
+    long long tmp;
+    long long ans;
+    while(t--){/*
+        scanf(&quot;%lld&quot;,&amp;tmp);
+        n=tmp%120;
+        ans=tmp/120*300;
+        ans+=d[n];
+        printf(&quot;%lld\n&quot;,ans);*/
+        cin&gt;&gt;tmp;
+        if(tmp&lt;6)
+            cout&lt;&lt;15&lt;&lt;endl;
+        else{
+            ans=(tmp+1)/2*5;
+            printf(&quot;%lld\n&quot;,ans);
+        }
+    }
+    return 0;
+}
+</code></pre>
+<h3><span id='b'>2.B</span></h3>
+<p><a href="https://codeforces.com/contest/1555/problem/B">原题链接</a></p>
+<h4>题目大意</h4>
+<p>一个桌子上放着一个矩形，要往桌子上再放一个矩形，求能否放下那个矩形，如果能 第一个矩形需要移动的距离是多少。</p>
+<h4>解题思路</h4>
+<p>算出第一个矩形的长度和宽度，如果两个矩形的长和宽同时大于桌子的长宽，那么肯定是放不下的；用贪心的直觉，要想移动最小，那么第二个矩形肯定要放在四个角上，第一个矩形肯定只有横向和纵向移动，所以枚举四个点取最小值。这题目刚刚开始看上去挺吓人的，输出这里写了个1e-6的精度，以为是什么几何加二分题直接skip，后来看看还是可以写的，这题面纯属吓唬人。写是能写，但是大概我几何天赋不好，几个条件对着草稿看半天才写出来...</p>
+<h4>AC代码</h4>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int t;
+    scanf(&quot;%d&quot;,&amp;t);
+    int W,H,x1,y1,x2,y2;
+    int w,h;
+    int w1,h1;
+    int minn;
+    while(t--){
+        scanf(&quot;%d%d%d%d%d%d%d%d&quot;,&amp;W,&amp;H,&amp;x1,&amp;y1,&amp;x2,&amp;y2,&amp;w,&amp;h);
+        w1=x2-x1;
+        h1=y2-y1;
+        minn=100000000;
+        if(w1&gt;W||h1&gt;H||w&gt;W||h&gt;H||(w1+w&gt;W &amp;&amp; h1+h&gt;H)){
+            printf(&quot;-1\n&quot;);
+        }
+        else{
+            if((x1&gt;=w)||(y1&gt;=h)||(H-y2&gt;=h)||(W-x2&gt;=w))
+                printf(&quot;0\n&quot;);
+            else{
+                if(w+w1&lt;=W){
+                    minn=min(minn,abs(w-x1));
+                    minn=min(minn,abs(W-w-x2));
+                }
+                if(h+h1&lt;=H){
+                    minn=min(minn,abs(H-h-y2));
+                    minn=min(minn,abs(h-y1));
+                }
+                printf(&quot;%d\n&quot;,minn);
+            }
+        }
+    }
+    return 0;
+}
+</code></pre>
+<h3><span id='c'>3.C</span></h3>
+<p><a href="https://codeforces.com/contest/1555/problem/C">原题链接</a></p>
+<h4>题目大意</h4>
+<p>给出一个2 * m的矩形，alice和bob轮流从(1,1)走到(2,m)，他们只能向下或者向左移动，alice走到终点的路上拿走路径上的分数，bob走到终点路上捡起路径上的分数，alice想要让bob捡到的分数最小，而bob想让他的分数最大，求出最终的答案。</p>
+<h4>解题思路</h4>
+<p>如图，alice要从(1,1)到(2,m)，因为只能向左或者向下，所以她的路径能把整张图剩下分数分成两个部分，而alice要让bob的分数最小，就是要让剩下两个部分的最大值取到最小。<img src="https://img-blog.csdnimg.cn/6e69f5954d954177a43b0352d6b8753a.PNG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM0MDM5NDc5,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>
+<p>所以枚举往下的点，打一个前缀和后缀表遍历取最大值的最小值即可，时间O(N)。</p>
+<p>刚刚开始读题读了半天都不懂，以为alice是要让她自己的分数最小，后来读懂了想了好几条思路，不是tle就是wa了，比赛后两三分钟交了一发终于ac了，感觉主要是B题耽误了太多时间，害。</p>
+<h4>AC代码</h4>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+const int maxn=1e5+10;
+int a[maxn];
+int b[maxn];
+int sa[maxn];
+int sb[maxn];
+int main(){
+    int t;
+    scanf(&quot;%d&quot;,&amp;t);
+    int m;
+    int i,j,k;
+    int maxx,mi,ans;
+    int s1,s2;
+    while(t--){
+        scanf(&quot;%d&quot;,&amp;m);
+        for(i=0;i&lt;m;i++)
+            scanf(&quot;%d&quot;,&amp;a[i]);
+        for(i=0;i&lt;m;i++)
+            scanf(&quot;%d&quot;,&amp;b[i]);
+        sb[0]=b[0];
+        sa[m-1]=a[m-1];
+        for(i=1;i&lt;m;i++){
+            sb[i]=b[i]+sb[i-1];
+            sa[m-1-i]=a[m-1-i]+sa[m-i];
+        }
+        ans=min(sa[1],sb[m-2]);//~~~~
+        for(i=1;i&lt;m-1;i++){
+            ans=min(ans,max(sa[i+1],sb[i-1]));
+        }
+        if(m==1){
+            printf(&quot;0\n&quot;);
+        }
+        else if(m==2){
+            printf(&quot;%d\n&quot;,min(a[1],b[0]));
+        }
+        else{
+            printf(&quot;%d\n&quot;,ans);
+        }
+    }
+    return 0;
+}
+</code></pre>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

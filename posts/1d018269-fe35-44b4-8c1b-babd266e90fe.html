@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>学习vim 第2章</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<h1>第二章 buffers,windows,tabs</h1>
+<p>如果你用过现在流行的编辑器，你可能对窗口和选项卡很熟悉。VIM在这两个显示要素的基础上再多了一个buffers。在这一章节里，我希望解释一下什么是buffers，窗口，选项卡，然后<!--more-->说明一下他们在VIM里的运行原理。</p>
+<p>在你开始之前，确保你在vimrc里有设置<code>set hidden</code>。如果没有，每当你换buffers的时候，要是没有保存文件，VIM会逼着你去保存(当你想要快点切换时候就不会希望VIM来阻止你)。我还没有说到vimrc，如果你没有vimrc就创建一个。它通常放在根目录，叫<code>.vimrc</code>，我的放在<code>~/.vimrc</code>。你不知道你的vimrc放在哪就用<code>:h vimrc</code>。打开它，然后加上</p>
+<pre><code class="language-shell">set hidden
+</code></pre>
+<p>保存它，然后重新引用(在vimrc里命令行运行<code>:source %</code>)。</p>
+<h2>Buffers</h2>
+<p>什么是<em>buffers</em>？</p>
+<p>buffer是在内存里的一片空间，你写和编辑文本都是在那里完成的。当你在VIM里打开一个文件的时候，数据就加载到了buffer里。当你打开三个文件，你的内存空间里就开辟了三个buffer。</p>
+<p>有两个空白文件<code>file1.js</code>和<code>file2.js</code>(最好自己动手 在vim里创建一下)。在终端里运行</p>
+<pre><code class="language-shell">vim file1.js
+</code></pre>
+<p>你看到的是<code>file1.js</code>的buffer。当你打开一个新文件的时候，VIM会创建一个新的buffer。</p>
+<p>退出VIM，然后我们打开两个文件</p>
+<pre><code class="language-shell">vim file1.js file2.js
+</code></pre>
+<p>这个界面显示的是<code>file1.js</code>的buffer，但实际上它生成了两个buffer。输入指令<code>:buffers</code>可以看所有的buffer(你也可以用<code>:ls</code>和<code>:files</code>)。你会看见<code>file1.js</code>和<code>file2.js</code>。执行<code>vim file1 file2 file 3 ... filen</code>会创建n个buffer。每当你打开一个新文件，VIM会为这个文件创建一个新的buffer。</p>
+<p>有多种方法可以切换buffer</p>
+<ol>
+<li><code>:bnext</code>切换到下一个buffer</li>
+<li><code>:bprevious</code>切换到前一个buffer</li>
+<li><code>:buffer</code>+ filename ，用<code>&lt;tab&gt;</code>可以让VIM补全文件名。</li>
+<li><code>:buffer</code>+ n，n是一个数字，它会让你切换到第n的buffer。</li>
+<li>还可以按buffer list的顺序切换，<code>Ctrl-o</code>往前跳，<code>Ctrl-i</code>向后跳。buffer对象没有什么特别的方法，这些只能让他们在不同的buffer之间切换，我会在第五章详细讲解一下&quot;Jump&quot;</li>
+<li><code>Ctrl-^</code>会让你返回上一个编辑的buffer</li>
+</ol>
+<p>每当VIM创建一个buffer，它就会保存在你的buffers list里，想要删除它，就要用<code>:bdelete</code>指令，它允许后面跟个数字表示删除第几个buffer 也可以用<code>&lt;tab&gt;</code>去自动填充文件名。</p>
+<p>我在学习buffers部分的时候，感觉最难的部分是想象buffer是如何工作的，因为我已经习惯了主流的文本编译器的多窗口风格。如果把它想象成一副扑克牌会好理解一点，如果我有两个buffer，那我的牌组里就有两张牌，最顶端的牌就是当前我看到的卡片，我同时也知道它下面还有牌。当我看见<code>file1.js</code>时就可以类比成看到了<code>file1.js</code>放在了牌的顶端，我看不到其他的buffer。</p>
+<p>如果你没有用过VIM，这是一个全新的概念，花点时间去理解它。</p>
+<h2>退出VIM</h2>
+<p>顺带一提，如果打开了多个buffer，如果你想把它们全部关闭，可以</p>
+<pre><code class="language-shell">:qall
+</code></pre>
+<p>如果你不想保存修改，全部关闭</p>
+<pre><code class="language-shell">:qall!
+</code></pre>
+<p>如果你想保存然后全部关闭</p>
+<pre><code class="language-shell">:wqall
+</code></pre>
+<h2>多窗口</h2>
+<p>窗口(window)是buffer的一种呈现方式。如果你从主流的编辑器里转过来，你可能会熟悉这个概念，大多文本编辑器都支持多窗口。在VIM里，你也可以用多窗口。</p>
+<p>让我们再一次从终端里打开<code>file1.js</code></p>
+<pre><code class="language-shell">vim file1.js
+</code></pre>
+<p>我之前说过你看到的是<code>file1.js</code>的buffer，虽然那句话没啥问题，但还是不够完整，你看到的是通过window呈现的<code>file1.js</code>的buffer。</p>
+<p>先别急着退出VIM，运行</p>
+<pre><code class="language-shell">:split file2.js
+</code></pre>
+<p>现在你看到了两个窗口，最上面的窗口是<code>file2.js</code>。</p>
+<p>如果你想要在窗口间切换，用下面这些指令</p>
+<pre><code class="language-shell">Ctrl-w H &quot;移动到左边的窗口
+Ctrl-w J &quot;移动到下面的窗口
+Ctrl-w K &quot;移动到上面的窗口
+Ctrl-w L &quot;移动到右边的窗口
+</code></pre>
+<p>现在运行</p>
+<pre><code class="language-shell">:vsplit file3.js
+</code></pre>
+<p>你会看到三个窗口显示着三个buffer，一个窗口显示<code>file3.js</code>，其他两个显示<code>file1,js</code>和<code>file2.js</code>。</p>
+<p>你同样可以有多个窗口显示同一个buffer，当你在左上的窗口输入</p>
+<pre><code class="language-shell">buffer file2.js
+</code></pre>
+<p>现在两个窗口同时显示着<code>file2.js</code>，如果你开始在窗口上打字，你会发现两个窗口同时发生改变，另一个窗口是实时变化的。</p>
+<p>当你想要关闭当前窗口时，你可以按<code>Ctrl-w C</code>或者输入<code>:quit</code>，当你关闭一个窗口的时候，那个buffer是不会被关闭的，不信的话用<code>buffers</code>来确认一下。</p>
+<p>下面是一些在普通模式下非常有用的命令</p>
+<pre><code class="language-shell">Ctrl-w V &quot;打开一个新的竖向分屏窗口
+Ctrl-w S &quot;打开一个新的横向分屏窗口
+Ctrl-w C &quot;关闭一个窗口
+Ctrl-w O &quot;只留当前停留的窗口，其他全部关掉
+</code></pre>
+<p>下面是一些有用的命令行指令</p>
+<pre><code class="language-shell">:vsplit filename &quot;在横向分屏窗口打开一个文件
+:split filename &quot;在竖向分屏窗口打开一个文件
+:new filename &quot;创造一个新窗口(貌似是默认竖向
+</code></pre>
+<h2>Tabs</h2>
+<p>标签(tab)是窗口的集合，想象成是一堆窗口的布局。在大多数的现代文本编辑器和浏览器里，标签给人的印象是一个文件或者页面，当你关闭它的时候，文件和页面也就消失了。而在VIM里，标签并不意味着打开一个文件，关闭标签的时候也并不是关闭一个文件，你只是关闭了那个窗口布局，这些文件的数据都存放在内存中的buffer。buffer始终都在那。</p>
+<p>让我们来操作一下VIM的标签，打开<code>file1.js</code></p>
+<pre><code class="language-shell">vim file1.js
+</code></pre>
+<p>然后在新的标签里打开<code>file2.js</code></p>
+<pre><code class="language-shell">:tabnew file2.js
+</code></pre>
+<p>你同样可以按<code>&lt;tab&gt;</code>让VIM自动补完文件名(不是双关语233)。</p>
+<p>下面是一些有用的标签移动命令</p>
+<pre><code class="language-shell">:tabnnew file.txt &quot;在一个新的标签里打开file.txt
+:tabclose &quot;关闭当前的标签
+:tabnext &quot;进入下一个标签
+:tabprevious/:tabprev &quot;进入前一个标签
+:tablast &quot;进入最后一个标签
+:tabfirst &quot;进入第一个标签
+</code></pre>
+<p>你同样可以用<code>gt</code>命令进入下一个标签，你也可以用<code>gT</code>进入下一个标签，你也可以加上计数，比如你可以用<code>3gt</code>进入第三个标签。</p>
+<p>多个标签页的好处是你可以在不同的标签里拥有不同的窗口排列，如果你想要在第一个标签里有三个垂直分布的窗口，然后在第二个标签里混合水平和垂直分布，用Tabs是你最好的选择。</p>
+<p>如果你想从终端里启动VIM时直接打开多个标签，可以</p>
+<pre><code class="language-shell">vim -p file1.js file2.js file3.js
+</code></pre>
+<h2>3D移动</h2>
+<p>窜梭在不同的窗口间如同在一个二维平面移动，你可以用<code>Ctrl-w H/J/K/L</code>来左下上右移动。</p>
+<p>在buffer间移动如同穿越了Z轴，想象你的buffer文件穿在一条Z轴上，你可以用<code>:bnext</code>和<code>:bprev</code>在Z轴之间移动。你可以跳到用<code>:buffer filename/buffernumber</code>跳到Z轴上的任意位置。</p>
+<p>你就可以同时使用window移动和tab移动来实现三维移动。</p>
+<h2>聪明地使用这三个东西</h2>
+<p>你学了buffers、windows、tabs的用法和大致原理之后，现在你就可以理解它们并用在你的实际应用中。</p>
+<p>所有人都有自己的编辑风格，下面拿我的风格来做介绍。</p>
+<ol>
+<li>首先我在buffer里载入所有我当前工作需要用到的文件，VIM可以应付很多buffer并且不会让它运行速度变慢。打开很多buffer并不会充满你的屏幕。我只会看一个buffer，因为我只有一个窗口，但我需要去其他文件上操作的时候，我可以随时快速切换到其他buffer。</li>
+<li>我通常会在查找文件区别，阅读文档，思路跟着代码走的时候会用到多重窗口，我会让窗口数不超过3，因为那样会让我的屏幕变得特别拥挤(我用的是一台小笔记本)。当我做完我要做的事之后，我会关闭多余窗口，窗口越少，注意力越集中。</li>
+<li>接着是tabs，其实我用的不是tabs，而是<a href="https://github.com/tmux/tmux/wiki">tmux</a>窗口，我经常一次性用多个tmux窗口。比如，一个写客户端代码，一个写后端代码。</li>
+</ol>
+<p>我的编辑风格可能和你的不同，那很正常。亲自去体验来找到最适合你的编辑风格和流派。</p>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>git 学习笔记 4</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<h2>拆掉之前的提交</h2>
+<h3>使用 <code>reset</code></h3>
+<p>开发过程中难免有对之前的 commit 后悔的情况，这时候我们可以用 <code>git reset</code> 命令来做到，但是<!--more--> Reset 命令的意思很容易让人误解</p>
+<p>由于重启之后 <code>/tmp</code> 文件夹被清空了，所以我们再开一个新的本地仓库，随便写点 commit</p>
+<pre><code class="language-bash">$ ls
+tmp.txt
+$ cat tmp.txt
+line 1
+line 2
+line 3
+line 4
+line 5
+line 6
+$ git log --oneline
+8c7e150 (HEAD -&gt; master) cmt 6
+280fc06 cmt 5
+e353c79 cmt 4
+4b6168e cmt 3
+4e4acae commit 2
+ed641db commit 1
+</code></pre>
+<p>每次 commit 都是加上一行 line</p>
+<p>下面我们来尝试一下 <code>git reset</code> ，如果我们想拆掉最后一次的 commit ，我们有两种做法，一种是相对，一种是绝对</p>
+<p>相对指的就是相对于参数中的 commit，我们想要前往前面哪个 commit</p>
+<pre><code class="language-bash">$ git reset 8c7e150^
+Unstaged changes after reset:
+M       tmp.txt
+$ git log --oneline
+280fc06 (HEAD -&gt; master) cmt 5
+e353c79 cmt 4
+4b6168e cmt 3
+4e4acae commit 2
+ed641db commit 1
+</code></pre>
+<p>可以看到 <code>git reset 8c7e150^</code> 之后 HEAD 指针指在了前一次的 commit 上，<code>^</code> 代表前一次，所以 <code>8c7e150^</code> 就代表最后一条 commit 的前一次 commit，同样的道理，如果你要倒退到两次前，那么就可以 <code>79b0d45^^</code>。再往上，如果你要回到第5次，打住，不要写 <code>8c7e150^^^^^</code> ，还有一种简便写法，<code>8c7e150~5</code>， 等价于 <code>8c7e150^^^^^</code>。SHA-1可以代表一次 commit，但是老是用 SHA-1 可能觉得有点麻烦，也不好记，可以用 <code>HEAD</code> 或者 分支名 代指当前的分支所在的 commit，<code>git reset HEAD^</code> 或者 <code>git reset master^</code> 等价于上面的<code>git reset 8c7e150^</code></p>
+<p>上面是相对方法，还算方便，下面我们来看下稍微麻烦点的绝对方法</p>
+<p>绝对就是知道我们的目标的地点，直接前往那里</p>
+<pre><code class="language-bash">$ git log --oneline
+8c7e150 (HEAD -&gt; master) cmt 6
+280fc06 cmt 5
+e353c79 cmt 4
+4b6168e cmt 3
+4e4acae commit 2
+ed641db commit 1
+$ git reset e353c79
+Unstaged changes after reset:
+M       tmp.txt
+$ git log --oneline
+e353c79 (HEAD -&gt; master) cmt 4
+4b6168e cmt 3
+4e4acae commit 2
+ed641db commit 1
+</code></pre>
+<p>你可以看到，我输入的 SHA-1 对应的是第四条 commit，<code>git reset</code> 后我们就在那一次 commit 了，同样的道理，如果你输入的是其他 commit 的 SHA-1 也可以前往那条 commit</p>
+<p>这时候你可以开始好奇了，既然 commit 被拆掉了，那么拆出来的文件都没了吗，这个问题就和 <code>reset</code> 的模式有关系了</p>
+<h3><code>reset</code> 的模式</h3>
+<p><code>git reset</code> 有三种模式，<code>mixed</code>, <code>soft</code>, <code>hard</code></p>
+<p>这三种模式之间有细微的区别</p>
+<p><strong><code>mixed</code> 模式</strong></p>
+<p>这个模式是默认的参数，如果没有指定模式的参数，<code>git reset</code> 都会使用这个模式，该模式下会把暂存区的文件删除，但是不会影响工作目录的文件</p>
+<pre><code class="language-bash">$ git log --oneline
+8c7e150 (HEAD -&gt; master) cmt 6
+280fc06 cmt 5
+e353c79 cmt 4
+4b6168e cmt 3
+4e4acae commit 2
+ed641db commit 1
+$ git reset HEAD^ --mixed
+Unstaged changes after reset:
+M       tmp.txt
+$ git status
+On branch master
+Changes not staged for commit:
+  (use &quot;git add &lt;file&gt;...&quot; to update what will be committed)
+  (use &quot;git restore &lt;file&gt;...&quot; to discard changes in working directory)
+        modified:   tmp.txt
+
+no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)
+$ cat tmp.txt
+line 1
+line 2
+line 3
+line 4
+line 5
+line 6
+</code></pre>
+<p>可以看到，使用 <code>mixed</code> 模式 <code>reset</code> 之后 <code>tmp.txt</code> 的文本内容没有回到第五次 commit 的状态，说明我们工作区的文件没有变化。但是 <code>git status</code> 提醒我们 <code>tmp.txt</code> 相对于暂存区的 <code>tmp.txt</code> 发生了改变，说明暂存区被还原成了第五次 commit 的状态</p>
+<p><strong><code>soft</code> 模式</strong></p>
+<p>使用 <code>soft</code> 模式需要加上 <code>--soft</code> 参数，<code>soft</code> 模式下工作目录和暂存区的文件都不会被删除，所以看起来只有 HEAD 的位置移动了而已，commit 被拆开的部分会被直接放在暂存区</p>
+<pre><code class="language-bash">$ git log --oneline
+8c7e150 (HEAD -&gt; master) cmt 6
+280fc06 cmt 5
+e353c79 cmt 4
+4b6168e cmt 3
+4e4acae commit 2
+ed641db commit 1
+$ git status
+On branch master
+nothing to commit, working tree clean
+$ git reset HEAD^ --soft
+$ git log --oneline
+280fc06 (HEAD -&gt; master) cmt 5
+e353c79 cmt 4
+4b6168e cmt 3
+4e4acae commit 2
+ed641db commit 1
+$ cat tmp.txt
+line 1
+line 2
+line 3
+line 4
+line 5
+line 6
+$ git status
+On branch master
+Changes to be committed:
+  (use &quot;git restore --staged &lt;file&gt;...&quot; to unstage)
+        modified:   tmp.txt
+
+</code></pre>
+<p>上面 <code>reset</code> 到前一次 commit 之后，<code>tmp.txt</code> 没有发生变化，工作目录会被保留，再来看暂存区，暂存区是准备 commit 的状态，没有检测到改动，所以暂存区也没有被删除</p>
+<p><strong><code>hard</code> 模式</strong></p>
+<p>这个模式就是彻底的回溯，工作目录和暂存区的文件都会被删除</p>
+<pre><code class="language-bash">$ git log --oneline
+8c7e150 (HEAD -&gt; master) cmt 6
+280fc06 cmt 5
+e353c79 cmt 4
+4b6168e cmt 3
+4e4acae commit 2
+ed641db commit 1
+$ git reset --hard HEAD^
+HEAD is now at 280fc06 cmt 5
+$ git log --oneline
+280fc06 (HEAD -&gt; master) cmt 5
+e353c79 cmt 4
+4b6168e cmt 3
+4e4acae commit 2
+ed641db commit 1
+$ cat tmp.txt
+line 1
+line 2
+line 3
+line 4
+line 5
+$ git status
+On branch master
+nothing to commit, working tree clean
+</code></pre>
+<p>可以看到文件的最后一行 <code>line 6</code> 被删除了，变成了第五次的状态，暂存区也被删除了，显示无事可做，所以就是可以看成时间完全回溯到了第五次 commit 的时候</p>
+<h3>后悔 <code>reset</code> 了</h3>
+<p>后悔之前使用的 <code>reset</code> 了，还能还原之前的 commit 吗？</p>
+<p>答案是可以的，我们需要树立一个观念，不管用什么模式进行 <code>reset</code>，commit 不会因为 <code>reset</code> 就马上消失</p>
+<pre><code class="language-bash">$ git log --oneline
+8c7e150 (HEAD -&gt; master) cmt 6
+280fc06 cmt 5
+e353c79 cmt 4
+4b6168e cmt 3
+4e4acae commit 2
+ed641db commit 1
+$ git reset HEAD~2
+Unstaged changes after reset:
+M       tmp.txt
+$ git log --oneline
+e353c79 (HEAD -&gt; master) cmt 4
+4b6168e cmt 3
+4e4acae commit 2
+ed641db commit 1
+</code></pre>
+<p>上面我们使用 <code>soft</code> 模式 <code>reset</code> 到了第四次 commit 的地方，下面我来演示如何回到第六次 commit</p>
+<pre><code class="language-bash">$ git reset 8c7e150 --hard
+HEAD is now at 8c7e150 cmt 6
+$ git log --oneline
+8c7e150 (HEAD -&gt; master) cmt 6
+280fc06 cmt 5
+e353c79 cmt 4
+4b6168e cmt 3
+4e4acae commit 2
+ed641db commit 1
+</code></pre>
+<p>使用绝对方法，指向第六次 commit 的 SHA-1 就能回到第六次 commit 了，你可能会觉得这样很麻烦，为什么不能用相对方法，那是因为 git 的逻辑是类似树的结构</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/gittree202315ed.png" alt="gittree202315ed"></p>
+<p>每个 commit 都是一个节点，上图中每个点都是 commit，都指向他们前面一个节点，由图上可以看出，一个 commit 上能衍生出不同的分支，所以当前节点和后继节点的关系是一对多的，因此 commit 是无法记录后继节点的信息的，但是往前的节点是唯一的，所以可以用 <code>^</code> 这种符号来快速定位，所以这是必要的麻烦。像上图中如果 还能加一个符号指向后继节点，那么我们应该回到左边的节点还是右边的节点呢，这就产生了矛盾</p>
+<p>那如果我们 <code>reset</code> 之前没有记录之前的 SHA-1 怎么办，其实没有关系，git 中的 <code>reflog</code> 指令可以保留一些记录，这些记录上就有 SHA-1 信息</p>
+<pre><code class="language-bash">$ git reset HEAD~3 --hard
+HEAD is now at 4b6168e cmt 3
+$ git reflog
+4b6168e (HEAD -&gt; master) HEAD@{0}: reset: moving to HEAD~3
+8c7e150 HEAD@{1}: reset: moving to 8c7e150
+e353c79 HEAD@{2}: reset: moving to HEAD~2
+8c7e150 HEAD@{3}: reset: moving to HEAD
+8c7e150 HEAD@{4}: reset: moving to 8c7e150
+280fc06 HEAD@{5}: reset: moving to HEAD^
+8c7e150 HEAD@{6}: reset: moving to 8c7e150
+280fc06 HEAD@{7}: reset: moving to HEAD^
+8c7e150 HEAD@{8}: reset: moving to 8c7e150
+280fc06 HEAD@{9}: reset: moving to HEAD^
+8c7e150 HEAD@{10}: reset: moving to 8c7e150
+280fc06 HEAD@{11}: reset: moving to HEAD^
+8c7e150 HEAD@{12}: reset: moving to 8c7e150
+280fc06 HEAD@{13}: reset: moving to HEAD^
+8c7e150 HEAD@{14}: reset: moving to 8c7e150
+e353c79 HEAD@{15}: reset: moving to e353c79
+e353c79 HEAD@{16}: reset: moving to e353c79
+e353c79 HEAD@{17}: reset: moving to e353c79
+8c7e150 HEAD@{18}: reset: moving to 8c7e150
+280fc06 HEAD@{19}: reset: moving to 8c7e150^
+8c7e150 HEAD@{20}: commit: cmt 6
+280fc06 HEAD@{21}: commit: cmt 5
+e353c79 HEAD@{22}: commit: cmt 4
+4b6168e (HEAD -&gt; master) HEAD@{23}: commit: cmt 3
+4e4acae HEAD@{24}: commit: commit 2
+ed641db HEAD@{25}: commit (initial): commit 1
+</code></pre>
+<p>当HEAD移动时，都会在 <code>reflog</code> 中留下记录，我们能找到之前 commit 的 SHA-1 的值是 <code>8c7e150</code>，想要回去输入这串 SHA-1 即可，除了使用 <code>git reflog</code>，<code>git log -g --oneline</code> 也能做到一样的效果</p>
+<blockquote>
+<p>💡 不要被 <code>reset</code> 的英文意思给误导了，它通常被翻译成重新设置，但是在 git 中，它的意思应该是 前往 或者 变成，那些消失的 commit 并不会因为 <code>reset</code> 而消失，被记录过的东西只是暂时消失了，但是随时都可以救回来</p>
+</blockquote>
+<blockquote>
+<p>⚠ 注意，git 只会记录暂存区和历史仓库，如果你当前代码没有 <code>git add</code> 和 <code>git commit</code> 那你 <code>reset</code> 的时候需要小心了，需要记住不同 <code>reset</code> 模式下对工作目录和暂存区的影响，否则会导致 git 没有管控到的文件丢失！当然还是应该先 <code>git commit</code> 了之后再 <code>reset</code></p>
+</blockquote>
+<h2>HEAD 是什么</h2>
+<p>我把 HEAD 当成一个指针（书上说是指标，但这个指标有歧义），指向某一个分支，通常可以把它当作 当前所在的分支，在 <code>.git</code> 文件夹里就有 <code>HEAD</code> 文件，我们来看看里面是什么内容</p>
+<pre><code class="language-bash">$ cat .git/HEAD
+ref: refs/heads/master
+</code></pre>
+<p>它指向当前分支的 master，可以看到 master 也对应了一个文件，我们来看看 master 上有什么内容</p>
+<pre><code class="language-bash">$ cat .git/refs/heads/master
+4b6168ef584743ebb557fc768da29c509665687e
+</code></pre>
+<p>发现是一个奇怪的文件</p>
+<p>我们新建一个分支，checkout 过去看看 <code>HEAD</code> 会有什么变化</p>
+<pre><code class="language-bash">$ git branch cat
+$ git branch
+  cat
+* master
+$ git checkout cat
+Switched to branch 'cat'
+$ cat .git/HEAD
+ref: refs/heads/cat
+</code></pre>
+<p>发现它指向了 <code>refs/heads/cat</code> ，所以 HEAD 会在切换分支的时候改变，而通常会指向当前所在的分支，不过 HEAD 也不一定总是会指向某个分支，当 HEAD 没有指向分支的时候便会造成 detached HEAD 的状态，后面会讲到</p>
+<p>切换分支的同时，HEAD的内容会改变，当 HEAD 的内容改变的时候，Reflog 也会留下记录</p>
+<h2>只提交文件的部分内容</h2>
+<p>假设我们当前是下面这个状态</p>
+<pre><code class="language-bash">$ git log --oneline
+8c7e150 (HEAD -&gt; master) cmt 6
+280fc06 cmt 5
+e353c79 cmt 4
+4b6168e (cat) cmt 3
+4e4acae commit 2
+ed641db commit 1
+$ git status
+On branch master
+Changes not staged for commit:
+  (use &quot;git add &lt;file&gt;...&quot; to update what will be committed)
+  (use &quot;git restore &lt;file&gt;...&quot; to discard changes in working directory)
+        modified:   tmp.txt
+
+no changes added to commit (use &quot;git add&quot; and/or &quot;git commit -a&quot;)
+$ cat tmp.txt
+line 1
+line 2
+line 3
+line 4
+line 5
+line 6
+sercert 1
+sercert 2
+sercert 3
+line 7
+</code></pre>
+<p>我想 commit 一个 cmt 7 但是我只想把 <code>line 7</code> 提交上去，那三行 <code>sercert</code> 我不想提交，这时候要怎么做呢？</p>
+<p>输入 <code>git add -p tmp.txt</code>，git 就会询问是否将这个区域加到暂存区</p>
+<pre><code class="language-bash">$ git add -p .
+diff --git a/tmp.txt b/tmp.txt
+index f985857..c24d9f7 100644
+--- a/tmp.txt
++++ b/tmp.txt
+@@ -4,3 +4,7 @@ line 3
+ line 4
+ line 5
+ line 6
++sercert 1
++sercert 2
++sercert 3
++line 7
+(1/1) Stage this hunk [y,n,q,a,d,e,?]?
+</code></pre>
+<p>发现有很多选项，我们来看看有什么选项</p>
+<pre><code class="language-bash"># y 暂存当前区域
+y - stage this hunk
+# n 不暂存当前区域
+n - do not stage this hunk
+# q 退出，不暂存这个区域和之后的所有区域
+q - quit; do not stage this hunk or any of the remaining ones
+# a 暂存当前区域和之后的这个文件的所有区域
+a - stage this hunk and all later hunks in the file
+# d 不暂存当前区域和之后的这个文件的所有区域
+d - do not stage this hunk or any of the later hunks in the file
+# e 手动编辑当前区域
+e - manually edit the current hunk
+? - print help
+</code></pre>
+<p>我们要自定义那就回答 <code>e</code></p>
+<pre><code class="language-bash">  1 # Manual hunk edit mode -- see bottom for a quick guide.
+  2 @@ -4,3 +4,7 @@ line 3
+  3  line 4
+  4  line 5
+  5  line 6
+  6 +sercert 1
+  7 +sercert 2
+  8 +sercert 3
+  9 +line 7
+ 10 # ---
+ 11 # To remove '-' lines, make them ' ' lines (context).
+ 12 # To remove '+' lines, delete them.
+ 13 # Lines starting with # will be removed.
+ 14 # If the patch applies cleanly, the edited hunk will immediatel    y be marked for staging.
+ 15 # If it does not apply cleanly, you will be given an opportunit    y to
+ 16 # edit again.  If all lines of the hunk are removed, then the e    dit is
+ 17 # aborted and the hunk is left unchanged.
+</code></pre>
+<p>跳出 vim 编辑器，可以看到说明，如果我们不想要那些修改，就把那几行删掉，我们删掉 6 - 8 行</p>
+<pre><code class="language-bash">  1 # Manual hunk edit mode -- see bottom for a quick guide.
+  2 @@ -4,3 +4,7 @@ line 3
+  3  line 4
+  4  line 5
+  5  line 6
+  6 +line 7
+  7 # ---
+  8 # To remove '-' lines, make them ' ' lines (context).
+  9 # To remove '+' lines, delete them.
+ 10 # Lines starting with # will be removed.
+ 11 # If the patch applies cleanly, the edited hunk will immediatel    y be marked for staging.
+ 12 # If it does not apply cleanly, you will be given an opportunit    y to
+ 13 # edit again.  If all lines of the hunk are removed, then the e    dit is
+ 14 # aborted and the hunk is left unchanged.
+</code></pre>
+<p>保存退出之后，我们来看一下 <code>git status</code></p>
+<pre><code class="language-bash">$ git status
+On branch master
+Changes to be committed:
+  (use &quot;git restore --staged &lt;file&gt;...&quot; to unstage)
+        modified:   tmp.txt
+
+Changes not staged for commit:
+  (use &quot;git add &lt;file&gt;...&quot; to update what will be committed)
+  (use &quot;git restore &lt;file&gt;...&quot; to discard changes in working directory)
+        modified:   tmp.txt
+</code></pre>
+<p>看到只添加了一部分的修改内容，还有一部分修改没有添加到暂存区，这样我们就可以先 <code>git commit</code> 一部分了</p>
+<blockquote>
+<p>第五章还剩下计算 SHA-1 的方法 和 其他一些 git 底层的原理了，底层的原理在以后的应用可能不会用到，但是学习的时候还是学习一下吧，再之后就开始讲分支的应用了，分支是必须掌握的重点了</p>
+</blockquote>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

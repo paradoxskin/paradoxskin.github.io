@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>HEXO的观察</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<blockquote>
+<p>起因是对gitpage没法用动态网页，而又想给自己的博客实现md实时渲染而烦恼，搜索到了一些博客用的框架，最后选择了轻量简单的hexo尝试效果</p>
+</blockquote>
+<h2>安装</h2>
+<p>安装nodejs</p>
+<!-- more -->
+<pre><code class="language-shell">sudo pacman -S nodejs
+node -v
+</code></pre>
+<p>安装npm</p>
+<pre><code class="language-shell">sudo pacman -S npm
+npm -v
+</code></pre>
+<p>安装hexo</p>
+<pre><code class="language-shell">&quot;装本体
+sudo npm install hexo-cli -g
+&quot;装部署插件
+sudo npm install hexo-deployer-git --save
+</code></pre>
+<h2>使用</h2>
+<pre><code class="language-shell">mkdir hexo
+cd hexo
+&quot;初始化博客
+hexo init
+&quot;新建博客
+hexo n &quot;你好&quot;
+</code></pre>
+<h2>目录</h2>
+<p><code>public</code>是静态页面</p>
+<p><code>source/_posts</code>是存放的文章</p>
+<p><code>themes</code>是博客主题</p>
+<p><code>_config.yml</code>是博客全局配置</p>
+<h2>部署</h2>
+<pre><code class="language-shell">hexo s
+</code></pre>
+<h2>上传gitpage</h2>
+<p>在deploy里输入</p>
+<pre><code class="language-shell">deploy:
+    type:git
+    repo: git@github.com:username/repo
+    branch: master
+</code></pre>
+<pre><code class="language-shell">&quot;清理缓存
+hexo clean
+&quot;创建静态网页到public文件夹
+hexo g
+&quot;上传gitpage
+hexo d
+</code></pre>
+<h2>总结</h2>
+<p>gitpage不支持动态页面于是就把需要的网址转换成静态页面，本质上是用脚本转换了markdown到html，上传GitPage其实也只是创建了一个git仓库把静态网页上传，感觉实现方式有点粗鲁，但是有效</p>
+<p>还是先用一段时间，到时候自己看看有什么优雅的实现方式</p>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>rust学习笔记 8</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<h2>堆内存区</h2>
+<p>静态内存、栈内存、堆内存都能用来存放数据，静态内存主要用来存全局变量那种，栈内存用来存函数变量那种，因为函数的调用很适合用栈来表示，所以处理函数变量相当方便，变量的地址也一般都是相邻的，而堆一般用来存放动态的变量，存放的地址也一般是离散的<!--more--></p>
+<p>在 rust 中，内存分配机制主要是使用栈来存储数据，只要是编译时可以确定大小的变量都使用栈来存储，而那些没法在编译时确认大小的变量，都必须用堆内存来存储，想要堆的话需要向操作系统申请</p>
+<p>比如说 Vec 的数据存储，都是使用堆来存放里面的元素的，当然因为 Vec 不是需要用户自己实现，所以我们也不需要去关心它的底层，我们自己写的时候也会遇到无法确定大小的情况，比如说，自己调用自己的结构体</p>
+<pre><code class="language-rust">struct Link {
+    data: i32,
+    next: Option&lt;Link&gt;
+}
+</code></pre>
+<p>这个为了实现链表的结构体调用了自己，而不是引用的形式，当我们编译的时候，编译器就会教我们做人，说这个结构体拥有无限的 size，告诉我们需要使用 box 来包裹 next 变量</p>
+<p>想象一下，如果一个结构体能不停的容纳自己相同类型的结构体，里面的结构体也能具有相同的的能力，那么就真的无法预测它需要多大的内存空间了，所以这时候，编译器就要求我们不要那栈来存这个东西，要用堆，而把变量存进堆里，就需要它说的这个 box</p>
+<h3>Box 类型</h3>
+<p>按照编译器提示，我们应该写成：</p>
+<pre><code class="language-rust">struct Link {
+    data: i32,
+    next: Option&lt;Box&lt;Link&gt;&gt;
+}
+</code></pre>
+<p>Box 类能把目标变量存放在堆内存里，具体的使用会是这样子</p>
+<pre><code class="language-rust">fn main() {
+    let link = Some(Box::new(Link {
+        data: 1,
+        next: Some(Box::new(Link {
+            data: 2,
+            next: Some(Box::new(Link {
+                data: 3,
+                next: None
+            }))
+        }))
+    }));
+    let mut lnk = &amp;link;
+    loop {
+        if let Some(b) = lnk {
+            println!(&quot;{}&quot;, b.data);
+            lnk = &amp;b.next;
+        }
+        else {
+            break;
+        }
+    }
+}
+</code></pre>
+<p><code>Box::new</code> 方法用来创建一个堆内存区中的数据实例，会向系统申请一块与传入数据大小相等的堆内存区来放这个数据</p>
+<p>Box 实现了解引用特性 Deref，也就是 <code>Box&lt;SomeType&gt;</code> 相当于 <code>&amp;SomeType</code>，当然和一般实现了 Deref 的结构体还是有区别的，Box 的解引用是自动的，不需要使用显式 <code>*</code></p>
+<p>Box 其实只是一个指向堆区的指针，不是像盒子一样的东西</p>
+<p>在 rust 中堆区的数据不存在直接的所有权，他的所有权归 Box 指针所有，当 Box 变量超过生命周期时，就会释放掉在堆中的内存空间</p>
+<h3>dyn 关键字</h3>
+<p>实现了相同特性的，变量可以被统一处理</p>
+<p>但是实现相同特性的不同类型，往往他的大小是不同的，这里编译时就无法确定大小，需要 box 的帮忙</p>
+<p>dyn 关键字能让 box 明确下面这个是个特性而不是一个具体类型</p>
+<h2>高级引用</h2>
+<p>前面介绍的 Box 就是一种高级引用，除了 Box 外还有其他高级引用，都是能实现普通引用难以实现的重要功能</p>
+<h3>Rc</h3>
+<p>rc 是什么？<del>rc 是浪漫取消</del></p>
+<p>Rc 是 Reference Counting，实现了 Copy 特性的泛型类，作用让不易于实现克隆特性的变量能够被轻易得使用 clone 方法，它会把数据放在堆上，当调用它的 clone 方法时，它会将引用计数加1，当 Rc 检测到计数为 0 时，Rc 才会释放堆上的数据</p>
+<pre><code class="language-rust">use std::rc::Rc;
+
+struct A {
+    value: i32
+}
+
+fn main() {
+    let x = Rc::new(A {value: 46});
+    let y = x.clone();
+    println!(&quot;{}&quot;, x.value);
+}
+</code></pre>
+<p>使用 Rc 只要知道两个函数就好，一个是 <code>new</code> 用来创建一个 Rc， 一个是 <code>clone</code> 方法用来克隆</p>
+<p>可以看出 Rc 实现了自动解引用的特性，但是它没有实现 DerefMut 特性，所以不能当作可变引用来使用，也就是如果单靠 Rc 只能当作不可变引用来使用</p>
+<h3>Mutex</h3>
+<p>Mutex 是互斥锁，用来保障数据对象不能被同时超过一个方面访问或使用，就是锁的概念</p>
+<p>它没有实现自动解引用，所以需要使用显式 <code>*</code> 来解引用</p>
+<pre><code class="language-rust">use std::sync::Mutex;
+
+fn main() {
+    let mutex = Mutex::new(1000);
+    let mut locked_1 = mutex.lock().unwrap();
+    *locked_1 += 2;
+    println!(&quot;{}&quot;, locked_1);
+    let locked_2 = mutex.lock().unwrap();
+    println!(&quot;locked_2 locked&quot;);
+}
+</code></pre>
+<p>上面这个程序会卡在第八行，因为 mutex 已经被 locked_1 上了锁，在 locked_1 生命周期结束被释放前，locked_2 都会一直等待，所以这个程序是有问题的，如果把 locked_1 写进代码块里就行了</p>
+<pre><code class="language-rust">use std::sync::Mutex;
+
+fn main() {
+    let mutex = Mutex::new(1000);
+    {
+        let mut locked_1 = mutex.lock().unwrap();
+        *locked_1 += 2;
+        println!(&quot;{}&quot;, locked_1);
+    }
+    let locked_2 = mutex.lock();
+}
+</code></pre>
+<p>Mutex 可以和 Rc 相结合，间接的能够改变 Rc 的值</p>
+<pre><code class="language-rust">use std::sync::Mutex;
+use std::rc::Rc;
+
+fn main() {
+    let mut_rc = Rc::new(Mutex::new(10000));
+    {
+        let copy = mut_rc.clone();
+        let mut lock_1 = copy.lock().unwrap();
+        *lock_1 += 1;
+    }
+    let lock_2 = mut_rc.lock().unwrap();
+    println!(&quot;{}&quot;, lock_2);
+}
+</code></pre>
+<p>我们也可以发现 Rc 其实只是对内存多了一个引用，并没有对数据本身进行复制</p>
+<h2>运算符方法</h2>
+<p>也叫重载运算符（？</p>
+<p>Rust 的重载不用像 cpp 里那样一堆奇怪的符号关键字记忆，只需要实现特性即可</p>
+<p>比如说我想要实现一个向量结构体的加法，那么我就可以对它实现一个 std::ops::Add 特性</p>
+<pre><code class="language-rust">use std::ops::Add;
+
+struct Vectors (i32, i32);
+
+impl Add for Vectors {
+    type Output = Self;
+
+    fn add(self, other: Self) -&gt; Self {
+        Self (self.0 + other.0, self.1 + other.1)
+    }
+}
+
+fn main() {
+    let x = Vectors (2, 4);
+    let y = Vectors (5, 5);
+    let z = x + y;
+    println!(&quot;z = ({}, {})&quot;, z.0, z.1);
+}
+</code></pre>
+<p>在上面这个代码里，我们在 <code>z = x + y</code> 之后，x 和 y 的所有权就发生了转移，不能再使用了，但有些情况下我们不想让这种情况发生，我们就需要使用引用符号，但是由于在 rust 里引用也是一种类型，所以我们并没有实现引用的加法</p>
+<p>我们还需要对引用实现 Add 特性</p>
+<pre><code class="language-rust">impl Add for &amp;Vectors {
+    type Output = Vectors;
+
+    fn add(self, other: Self) -&gt; Vectors {
+        Vectors (self.0 + other.0, self.1 + other.1)
+    }
+}
+</code></pre>
+<p>这样使用就能避免失去所有权了</p>
+<pre><code class="language-rust">fn main() {
+    let x = Vectors (2, 4);
+    let y = Vectors (5, 5);
+    let z = &amp;x + &amp;y;
+    println!(&quot;z = ({}, {})&quot;, z.0, z.1);
+    println!(&quot;x = ({}, {})&quot;, x.0, x.1);
+}
+</code></pre>
+<p>但是有一点要注意，运算符不能创造新的符号了，所以我们只能对现有的运算符进行重构，但可以看出，符号可以简单得看作是对调用函数或方法的语法糖，我们实现符号是一方面为了方便编写，另一方面也是为了提高代码的可读性</p>
+<p>rust 中可以重载的运算符都在 <code>std::ops</code> 里，可以去标准库的官方文档查看</p>
+<p><a href="https://doc.rust-lang.org/std/all.html">std库文档传送门</a></p>
+<p>另外还有几个比较重要的特殊重载运算符，一个是解引用 Deref 和 DerefMut, 还有一个是 Drop 特性</p>
+<p>具体的使用场景就不放了，就讲讲对应什么运算符号吧</p>
+<pre><code class="language-rust">{
+    let x = &amp;mut a;
+    println!(&quot;{}&quot;, *x); // Deref
+    *x += 1; // DerefMut
+}// x 的生命周期结束，调用 Drop，相当于是析构函数
+</code></pre>
+<blockquote>
+<p>在看完知识点后信心满满的开始写代码，想要不利用 Box 实现一个根据数组来构建链表的程序，然而被编译器干沉默了，什么生命周期，所有权机制，悬垂指针的概念疯狂对我输出，然后知道自己的修炼还不够，还需要多写 rust, 所以花了这么长的时间才把这篇东西搞定，累死 <em>(:з」∠)</em></p>
+</blockquote>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

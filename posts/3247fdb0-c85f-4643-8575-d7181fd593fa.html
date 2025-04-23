@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>java web 01</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<h1>Java Web开发基础知识</h1>
+<h2>关于静态和动态网页</h2>
+<p>静态和动态是相对于浏览器而言的，浏览器可以直接渲染静态代码，但浏览器不能直接渲染动态代码，需要第三方翻译成静态代码才能渲染</p>
+<!--more-->
+<h2>Servlet容器</h2>
+<p>Apache,Nginx,Tomcat都是Web服务器软件，但是它们之间是有区别的</p>
+<p>前两个软件只能处理静态代码，处理动态代码只能借助Servlet代码或者JSP代码翻译成静态代码，Servlet容器就是能把动态代码翻译成静态代码的软件</p>
+<p>最后一个软件提供了Servlet容器，所以我们只需要安装Tomcat就能拥有Java Web的开发环境</p>
+<h2>资源文件分类</h2>
+<p>资源可以分为两类，静态资源文件和动态资源文件</p>
+<p>如果一个资源文件只包含静态代码，它就是静态资源文件</p>
+<p>如果一个资源文件有动态代码，哪怕只有一行，它就是动态资源文件</p>
+<p>web服务器一般通过文件后缀名来识别资源文件，一般动态资源文件的后缀名是<code>.jsp</code>或者<code>.java</code>，常见的静态资源文件后缀名有<code>.html</code>,<code>.htm</code>,<code>.css</code>,<code>.js</code>,<code>.jpg</code></p>
+<h2>其他说明</h2>
+<p>通常情况下，一台web服务器能同时部署多个web项目，一个web项目包含多个资源文件，web开发人员工作的本质就是开发web项目所需要的各种静态和动态资源文件，将他们整合，然后部署在服务器上测试、运行</p>
+<p>web工作人员有web设计人员和web开发人员，web设计人员通常使用html,css设计网站页面，侧重于美工，web开发人员使用服务器端脚本语言编写动态页面，也会参与web设计，也可能帮助维护动态网站使用的数据库</p>
+<h2>环境配置</h2>
+<p>安装JDK和Tomcat即可</p>
+<p>书中是windows系统，所以不适用，直接</p>
+<pre><code class="language-bash">sudo pacman -S jdk
+sudo pacman -S tomcat9
+</code></pre>
+<p>即可</p>
+<p>还需要开启tomcat的服务</p>
+<pre><code class="language-shell">sudo systemctl start tomcat9
+</code></pre>
+<p>没配置过的tomcat会默认搭载在8080端口上，在浏览器上打开<a href="http://localhost:8080"><code>http://localhost:8080</code></a></p>
+<p>如果没出问题的话会看到一个全英文的界面，上面有一只汤姆猫(<del>虎?</del>)</p>
+<p>想要修改的话在<code>/usr/share/tomcat9/conf/server.xml</code>中，修改之后记得重启服务才能生效</p>
+<p>这个网页的本地位置在<code>/var/lib/tomcat9/webapps/ROOT/index.jsp</code></p>
+<p>实际访问时我们并不需要指定<code>index.jsp</code>，那是因为在tomcat的conf文件夹里的<code>web.xml</code>里有</p>
+<pre><code class="language-xml">    &lt;welcome-file-list&gt;
+        &lt;welcome-file&gt;index.html&lt;/welcome-file&gt;
+        &lt;welcome-file&gt;index.htm&lt;/welcome-file&gt;
+        &lt;welcome-file&gt;index.jsp&lt;/welcome-file&gt;
+    &lt;/welcome-file-list&gt;
+</code></pre>
+<p>表示如果没有指定就默认依次找该目录下的这些文件</p>
+<h2>实践1</h2>
+<p>在ROOT目录新建<code>abc.jsp</code></p>
+<p>编辑</p>
+<pre><code class="language-jsp">&lt;%@ page pageEncoding=&quot;utf-8&quot;%&gt;
+&lt;%
+System.out.println(&quot;你好，Tomcat控制台&quot;);
+String realPath = request.getServletContext().getRealPath(&quot;&quot;);
+response.getWriter().print(&quot;Web项目的根目录绝对路径是&quot;+realPath);
+%&gt;
+</code></pre>
+<p>一般情况下在ROOT中是没有权限的，<del>需要777</del></p>
+<p>然后访问<code>http://localhost:8080/abc.jsp</code>就能看到这条信息了</p>
+<h2>编码问题</h2>
+<p>如果你在上面的实践中删掉第一行，可能会出现乱码的情况</p>
+<p>Tomcat默认使用UTF-8编码，这个要注意</p>
+<h2>斜杠</h2>
+<p><code>:8080/abc/</code>访问的是<code>abc</code>目录，而不是<code>abc</code>文件，斜杠就代表一定是目录名而不是文件名</p>
+<p>但是反过来<code>:8080/abc</code>可以访问到<code>abc</code>文件，如果没有找到文件，则会访问到<code>abc</code>文件夹的<code>index</code>文件，这时候实际上是浏览器发起了两次访问请求，一次是请求<code>/abc</code>，收到了存在<code>abc</code>文件夹之后发起了第二次请求<code>/abc/</code></p>
+<p>为了避免浏览器发起二次访问，要<strong>尽量避免网址中资源名和物理路径目录名同名</strong></p>
+<h2>webapps和ROOT</h2>
+<p>在Tomcat的配置文件<code>server.xml</code>里有</p>
+<pre><code class="language-xml">      &lt;Host name=&quot;localhost&quot;  appBase=&quot;webapps&quot;
+            unpackWARs=&quot;true&quot; autoDeploy=&quot;true&quot;&gt;
+</code></pre>
+<p>表示webapps目录也可以存放web程序，ROOT就位于webapps文件夹里，ROOT相当于webapps的默认资源目录，如果他们之间发生冲突的话是有优先级来处理的</p>
+<p>当webapps目录和Root目录存在abc目录时，tomcat会直接找webapps里的abc，ROOT里的abc文件夹相当于是隐身了，除此之外ROOT目录下同名的文件也会隐身</p>
+<p>所以在开发的时候要<strong>避免web目录下的目录名和目标资源名同名</strong></p>
+<h2>任意物理绝对路径部署web项目</h2>
+<p>在server.xml里写<code>&lt;Context docBase=&quot;path/in/computer&quot; path=&quot;target/path&quot;/&gt;</code></p>
+<p>或者在<code>conf/C开头的文件夹</code>里放<code>name.xml</code>写<code>&lt;Context docBase=&quot;path/in/computer&quot;/&gt;</code>，访问<code>8080/name</code></p>
+<p>然后重启一下tomcat9就可以部署绝对路径的项目了</p>
+<p><del>然而linux里不知道抽了什么风，没法成功</del></p>
+<p>成功了，是指定目标文件夹的权限问题，作为代价我把一些文件夹<code>chmod 777</code>了，之后再研究一下tomcat的用户组之类的东西</p>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

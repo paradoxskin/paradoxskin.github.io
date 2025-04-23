@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>vim隐藏按键</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<p><a href="https://www.vimgolf.com">vimgolf</a>真的有很多东西<!--more-->可以学到啊，虽然自己写的vimrc用快捷键把某些键位覆盖了</p>
+<ul>
+<li><p><code>gJ</code>：消除与下行间的换行</p>
+</li>
+<li><p><code>vit</code>：可以直接选中html中一对尖括号中间的内容</p>
+</li>
+<li><p><code>M</code>：前往中间行</p>
+</li>
+<li><p><code>m</code>：前往中间列</p>
+</li>
+<li><p><code>:g/^/m0</code>：反转行，解释：</p>
+<blockquote>
+<p><code>:g</code>的用法是</p>
+<p><code>:[ranger]g[lobal]/{pattern}/[cmd]</code></p>
+<p>ranger表示范围，pattern是一个正则表达式，表示要匹配的模式串，cmd表示命令</p>
+<p><code>:g/^</code>就是选中了所有行首，因为所有行都有行首</p>
+<p><code>m</code>表示命令move，m0就是移动到第0行，从第0行开始处理，一行一行处理下去就是翻转行的效果</p>
+</blockquote>
+</li>
+<li><p><code>)</code>：前往文本尾</p>
+</li>
+<li><p><code>:sor!</code>：降序排序</p>
+</li>
+<li><p><code>233G</code>：前往233行的开头</p>
+</li>
+<li><p><code>E</code>前往单词最后，若为最后，前往下一个单词的最后</p>
+</li>
+<li><p><code>B</code>前往单词最前，若为最前，前往上一个单词的最前</p>
+</li>
+<li><p><code>:%</code>：对所有行执行之后的操作</p>
+</li>
+<li><p><code>:%norm xxx</code>：对所有行执行normal模式下的操作，如果有一步匹配就会跳出脚本，一般只有vimgolf中才会用</p>
+</li>
+<li><p><code>:%s/    /\t/g</code>: 所有空格换成<code>&lt;tab&gt;</code></p>
+</li>
+<li><p>使用纯净的VIM：<code>vim -u NONE -n</code></p>
+</li>
+</ul>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

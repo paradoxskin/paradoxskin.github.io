@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>7月29日题记</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<h2>题目列表</h2>
+<p>1.<a href="#cf1550c">CF 1550C</a>
+2.<a href="#cf1551d1">CF 1551D1</a>
+3.<a href="#cf1551d2">CF 1551D2</a>
+4.<a href="#cf1203c">CF 1203C</a>
+5.<a href="#cf1203b">CF 1203B</a></p>
+<hr>
+<blockquote>
+<p>这几篇题解都是我从自己的CSDN里搬来的，不然显得我没打过ACM www<!--more--></p>
+</blockquote>
+<h3><span id="cf1550c"> 1. CF1550C </span></h3>
+<p><a href="https://codeforces.com/problemset/problem/1550/C">原题链接</a></p>
+<h4>题目大意</h4>
+<p>求一个数组中满足 (从目标数组里任选三点，满足三个曼哈顿距离没有加减关系) 的连续子区间数量，定义长度为1和2的数组也满足这一条件
+<img src="https://img-blog.csdnimg.cn/e839c9905c0646ceaa0a9b5bd54a8d43.PNG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM0MDM5NDc5,size_16,color_FFFFFF,t_70#pic_center" alt="good">
+<img src="https://img-blog.csdnimg.cn/4eaf33e9c421453fac87dad6a5e1e4f9.PNG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM0MDM5NDc5,size_16,color_FFFFFF,t_70#pic_center" alt="bad"></p>
+<h4>解题思路</h4>
+<p>从上面可以知道如果有三个点满足中间的点不被两边的点包含就符合 另外讨论三个以上的点 四个点的时候 可以看成三个点再加上一个点 所以前面三个点是满足关系的 然后我们只要关注最后一个点怎么插
+<img src="https://img-blog.csdnimg.cn/53c4b27f730f4e79b7796670a380a741.PNG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM0MDM5NDc5,size_16,color_FFFFFF,t_70#pic_center" alt="三+一个点"></p>
+<p>可以看出要满足的话只有边上两个点把中间两个点包起来的时候。四个点以上我就不画了，因为无论如何都是找不到满足这一条件的情况，所以我们就直接暴力枚举首个点 判断后续长度为3和4子区间是否满足这一条件即可。</p>
+<h4>AC代码</h4>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+const int maxn=2e5+10;
+int d[maxn];
+int main(){
+    int t,n,tmp,i,j,k,ans;
+    scanf(&quot;%d&quot;,&amp;t);
+    while(t--){
+        scanf(&quot;%d&quot;,&amp;n);
+        ans=2*n-1;
+        for(i=0;i&lt;n;i++){
+            scanf(&quot;%d&quot;,&amp;d[i]);
+        }
+        for(i=0;i&lt;n-3;i++){
+            if((d[i+1]&gt;d[i]&amp;&amp;d[i+1]&gt;d[i+2])||(d[i+1]&lt;d[i]&amp;&amp;d[i+1]&lt;d[i+2])){
+                ans++;
+                if( ((d[i+3]&lt;d[i+1]&amp;&amp;d[i+3]&gt;d[i+2])||(d[i+3]&gt;d[i+1]&amp;&amp;d[i+3]&lt;d[i+2])) &amp;&amp; ((d[i]&lt;d[i+1]&amp;&amp;d[i]&gt;d[i+2])||(d[i]&gt;d[i+1]&amp;&amp;d[i]&lt;d[i+2])) )
+                    ans++;
+            }
+        }
+        if(n&gt;=3){
+            if((d[n-2]&gt;d[n-3]&amp;&amp;d[n-2]&gt;d[n-1])||(d[n-2]&lt;d[n-3]&amp;&amp;d[n-2]&lt;d[n-1]))
+                ans++;
+        }
+        printf(&quot;%d\n&quot;,ans);
+    }
+    return 0;
+}
+</code></pre>
+<hr>
+<h3><span id="cf1551d1"> 2. CF1551D1 </span></h3>
+<p><a href="https://codeforces.com/problemset/problem/1551/D1">原题链接</a></p>
+<h4>题目大意</h4>
+<p>在NxM的棋盘上摆1x2的多米诺骨牌，判断是否能在摆下k的水平块的前提下摆满整个棋盘</p>
+<h4>解题思路</h4>
+<p>刚刚开始的思路是用某些小块固定出大块，然后发现思路不对，很难考虑完全。然后我就去看官方题解了...
+题解的大致意思是按n和m的奇偶分成四种情况</p>
+<ol>
+<li>n奇m奇:不用考虑，肯定是不可能。</li>
+<li>n偶m偶:k不会超过 m * n / 2 所以肯定可以做到。</li>
+<li>n偶m奇:既然n偶m偶能过，那就想办法让m的一行填掉。</li>
+<li>n奇m偶:原理同上，看看能不能填掉n的一行。</li>
+</ol>
+<h4>AC代码</h4>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int t;
+    scanf(&quot;%d&quot;,&amp;t);
+    int n,m,k;
+    int kk;
+    while(t--){
+        scanf(&quot;%d%d%d&quot;,&amp;n,&amp;m,&amp;k);
+        kk=n*m/2-k;
+        if(n%2&amp;&amp;m%2){
+            printf(&quot;NO\n&quot;);
+            continue;
+        }
+        else if(n%2){
+            k-=m/2;
+        }
+        else if(m%2){
+            kk-=n/2;
+        }
+        if(k&lt;0||k%2||kk&lt;0){
+            printf(&quot;NO\n&quot;);
+            continue;
+        }
+        printf(&quot;YES\n&quot;);
+    }
+    return 0;
+}
+</code></pre>
+<hr>
+<h3><span id="cf1551d2">3 . CF1551D2 </span></h3>
+<p><a href="https://codeforces.com/problemset/problem/1551/D2">原题链接</a></p>
+<h4>题目大意</h4>
+<p>上一道题目的构造版本。</p>
+<h4>解题思路</h4>
+<p>思路和上面以提是一样的，但是构造思路很麻烦，看代码吧，以为涉及到字符串，所以用了我比较熟悉的python写，写的是十分的冗长...</p>
+<h4>AC代码</h4>
+<pre><code class="language-python">t=int(input())
+h1=&quot;ac&quot;
+h2=&quot;bd&quot;
+s1=&quot;ef&quot;
+s2=&quot;gh&quot;
+for aslkfjalkfj in range(t):
+    n,m,k=[int(i) for i in input().split()]
+    kk=n*m//2-k
+    if(n%2 and m%2):
+        print(&quot;NO&quot;)
+        continue
+    elif n%2:
+        k-=m//2
+    elif m%2:
+        kk-=n/2
+    if(k&lt;0 or k%2 or kk&lt;0):
+        print(&quot;NO&quot;)
+        continue
+    print(&quot;YES&quot;)
+    mp=['']*n
+    x=0
+    y=0
+    tmp=0
+    if(n%2):
+        while k&gt;0:
+            mp[y]+=h1[tmp]+h1[tmp]
+            mp[y+1]+=h2[tmp]+h2[tmp]
+            tmp=1-tmp
+            x+=2
+            k-=2
+            if(x==m):
+                x=0
+                y+=2
+        while kk&gt;0:
+            if y&gt;0:
+                if mp[y-1][x]==s1[tmp]:
+                    tmp=1-tmp
+            mp[y]+=s1[tmp]+s2[tmp]
+            mp[y+1]+=s1[tmp]+s2[tmp]
+            tmp=1-tmp
+            x+=2
+            kk-=2
+            if(x==m):
+                x=0
+                y+=2
+        mp[n-1]='xxyy'*(m//4)+'x'*(m%4)
+    if(m%2):
+        while k&gt;0:
+            mp[y]+=h1[tmp]+h1[tmp]
+            mp[y+1]+=h2[tmp]+h2[tmp]
+            tmp=1-tmp
+            x+=2
+            k-=2
+            if(x==m-1):
+                x=0
+                y+=2
+        while kk&gt;0:
+            if y&gt;0:
+                if mp[y-1][x]==s1[tmp]:
+                    tmp=1-tmp
+            mp[y]+=s1[tmp]+s2[tmp]
+            mp[y+1]+=s1[tmp]+s2[tmp]
+            tmp=1-tmp
+            x+=2
+            kk-=2
+            if(x==m-1):
+                x=0
+                y+=2
+        x=&quot;xy&quot;
+        for i in range(0,n,2):
+            mp[i]+=x[tmp]
+            mp[i+1]+=x[tmp]
+            tmp=1-tmp
+    else:
+        while k&gt;0:
+            mp[y]+=h1[tmp]+h1[tmp]
+            mp[y+1]+=h2[tmp]+h2[tmp]
+            tmp=1-tmp
+            x+=2
+            k-=2
+            if(x==m):
+                x=0
+                y+=2
+        while kk&gt;0:
+            if y&gt;0:
+                if mp[y-1][x]==s1[tmp]:
+                    tmp=1-tmp
+            mp[y]+=s1[tmp]+s2[tmp]
+            mp[y+1]+=s1[tmp]+s2[tmp]
+            tmp=1-tmp
+            x+=2
+            kk-=2
+            if(x==m):
+                x=0
+                y+=2
+    for i in mp:
+        print(i)
+</code></pre>
+<hr>
+<h3><span id="cf1203c">4. CF 1203C </span></h3>
+<p><a href="https://codeforces.com/problemset/problem/1203/C">原题链接</a></p>
+<h4>题目大意</h4>
+<p>找到输入n个数的最大公因子，再求出这个公因子又几个因数</p>
+<h4>解题思路</h4>
+<p>div3水题，连续gcd就可以求出最大公因子 然后因数分解只需要用试除法即可 时间复杂度是够的(不会分析gcd的时间复杂度</p>
+<h4>AC代码</h4>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+long long gcd(long long a,long long b){
+    return b==0?a:gcd(b,a%b);
+}
+int main(){
+    int n;
+    scanf(&quot;%d&quot;,&amp;n);
+    long long i,j,k;
+    long long tmp,igcd;
+    scanf(&quot;%lld&quot;,&amp;igcd);
+    for(i=1;i&lt;n;i++){
+        scanf(&quot;%lld&quot;,&amp;tmp);
+        igcd=gcd(igcd,tmp);
+    }
+    long long ans=0;
+    // qiu igcd de yin shu
+    for(i=1;i&lt;=sqrt(igcd);i++){
+        if(igcd%i==0){
+            ans+=2;
+            if(i*i==igcd)
+                ans--;
+        }
+    }
+    printf(&quot;%lld&quot;,ans);
+    return 0;
+}
+</code></pre>
+<hr>
+<h3><span id="cf1203b">5. CF 1203B </span></h3>
+<p><a href="https://codeforces.com/problemset/problem/1203/B">原题链接</a></p>
+<h4>题目大意</h4>
+<p>给一组边，判断是否能用所给边构造出的所有矩形面积相等。</p>
+<h4>解题思路</h4>
+<p>贪心，要想所有矩形面积相等，必须从最长和最短边里选</p>
+<h4>AC代码</h4>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+map&lt;int,int&gt;mp;
+struct node{
+    int val,num;
+};
+vector&lt;node&gt;vtmp;
+int main(){
+    int t;
+    scanf(&quot;%d&quot;,&amp;t);
+    int n,i,j,k,tmp,flag;
+    while(t--){
+        mp.clear();
+        vtmp.clear();
+        scanf(&quot;%d&quot;,&amp;n);
+        for(i=0;i&lt;4*n;i++){
+            scanf(&quot;%d&quot;,&amp;tmp);
+            mp[tmp]++;
+        }
+        flag=1;
+        for(map&lt;int,int&gt;::iterator it=mp.begin();it!=mp.end();it++){
+            if(it-&gt;second%2){
+                flag=0;
+                printf(&quot;NO\n&quot;);
+                break;
+            }
+            vtmp.push_back({it-&gt;first,it-&gt;second});
+        }
+        if(flag){
+            int S=vtmp[0].val*vtmp[vtmp.size()-1].val;
+            if(vtmp[0].num!=vtmp[vtmp.size()-1].num){
+                printf(&quot;NO\n&quot;);
+                continue;
+            }
+            for(i=1,j=vtmp.size()-2;i&lt;=j;i++,j--){
+                if(vtmp[i].val*vtmp[j].val!=S){
+                    printf(&quot;NO\n&quot;);
+                    flag=0;
+                    break;
+                }
+                if(vtmp[i].num!=vtmp[j].num){
+                    printf(&quot;NO\n&quot;);
+                    flag=0;
+                    break;
+                }
+            }
+            if(flag)
+                printf(&quot;YES\n&quot;);
+        }
+    }
+    return 0;
+}
+</code></pre>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

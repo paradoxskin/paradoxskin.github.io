@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>spotify-tuiの安装配置</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<h2>开头</h2>
+<blockquote>
+<p>这东西的配置花了我好长的时间来折腾，记录一下安装的心得吧<!--more--></p>
+<p>这次对 spotify_TUI 的安装可以说是非常即兴，本来洗完澡打算把写一半的代码上传到远程仓库，上床用轻薄本改代码，pull 完代码之后打算开始写代码的时候想听听歌，打开网易云第一首歌是国人翻唱的『わたしの一番かわいいところ』，最近几天刚刚中毒的我，听不到原唱我就很难受，于是就想用 spotify，然后去淘宝搜了下 spotify 会员，发现半年的家庭策略只要 30 块，想整个来听听（spotify里的歌其实不用会员也能听，但是他不给你放指定的音乐，他会给你莫名其妙的加一些奇怪的歌进歌单，比不让人听更血压飙升 ...），就直接去 archwiki 的 package 上搜了下 spotify，结果关键字带 spotify 的就只有两个，<code>spotify-lancher</code> 和 <code>spotifyd</code>，前者装完依赖之后总体积是后者的十倍，然后我果断选择了轻量的 <code>spotifyd</code>，安装完之后运行，不出所料什么都没发生，毕竟本来说明也是说</p>
+<blockquote>
+<p>Lightweight spotify <strong>streaming daemon</strong> with spotify connect support</p>
+</blockquote>
+<p>查了查不是显示交互界面的，大概意思是只负责后端控制，应用前端还需要用户自己安装，所以我就直接去 google 了下，找到的第一个油管视频就是同样使用 <code>dwm</code> 的 Brodie Robertson，我就开始直接<a href="https://www.youtube.com/watch?v=R5jikGfSdh4">抄作业</a>，抄着抄着发现了很酷炫的TUI，两眼放光😍</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/image-20230205132741577.png" alt="image-20230205132741577"></p>
+<p>然后就直接 google 到了<a href="https://github.com/Rigellute/spotify-tui">这个仓库</a>，然后就开始照着官方文档配置</p>
+<p>下面就具体说下怎么配置吧</p>
+</blockquote>
+<h2>Step1. 安装 spotifyd</h2>
+<p>只需一步</p>
+<pre><code class="language-bash">$ sudo pacman -S spotifyd
+</code></pre>
+<h2>Step2. 配置 spotifyd</h2>
+<p>和 <code>picom</code> 类似，<code>spotifyd</code> 有两种启动模式，参数模式 和 配置文件模式，<code>spotifyd --help</code> 可以看到参数模式的各种参数，不过我还是选择配置文件模式，参数模式看的头都要大了，配置文件要自己写，安装完之后不会给你，文件地址是 <code>~/.config/spotifyd/spotifyd.conf</code>，模板<a href="http://spotifyd.github.io/spotifyd/config/File.html">从官方文档这里 copy</a> ，虽然文档里有说明，但是有些选项我也搞不懂，最后精简一下放上我的配置</p>
+<pre><code class="language-bash">[global]
+username = &quot;username&quot;
+password = &quot;password&quot;
+use_mpris = false
+backend = &quot;pulseaudio&quot;
+device_name = &quot;VAiO&quot;
+bitrate = 160
+cache_path = &quot;放缓存的地址&quot; #必须要绝对路径
+max_cache_size = 1000000000
+no_audio_cache = false
+initial_volume = &quot;80&quot;
+volume_normalisation = true
+normalisation_pregain = -10
+autoplay = false
+device_type = &quot;computer&quot;
+</code></pre>
+<p>没错，密码是明文存储 ...</p>
+<p>当然有其他方式可以存，我只是懒得管，反正是浏览器自动生成的，不会被撞库</p>
+<p>差不多就这样了，下面开始安装客户端</p>
+<h2>Step3. 安装 spt</h2>
+<p><code>spt</code> 是什么？就是 <code>spotify-tui</code> 啊！</p>
+<p>如果你会 <code>build</code> rust 项目的话就直接 clone 下来 <code>build</code> 吧，地址是https://github.com/Rigellute/spotify-tui</p>
+<p>像我这种懒人直接下载<a href="https://github.com/Rigellute/spotify-tui/releases">作者编译好的</a>😎</p>
+<p>解压完之后直接把二进制文件拷贝到 <code>/usr/bin</code> 去，这样就能用命令打开了</p>
+<h2>Step4. 配置 spt</h2>
+<p>直接在命令行中输入 <code>spt</code>，它不会直接把你带到播放列表界面去，而是让你配置一个叫 <code>Spotify API</code> 的东西，你可以理解成面向第三方软件提供的一套用户验证 API 接口吧，<a href="https://github.com/Rigellute/spotify-tui#connecting-to-spotifys-api">官方流程</a>说的很详细，照着来就行了，如果你遇到问题，那一定是你的问题，按官方文档上来就没有问题，一个一个单词看过去，一模一样就不会有问题的</p>
+<p>官方文档还有很多能配置的选项啊，可以自己参考一下，我反正当时是能听到声音就谢天谢地了，管不上这么多事情</p>
+<h2>Step5. 运行 spotifyd</h2>
+<pre><code class="language-bash">$ spotifyd
+</code></pre>
+<p>嗯，一行</p>
+<p>不过你要保证它开始运行了</p>
+<pre><code class="language-bash">$ pidof spotifyd
+</code></pre>
+<p>有数字返回就说明它成功运行了，如果没返回就说明你的配置文件有问题，仔细找找问题</p>
+<h2>Step6. 运行 spt</h2>
+<pre><code class="language-bash">$ spt
+</code></pre>
+<p>不出所料地也只需要一行呢，现在你已经能看到 TUI 界面了吧，但是现在你还不能播放，因为你没有选择播放设备，按 <code>d</code>，如果你的 <code>spotifyd</code> 是在运行的，那你应该能看到一个 <code>device</code>，然后你只需要按下回车，就能开始放歌了，TUI 的操作就自己摸索吧，按 <code>?</code> 能看到说明</p>
+<p>差不多到这里就能装好了，装不好就是你不够仔细，我也就差不多从12点装到凌晨3点的样子 (233，查了好久的 issue 啊</p>
+<h2>可能遇到的问题</h2>
+<p>如果你给 spotifyd 配置了代理，可能会出现音乐播放一半之后没声音，进度条开始鬼畜的症状，起初我以为是我给 spotifyd 的缓存开小的问题，重新设置之后发现还是有问题，然后我找了下 issue，看了下记录看不出什么端倪，只看到个和网络有关系，然后我就盯着我的 <code>clash</code> 日志看，惊喜的发现，进度条开始鬼畜的时间节点和代理跳的时间点完全对上了，然后我就把代理配置给注释了，之后就没有这个问题了</p>
+<p>这说明什么，这说明不挂代理也能用 spotify 听歌😋</p>
+<p>另一个问题是没法单曲循环，嗯，spotify 貌似确实不能单曲循环，over，唯一的方法是一个歌单只放一首歌 ...</p>
+<p>最后放上运行图（配置的时候刚好是艾莉的背景图，所以第一次放出声音的时候真的好激动</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/2023-02-05-042625_1920x1080.png" alt="2023-02-05-042625_1920x1080"></p>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>go 使用 sqlite3</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<h2>安装 sqlite3</h2>
+<blockquote>
+<p>在 arch 源里，mysql 被替换成了 mariadb，没力气折腾了<!--more-->，也不想污染 manjaro 的环境，所以在 windows 上装了 mysql 来远程连接，但是远程连接的速度慢的感人，因为要做管理信息系统的实践课作业，我既不想拿两台电脑去，也不想在 manjaro 上装一个偏大的数据库来耗电，最后我觉得应该试一下是最轻量的 sqlite3</p>
+</blockquote>
+<p>one line</p>
+<pre><code class="language-bash">$ sudo pacman -S sqlite3
+</code></pre>
+<h2>使用 sqlite3</h2>
+<blockquote>
+<p>和其他关系型数据库不同的是，SQLite没有单独的服务器进程，以供客户端程序访问并提供相关的服务。SQLite作为一种嵌入式数据库，其运行环境与主程序位于同一进程空间，因此它们之间的通信完全是进程内通信，而相比于进程间通信，其效率更高。然而需要特别指出的是，该种结构在实际运行时确实存在保护性较差的问题，比如此时，应用程序出现问题导致进程崩溃，由于SQLite与其所依赖的进程位于同一进程空间，那么此时SQLite也将随之退出。但是对于独立的服务器进程，则不会有此问题，它们将在密闭性更好的环境下完成它们的工作。</p>
+</blockquote>
+<p>安装完之后，在命令行直接输入 <code>sqlite3</code> 就能进入 sqlite 的界面了，sqlite3 的命令都是用 <code>.</code> 开头，详见 <code>.help</code> ，下文并不会对命令做详细介绍，我认为没必要去记住，用的时候查一下表就行了，只要掌握几个常用的指令就行</p>
+<p><strong>创建数据库</strong></p>
+<p>在进入 sqlite 界面前可以指定一个数据库文件，如果这个文件不存在的话，进入界面之后输入 <code>.database</code> 会保存到本地，之后使用 <code>.quit</code> 退出 sqlite 界面查看</p>
+<pre><code class="language-bash">$ sqlite3 test1.db
+SQLite version 3.40.0 2022-11-16 12:10:08
+Enter &quot;.help&quot; for usage hints.
+sqlite&gt; .database
+main: /home/paradox/workspace/go/src/trysqlite3/test1.db r/w
+sqlite&gt; .quit
+$ ls
+test1.db
+</code></pre>
+<p>也可以在进入 sqlite 后，用 <code>.open</code> 进行等价的操作，但这时候不需要 <code>.database</code> 就能保存到本地</p>
+<pre><code class="language-bash">$ sqlite3
+SQLite version 3.40.0 2022-11-16 12:10:08
+Enter &quot;.help&quot; for usage hints.
+Connected to a transient in-memory database.
+Use &quot;.open FILENAME&quot; to reopen on a persistent database.
+sqlite&gt; .open test.db
+sqlite&gt; .quit
+$ ls
+test.db
+</code></pre>
+<h2>gorm 连接</h2>
+<p><a href="https://gorm.io/zh_CN/docs/connecting_to_the_database.html#SQLite">🔗</a> gorm 的官方文档有演示，由于 sqlite 是基于文件的，所以就不需要一堆复杂的连接参数</p>
+<pre><code class="language-go">package main
+import (
+    &quot;gorm.io/gorm&quot;
+    &quot;gorm.io/driver/sqlite&quot;
+)
+
+func main() {
+    db, err := gorm.Open(sqlite.Open(&quot;test.db&quot;), &amp;gorm.Config{})
+}
+</code></pre>
+<p><strong>测试建表</strong></p>
+<p>这里使用 gorm 的 <code>AutoMigrate</code> 方法</p>
+<pre><code class="language-go">type File struct {
+    Id int
+    Filename string
+    CreateDate time.Time
+}
+
+func main() {
+    db, _ := gorm.Open(sqlite.Open(&quot;test.db&quot;), &amp;gorm.Cofing{})
+    db.AutoMigrate(&amp;File{})
+}
+</code></pre>
+<p><code>.table</code> 查看数据库中的所有表，<code>.schema</code> 查看指定表的字段</p>
+<pre><code class="language-bash">$ sqlite3 test.db
+SQLite version 3.40.0 2022-11-16 12:10:08
+Enter &quot;.help&quot; for usage hints.
+sqlite&gt; .tables
+files
+sqlite&gt; .schema files
+CREATE TABLE `files` (`id` integer,`filename` text,`create_date` datetime,PRIMARY KEY (`id`));
+</code></pre>
+<p>没问题，那 gorm 的其他方法应该都能用了</p>
+<p>最后来测试一下增就结束吧</p>
+<pre><code class="language-go">db.Create(&amp;File{Filename: &quot;nice&quot;, CreateData: time.Now()})
+</code></pre>
+<p>数据库当然支持 sql 语句，我们来查看表</p>
+<pre><code class="language-bash">sqlite&gt; select * from files;
+1|nice|2023-01-28 21:14:31.440692473+08:00|
+</code></pre>
+<p>其中 id 是自增主键，所以能自加，可以看到非常完美，我相信 sqlite 一定非常好用</p>
+<p>之后可能会遇到坑，做好心理准备</p>
+<blockquote>
+<p>貌似后台要开一个 <code>sqlite3 test.db</code> 才能响应，不然 orm 会阻塞</p>
+<p>说实话，懒人的 orm 让我有点不舒服，下学期还是要系统性学习一下 sql 语句啊，一方面为了灵活，另一方面面试肯定还要用啊 ...</p>
+</blockquote>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

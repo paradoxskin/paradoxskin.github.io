@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>git 学习笔记 1</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<p>图书馆借的高见龙的『Git 从入门到精通 (978-7-301-30587-4) 』已经借了将近两个学期了，还没有看完，争取在这个寒假里把它给结束了，这学期之前刚好做了点笔记<!--more-->，先把之前写的都发上来吧，下面的都只是配置之类的，没有正式开始展现Git的强大功能</p>
+<h2>Git入门</h2>
+<ul>
+<li><p>什么是git</p>
+<p>简单地说，git是一种版本控制系统。专业地说，git是一种分布式版本的版本控制系统</p>
+</li>
+<li><p>为什么要学git</p>
+<p>用版本来管理可以知道每次都更改了哪些内容，也可以回档避免特殊情况，更重要的是可以做到多个人同时开发</p>
+</li>
+<li><p>git的优点</p>
+<ul>
+<li>免费，开源</li>
+<li>速度快，体积小</li>
+<li>分布式系统</li>
+</ul>
+</li>
+<li><p>git的缺点</p>
+<p>易学难精通</p>
+</li>
+<li><p>git就是github吗</p>
+<p>不是，git是一个软件，github是一个网站，实际上是一个git服务器</p>
+</li>
+</ul>
+<h2>环境安装</h2>
+<ul>
+<li><p>windows</p>
+<p>从<a href="https://git-scm.com/download/win">官网</a>下载无脑下一步即可</p>
+</li>
+<li><p>macOS</p>
+<ul>
+<li>方法1  从<a href="https://git-scm.com/download/mac">官网</a>下载</li>
+<li>方法2 用<a href="https://brew.sh/index_zh-cn.html">Homebrew</a>安装 <code>brew install git</code></li>
+</ul>
+</li>
+<li><p>linux</p>
+<p><code>sudo pacman -S git</code></p>
+<p><code>sudo apt-get install git</code></p>
+</li>
+<li><p>图形界面工具</p>
+<p><a href="https://git-scm.com/downloads/guis">官网</a>下载</p>
+<p>我的评价是不如<a href="https://github.com/jesseduffield/lazygit">lazygit</a></p>
+</li>
+</ul>
+<h2>终端命令</h2>
+<h3>常用命令</h3>
+<p>作为一本git书讲一下终端命令好像确实没什么问题，具体用法我就不记了，该懂都得懂，不懂自己查</p>
+<table>
+<thead>
+<tr>
+<th>Windows</th>
+<th>macOS/Linux</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>cd</td>
+<td>cd</td>
+<td>切换目录</td>
+</tr>
+<tr>
+<td>cd</td>
+<td>pwd</td>
+<td>获取当前所在的位置</td>
+</tr>
+<tr>
+<td>dir</td>
+<td>ls</td>
+<td>列出当前的文件目录</td>
+</tr>
+<tr>
+<td>mkdir</td>
+<td>mkdir</td>
+<td>创建新的目录</td>
+</tr>
+<tr>
+<td>无</td>
+<td>touch</td>
+<td>创建文件</td>
+</tr>
+<tr>
+<td>copy</td>
+<td>cp</td>
+<td>复制文件</td>
+</tr>
+<tr>
+<td>move</td>
+<td>mv</td>
+<td>移动文件</td>
+</tr>
+<tr>
+<td>del</td>
+<td>rm</td>
+<td>删除文件</td>
+</tr>
+<tr>
+<td>cls</td>
+<td>clear/&lt;Ctrl-L&gt;</td>
+<td>清屏</td>
+</tr>
+</tbody>
+</table>
+<h3>超简明的Vim操作介绍</h3>
+<p><code>:wq</code> 保存，over</p>
+<h2>设置Git</h2>
+<h3>用户设置</h3>
+<p>要用git,第一步就是让git知道你是谁，在终端输入</p>
+<pre><code class="language-shell">$ git config --global user.name &quot;XXXX&quot;
+$ git config --global user.email &quot;XXX@XXX.XX&quot;
+</code></pre>
+<p>之后可以用命令查看当前配置</p>
+<pre><code class="language-shell">$ git config --list
+</code></pre>
+<h3>可以给每个项目设置不同的作者吗</h3>
+<p>你可能注意到了<code>--global</code>  没错，它也有<code>--local</code>，在一个项目目录可以进行独立配置</p>
+<pre><code class="language-shell">$ git config --local user.name &quot;XXX&quot;
+$ git config --local user.email &quot;XXX@XXX.XX&quot;
+</code></pre>
+<p>这样一来，在对这个项目进行操作的时候，就会使用特定的用户来操作，离开这个项目之后还是会用global设置</p>
+<h3>其他方便的设置</h3>
+<ul>
+<li><p>更换编辑器</p>
+<p>实际上你并不需要把vim换掉</p>
+</li>
+</ul>
+<pre><code class="language-shell">$ git config --global core.editor emacs
+</code></pre>
+<ul>
+<li>设置缩写</li>
+</ul>
+<pre><code class="language-shell">$ git config --global alias.co checkout
+$ git config --global alias.br branch
+$ git config --global alias.st status
+$ git config --global alias.l &quot;log --oneline --graph&quot;
+$ git config --global alias.ls 'log --graph --pretty=format:&quot;%h &lt;%an&gt; &amp;ar %s&quot;'
+</code></pre>
+<p>最后一行把commit的人与时间都加进来了
+如果你忘了你alias了哪些指令，可以到git配置里查看 `cat ~/.gitconfig</p>
+<blockquote>
+<p>下一章之前也有做笔记的，但是还是让配置和使用有条分界线吧</p>
+</blockquote>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>修复游戏王卡查器笔记</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<h1>游戏王卡查器</h1>
+<p>最近游戏更新，之前一直用的 <a href="https://github.com/SkywalkerJi/mdt">mdt卡查器</a> 又失效了，等了两三天作者没有像以前一样<!--more-->及时发布新版本，于是打算把源码下载下来研究一下，看看能不能自己把bug修了</p>
+<p>clone下来直接运行<code>mdt.py</code>报错了，是缺少第三方库，<code>requirements.txt</code>里有写需要哪些库</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/image-20221113101534859.png" alt="image-20221113101534859"></p>
+<p>不要直接按报错缺哪些库来装库，因为有些库不是直接对应第三方库名的，比如<code>import i18n</code>，如果直接<code>pip install i18n</code>会没法使用<code>i18n.t</code>函数，因为它的库名是<code>python-i18n</code></p>
+<p>装完所有库之后还是报错了，说有些地方用到了<code>:=</code>，这东西是Go的东西，怎么会出现在python里？</p>
+<p>查了下资料才知道，海象符是在Py3.8才引入的，功能和Go中的稍微有点不一样，但是大致语义很简单：</p>
+<pre><code class="language-python">if a:=True:
+    print(a)
+#等价于
+a=True
+if a:
+    print(a)
+</code></pre>
+<p>所以把海象符改成先赋值再判断的格式就行了，然而运行之后还是报错了，因为缩进空格和tab混用，直接<code>:%s/    /\t/g</code>解决</p>
+<p>这样就可以运行起来了，程序的主要思路是先用<code>pymem</code>获得<code>GameAssembly.dll</code>子模块的内存地址，再通过几次偏移指针找到当前显示卡片信息的内存地址，获取该地址的4字节数据，这个数据就是卡片对应的cid，在预先加载好的数据集里查找改cid就能找到是哪张卡了</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/image-20221113103344884.png" alt="image-20221113103344884"></p>
+<center><b>偏移函数</b></center>
+<p>值得一提的是，组卡，战斗，回放界面用的不是同一个地址偏移方式</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/image-20221113103650379.png" alt="image-20221113103650379"></p>
+<center><b>不是用一种偏移方式</b></center>
+<p>了解了程序的大致运行思路之后开始调试，打开<code>master duel</code>和程序，发现程序是能找到<code>master duel</code>的地址的，但是点击卡片的时候完全没反应，如果只是更新了新卡那只有新卡不会被检测出来吧，旧卡应该会被检测出来，于是我把检测卡组的<code>try-except</code>去掉了</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/image-20221113104236417.png" alt="image-20221113104236417"></p>
+<center><b>用try和except不知道具体问题出在哪里</b></center>
+<p>发现程序在偏移函数的一行报错了</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/image-20221113104335530.png" alt="image-20221113104335530"></p>
+<center><b>读偏移之后的指针发生读取错误</b></center>
+<p>怀疑是新指针偏移发生了变化，原来指向的内容已经失效了，当时经过思考想要找到偏移的方法好像只有两种，一种是用ce根据cid来找到卡片内存位置，根据多次结果来推测偏移值，但是最多有六层偏移量，感觉这有点不切实际，另一种是逆向工程，找到源码里的偏移值，但对于没有过逆向经验的我来说这也是一件困难的事情</p>
+<h2>逆向</h2>
+<p>在学习过程中找到一篇<a href="https://blog.csdn.net/inter315/article/details/125382599?spm=1001.2014.3001.5506">博客</a>，而且他正是在做master duel的逆向，区别是他在研究怎么把静态资源反向编译出来，具体步骤是先用 <a href="https://github.com/Perfare/Il2CppDumper">ll2CppDumper</a> 解包<code>GameAssembly.dll</code>，在用 <a href="https://github.com/dnSpy/dnSpy">dnspy</a>看函数名找到函数地址，最后用ida找到那个地址分析函数，感觉很有趣，后悔当时选择了 ACM 而不是 CTF ...</p>
+<h2>Cheat Engine</h2>
+<p>上面的方法有点难度，既要找到对应的函数名，还要能看懂ida反编译后的代码，成本过于昂贵，理性放弃</p>
+<p>使用CE就需要直到我们要搜索什么，根据<code>mdt.py</code>这个程序的逻辑 (<em>找到内存中的某个值，然后根据这个值在数据库中找到对应的卡片</em> )，我们肯定能在内存空间中找到当前点击的卡片的cid，那我们在那里能看到卡片的cid是什么呢，cid的值是从4000-20000的数字因此很明显不是卡片的卡密，我们在程序里找到输出卡片信息的代码</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/image-20221117104940850.png" alt="image-20221117104940850"></p>
+<center><b>通过card_db找到信息</b></center>
+<p>我们可以直接加载读取这个card_db来找到我们要的卡</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/image-20221117105402770.png" alt="image-20221117105402770"></p>
+<center><b>把这几句复制进终端</b></center>
+<p>然后发现第一张卡就是青眼白龙，cid为4007，当时打开的是阳光的PSY卡组，所以遍历了一下card_db来找激流葬</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/zxczxc.PNG" alt="zxczxc"></p>
+<center><b>激流葬的cid是5114</b></center>
+<p>直接根据这两个cid用CE来找地址，一般会找到四个，如果你多选几张卡会发现有一个目标会失去跟踪，所以有效的地址有三个</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/1.PNG" alt="1"></p>
+<center><b>找到目标</b></center>
+<p>找到之后我们就不用麻烦地遍历card_db来找cid了，点哪张就会显示哪张卡片的cid</p>
+<p>如果你以为到此我们的工作就做完了就太天真了，当我们退出当前deck再回来的时候，会发现ce里的三个地址已经失效了，指针偏移的原理大概就是</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/offsets.png" alt="offsets"></p>
+<center><b>某个指针偏移a的指针指向另一个指针的地址</b></center>
+<p>如果只有一两次偏移就可以通过反着查找，用什么改变了这个地址来找，但是现在的情况是多次偏移，看了一个<a href="https://www.bilibili.com/video/BV1X7411773D">B站视频</a>才学会怎么找</p>
+<p>首先找到对应的地址，右键点击<strong>对这个地址进行指针扫描</strong></p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/2.PNG" alt="2"></p>
+<center><b>级别大小自己调着看，越大越慢</b></center>
+<p>然后退出卡组界面，多找几次对应的地址在上方<strong>指针扫描器</strong>点击<strong>重新扫描内存</strong>，把对应的内存输入进去筛选，多次筛选之后在剩下的几个里找看的顺眼点的</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/3.PNG" alt="3"></p>
+<center><b>扫描结果</b></center>
+<p>记住地址前面的初始偏移量，中间的偏移量写入偏移数组，脚本会自动执行</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/zczvzx.PNG" alt="zczvzx"></p>
+<center><b>修改程序</b></center>
+<p>值得一提的是总共需要找三个地址，一个是卡组，对战，对手卡组，每个都需要这么来一遍，最后就修复了卡查器</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/zxczc.PNG" alt="zxczc"></p>
+<center><b>完工</b></center>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

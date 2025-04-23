@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>CF Round 736 DIV.2 题解</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<p>好奇今天的杭电多校第三题怎么做的，之前做过一道差不多的小数据二分题，按那个思路超时了。</p>
+<blockquote>
+<p>好像是Prim最小生成树？</p>
+</blockquote>
+<hr>
+<h1>CF Round 736 DIV.2 题解(1549A/1549B/1549C)</h1>
+<h2>题目列表</h2>
+<p>1.<a href="#a">A</a>
+2.<a href="#b">B</a>
+3.<a href="#c">C</a></p>
+<hr>
+<blockquote>
+<p>这几篇题解都是我从自己的CSDN里搬来的，不然显得我没打过ACM www<!--more--></p>
+</blockquote>
+<h3><span id='a'>1.A</span></h3>
+<p><a href="https://codeforces.com/contest/1549/problem/A">原题链接</a></p>
+<h4>题目大意</h4>
+<p>给一个质数P，求a和b满足$P\ mod\ a == P\ mod\ b$。</p>
+<h4>解题思路</h4>
+<p>水题，总所周知，大于2的质数全是奇数，所以直接输出2和P-1。</p>
+<h4>AC代码</h4>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+int main(){
+    int t;
+    scanf(&quot;%d&quot;,&amp;t);
+    int a,b,p;
+    while(t--){
+        scanf(&quot;%d&quot;,&amp;p);
+        printf(&quot;%d %d\n&quot;,2,p-1);
+    }
+    return 0;
+}
+</code></pre>
+<hr>
+<h3><span id='b'>2.B</span></h3>
+<p><a href="https://codeforces.com/contest/1549/problem/B">原题链接</a></p>
+<h4>题目大意</h4>
+<p>国际象棋的兵的走位，给出我方和对面的位置，求我方士兵能到达对面的最大个数。</p>
+<h4>解题思路</h4>
+<p>如果前面是0直接进，其他情况大概优先左边再往右，其实没啥思路，直接暴力就过了...</p>
+<h4>AC代码</h4>
+<pre><code class="language-python">t=int(input())
+for lkasjflkasfj in range(t):
+    n=int(input())
+    a=['X']+list(input())+['X']
+    m='X'+input()+'X'
+    ans=0
+    for i in range(1,n+1):
+        if m[i]=='1':
+            if a[i]=='0':
+                ans+=1
+            elif a[i-1]=='1':
+                ans+=1
+                a[i-1]='2'
+            elif a[i+1]=='1':
+                ans+=1
+                a[i+1]='2'
+    print(ans)
+</code></pre>
+<hr>
+<h3><span id='c'>3.C</span></h3>
+<p><a href="https://codeforces.com/contest/1549/problem/C">原题链接</a></p>
+<h4>题目大意</h4>
+<p>给一个初始的图，然后对于一个结点，如果他的所有相邻结点都比他大，那他就会被消灭掉，求最终还剩几个点。有三种操作，一个是删除一条边，一个是增加一个边，还有一个是查询答案。</p>
+<h4>解题思路</h4>
+<p>因为所有点都是唯一的，所以对于每个联通的关系，总会有最小的结点被消灭，一直持续这个过程，最终状态就都是分离的，因此对于关系网中如果一个结点比所有和他相连的结点大，那最后那个结点会存活，而其他相连结点全部会被消灭掉，按照这个思路就可以模拟。不知道为什么，第一反应就是并查集，对每条边，每次把小结点的根变成大结点，然后不出所料的T了3次。最后换了一个思路，因为并查集是没有办法维护的，每次查询都要重新来对边合并，遍历一遍，时间成本是非常大的，所以应该找一个能维护的算法，最后决定用拓扑排序。让我们把每条边都变成从大的结点指向小的结点，记录每个点的入度，如果一个结点的入度为0那他最后就会存活，只要统计入度为0的点的个数就行了，而且维护起来相当方便👍</p>
+<h4>AC代码</h4>
+<pre><code class="language-cpp">#include&lt;bits/stdc++.h&gt;
+using namespace std;
+const int maxn=2e5+10;
+int a[maxn];
+int main(){
+    int n,m;
+    int i,j,k,tmp;
+    int u,v;
+    int q;
+    scanf(&quot;%d%d&quot;,&amp;n,&amp;m);
+    int ans=0;
+    for(i=0;i&lt;m;i++){
+        scanf(&quot;%d%d&quot;,&amp;u,&amp;v);
+        u=min(u,v);
+        a[u]++;
+    }
+    scanf(&quot;%d&quot;,&amp;q);
+    int op;
+    for(i=1;i&lt;=n;i++){
+        if(a[i]==0)
+            ans++;
+    }
+    while(q--){
+        scanf(&quot;%d&quot;,&amp;op);
+        if(op==3){
+            printf(&quot;%d\n&quot;,ans);
+        }
+        else if(op==1){
+            scanf(&quot;%d%d&quot;,&amp;u,&amp;v);
+            tmp=max(u,v);
+            u=min(u,v);
+            v=tmp;
+            a[u]++;
+            if(a[u]==1)
+                ans--;
+        }
+        else if(op==2){
+            scanf(&quot;%d%d&quot;,&amp;u,&amp;v);
+            tmp=max(u,v);
+            u=min(u,v);
+            v=tmp;
+            a[u]--;
+            if(a[u]==0)
+                ans++;
+        }
+    }
+    return 0;
+}
+</code></pre>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

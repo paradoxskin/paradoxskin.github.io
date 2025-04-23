@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>git 学习笔记 6</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<blockquote>
+<p>这一讲开始讲分支，也是 git 相当重要的部分，是开发必须掌握的技能</p>
+<p>在多人开发过程中，想要增加新功能或者修 bug 的时候，都会<!--more-->另开开一个分支出来，在确认没有问题之后再和主分支合并，这样就不会影响在运行中的产品，当然在单人开发过程中也可以采取这种开发模式</p>
+</blockquote>
+<h2>开始使用分支</h2>
+<p>在 git 中使用分支很简单，只要使用 <code>git branch</code> 命令即可</p>
+<pre><code class="language-bash">$ git branch
+* master
+</code></pre>
+<p>如果 <code>branch</code> 后面没有参数，它只会输出当前这个项目中有哪些分支，git 默认会设置一个 master 的分支，前面的星号代表当前处于这个分支上</p>
+<h3>新建分支</h3>
+<p>如果需要增加一个分支，就可以在 <code>git branch</code> 后面跟上想要的分支的名称</p>
+<pre><code class="language-bash">$ git branch cat
+$ git branch
+  cat
+* master
+</code></pre>
+<p>可以看出，确实多了一个 <code>cat</code> 分支，但是我们当前还是处在 <code>master</code> 分支上</p>
+<h3>更改分支名称</h3>
+<p>如果你觉得一个分支名不对你胃口，可以随时更改，是不会影响文件和目录的，更改分支的方法是 <code>git branch -m old_name new_name</code></p>
+<pre><code class="language-bash">$ git branch -m cat cat2.0
+$ git branch
+  cat2.0
+* master
+</code></pre>
+<p>即使是 <code>master</code> 分支，也可以改名</p>
+<pre><code class="language-bash">$ git branch -m master main
+$ git branch
+  cat2.0
+* main
+</code></pre>
+<h3>删除分支</h3>
+<p>删除对应的英语是 delete，所以参数是 <code>-d</code></p>
+<pre><code class="language-bash">$ git branch
+  cat1.0
+  cat2.0
+* main
+$ git branch -d cat1.0
+Deleted branch cat1.0 (was e47b10f).
+$ git branch
+  cat2.0
+* main
+</code></pre>
+<p>但 git 不允许用 <code>-d</code> 删除未合并的分支</p>
+<pre><code class="language-bash">$ git branch -d cat2.0
+error: The branch 'cat2.0' is not fully merged.
+If you are sure you want to delete it, run 'git branch -D cat2.0'.
+</code></pre>
+<p>但是你可以使用 <code>-D</code> 将其删除</p>
+<pre><code class="language-bash">$ git branch -D cat2.0
+Deleted branch cat2.0 (was 3f18f81)
+</code></pre>
+<p>在 git 中，没有什么分支是不能删的，但是你不能删除你当前所在的分支</p>
+<pre><code class="language-bash">$ git branch
+  b2
+* main
+$ git branch -d main
+error: Cannot delete branch 'main' checked out at '/home/paradox/Code/learngit/learnbranch'
+</code></pre>
+<p>不过你可以移动到其他分支之后再删除它</p>
+<blockquote>
+<p>你以为这样的规则下 git 必须要有一个分支？</p>
+<p>不不不，你可以把分支全删了</p>
+<p>通过 <code>git checkout</code> 到一个没有贴分支的 commit，让它成为一个detached HEAD，这时候我们就处于在所有其他分支以外的状态，<del>然后用 <code>git branch -d/D</code> 大开杀戒吧！</del></p>
+</blockquote>
+<h3>切换分支</h3>
+<p>切换分支使用的指令之前在还原被reset消失的文件时出现过，<code>git checkout</code></p>
+<pre><code class="language-bash">$ git branch
+  b2
+* main
+$ git checkout b2
+Switched to branch 'b2'
+$ git branch
+* b2
+  main
+</code></pre>
+<p>使用 <code>git checkout</code> 就能轻松地切换了分支</p>
+<p>一般来说，要想切换到那个分支就必须要先存在那个分支，如果你输入的分支参数还不存在项目中，就会出错，但你可以用 <code>-b</code> 参数，这样如果你要切换的分支不存在时 git 就会帮你新建这个分支并切换过去</p>
+<pre><code class="language-bash">$ git checkout b3
+error: pathspec 'b3' did not match any file(s) known to git
+$ git checkout -b b3
+Switched to a new branch 'b3'
+$ git branch
+  b2
+* b3
+  main
+</code></pre>
+<p>分支的切换非常的方便，在切换分支的时候工作区的文件可能会发生变化，但是别担心，那些文件都在，只要你切换回去就会回来</p>
+<pre><code class="language-bash">$ git branch
+* cat
+  master
+$ ls
+cat1  x.c
+$ git checkout master
+Switched to branch 'master'
+$ ls
+x.c
+$ git checkout cat
+Switched to branch 'cat'
+$ ls
+cat1  x.c
+</code></pre>
+<p><strong>如果有文件改动了一半就切换分支会发生什么</strong></p>
+<p>假设我们现在处在 cat 分支上，现在我们来新建两个文件，一个 <code>git add</code>，一个不 <code>git add</code></p>
+<pre><code class="language-bash">$ git log --oneline
+d5164b9 (HEAD -&gt; cat, master) cmt1
+$ ls
+a  b  file
+$ git status
+On branch cat
+Changes to be committed:
+  (use &quot;git restore --staged &lt;file&gt;...&quot; to unstage)
+        new file:   a
+
+Untracked files:
+  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+        b
+</code></pre>
+<p>现在我们切换回 master 分支来看看会发生什么</p>
+<pre><code class="language-bash">$ git checkout master
+A       a
+Switched to branch 'master'
+$ ls
+a  b  file
+$ git status
+On branch master
+Changes to be committed:
+  (use &quot;git restore --staged &lt;file&gt;...&quot; to unstage)
+        new file:   a
+
+Untracked files:
+  (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed)
+        b
+</code></pre>
+<p>原本没有 <code>a</code> 和 <code>b</code> 文件的 master 分支居然出现了这两个文件，而且 <code>a</code> 还是在暂存区的状态，也就是说，切换分支不会影响已经在工作目录中的那些改动</p>
+<p>但有时候有文件没有提交的情况下 git 会不让你切换过去</p>
+<pre><code class="language-bash">$ git checkout master
+Switched to branch 'master'
+$ cat file
+wt
+$ git checkout cat
+Switched to branch 'cat'
+$ echo hello &gt; file
+$ git checkout master
+error: Your local changes to the following files would be overwritten by checkout:
+        file
+Please commit your changes or stash them before you switch branches.
+Aborting
+</code></pre>
+<p>原因大概是同样的文件，但是文件更改并没有相对的先后顺序，然后 git 无法做出这次修改对目标分支的合并，就不会让你切换过去，当然，<code>checkout</code> 也有强制执行的参数 <code>-f</code></p>
+<pre><code class="language-bash">$ git checkout master -f
+Switched to branch 'master'
+$ cat file
+wt
+</code></pre>
+<p>这时候的 <code>file</code> 就是 master 分支的状态，cat 分支的文件因为被覆盖就消失了，因为没有被 git 管理，回到 cat 分支也找不回原来的 <code>file</code> 了</p>
+<p>当然这种情况是要避免的，通过 <code>commit</code> 和 <code>stash</code> 来保存这些文件，以免造成文件丢失的风险</p>
+<h3>切换时会发生什么</h3>
+<p>git 在 <code>git checkout</code> 时主要做了以下两件事</p>
+<ol>
+<li>更新暂存区和工作目录</li>
+<li>变更 HEAD 的位置</li>
+</ol>
+<p>什么叫更新暂存区和工作目录？git 会根据分支指向 commit 的内容来更新暂存区和工作目录，我们来看下面的例子</p>
+<pre><code class="language-bash">$ git log --oneline
+74fbcf5 (HEAD -&gt; master) 1
+$ ls
+x
+$ cat x
+1
+</code></pre>
+<p>我们的项目现在有一个 <code>x</code> 文件，文件内容是一个数字 1，这时候我们把当前分支换成 <code>cat</code> 并添加一些修改并提交</p>
+<pre><code class="language-bash">$ git checkout -b cat
+Switched to a new branch 'cat'
+$ cat x
+1
+2
+$ git add .
+$ git commit -m 2
+[cat fdde6ba] 2
+ 1 file changed, 1 insertion(+)
+</code></pre>
+<p>然后我们切换回 <code>master</code> 分支，<code>x</code> 文件回到了 <code>master</code> 分支的状态</p>
+<pre><code class="language-bash">$ cat x
+1
+2
+$ git checkout master
+Switched to branch 'master'
+$ cat x
+1
+</code></pre>
+<p>前面讲到过，commit 对象会指向一个 tree 对象，当我们拿出了一个 commit，那就能顺着这个对象把整个目录都找出来，切换分支的时候就是把原先分支对应的 commit 的目录都移除，然后换上目标分支贴着的 commit 对应的目录，有点换驾驶员的感觉</p>
+<p>而 HEAD 指向的是当前所在的分支，<code>checkout</code> 到一个分支，就会让 HEAD 指向那个分支，你可以 <code>checkout</code> 一个 commit 的 SHA-1，但那会让你的 HEAD 成为一个 detached HEAD，即便那个 commit 上有贴分支，HEAD 也不会指向那个分支，而是指向 commit，这样看来 HEAD、commit、branch 之间的关系没有看上去那么简单了吧</p>
+<h3>分支的含义</h3>
+<p>看到这里，我相信你对分支肯定有了~~一定的误解~~，来看看分支的含义吧</p>
+<p>如果从字面上来看，分支是从一条线上的一个点向外延伸出的另一条线，类似分岔铁路</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/tielufencha.jpg" alt="tielufencha"></p>
+<p>从表面上看确实是这么一回事，所以这就会引起误解，其实分支<strong>并不是这么一回事</strong></p>
+<p>之前提到过，git 的 逻辑是一张 DAG（有向无环图），而分支就是在 DAG 中，贴在 commit 上用来标记 commit 的贴纸，当前处在的贴纸会随着 commit 而前进</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/branch2023112.png" alt="branch2023112"></p>
+<p>上面的图片可以清晰地呈现分支的逻辑，你可能和之前的我一样认为黄色虚线圈起来的部分就是分支，那你可能就看的不是很清晰。其实只有那张褐色的贴纸才是分支，如果觉得分支包含 commit 历史的话，在面对分岔复杂情况下 commit 的 DAG 时，再贴上几张 branch，你可能就要抓狂了（如上图的 cat1.0 和 cat2.0，你能指出他们分别包含了哪些 commit 吗）</p>
+<p>为了看清楚 branch，我们再来梳理一下，先抛开 branch 不管，我们只看 commit 的部分</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/justcommit22023112.png" alt="justcommit22023112">
+如果没有分支，这样情况的 commit 的 DAG 能存在的吗？</p>
+<p>答案是可以，上一篇中学到 commit 对象的本质是一堆经过 SHA-1 计算之后的压缩文件，文件的内容是指向前一个 commit 对象和包含目录信息的 tree 对象，既然我们能做到指向前一个对象，那么把它想象成一张图，我们的目标是建立这张图，假设当前我们只有上图的 a 点作为起始点，现在我们能用的操作有 <code>commit</code> 和 <code>reset</code>，把之前的知识抽象成图论，那么借助 <code>commit</code> 可以创建一个新的点并且建立一条有向边指向之前所在的点，<code>reset</code> 可以跳转到指定的点上，那么上图我们可以从 a 一路 <code>commit</code> 完成 abcde 的部分，再用 <code>reset</code> 分别跳转到 b 和 c 完成剩下的部分，这么算下来，最少需要 9 次 <code>commit</code> 和 3 次 <code>reset</code> 就能建立上面的 DAG 了</p>
+<p>这么看下来好像和分支没什么关系，那么分支到底是什么呢？</p>
+<p><strong>贴纸！</strong></p>
+<p>如果我们不用分支，那当我们处于 e 点想跳转到 b2 点的情况下，就必须知道 b2 点的 SHA-1 是多少，通过 <code>git reflog</code> 不难知道 b2 的 SHA-1 是多少，但如果提交很多呢，你就需要在一堆 SHA-1 中寻找你要的 b2，是不是有点大海捞针的感觉。实际开发中我们也不愿意浪费时间在找 SHA-1 上，这时候就需要借助贴纸了，我们在 b2 上贴上分支 <code>git branch b2</code>，告诉 git，在 b2 这个 commit 上贴上 <code>b2</code>，那么之后我们只需要 <code>git checkout b2</code> 就能跳转到 b2 点，而不用像大海捞针一样的找 b2 的SHA-1 再 <code>reset</code>，是不是有点<strong>传送点</strong>的意思</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/branch2023112.png" alt="branch2023112"></p>
+<p>现在再回来看这张图，是不是就清晰很多，<strong>分支只是贴在某个 commit 上的贴纸而已！</strong></p>
+<blockquote>
+<p>上面使用 reset 跳转只是为了从本质上认识分支，实际上 reset 操作会影响到 branch，reset 会让当前所在的分支贴到指定的 commit 上，checkout 就不会，checkout 只会移动 HEAD 指针，不会影响到 branch，随带一提，当前所在的分支会随着 commit 操作移动，想象成把当前的贴纸撕下来贴到新的 commit 上就行了</p>
+</blockquote>
+<blockquote>
+<p>越学越感觉到 git 设计的精妙，感觉理解了一切！但我还是没法理解 git 的前后 commit 差异分析信息是怎么存储的，因为平时用 lazygit 或者在 github 上看历史代码都能看到 commit 修改了什么代码的信息，希望这本书后面能讲讲，但这本书好像都不会讲 stash，后面可能要自己查资料写文章了，但我感觉 stash 好像没有存在的必要啊...</p>
+<p>这一篇说了开分支和分支的原理，下一篇文章会讲分支合并，也是非常重要的一部分，敬请期待</p>
+</blockquote>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

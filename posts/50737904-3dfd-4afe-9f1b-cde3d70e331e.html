@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>rust学习笔记 3</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<h2>复合结构</h2>
+<h3>结构体</h3>
+<p>rust 中的结构体和元组都可以将若干个类型不相同的数据捆绑在一起<!--more-->，但结构体的每个成员和其本身都有一个名字，这样访问的时候就不用记住下标了，元组一般用来非定义的多值传递，而结构体是规范的</p>
+<ul>
+<li>定义</li>
+</ul>
+<pre><code class="language-rust">struct Site {
+    domain: String,
+    name: String,
+    nation: String
+}
+</code></pre>
+<p>和 C 语言有以下区别：</p>
+<ol>
+<li>定义语句仅用来定义，不能定义实例 (初始化)</li>
+<li>结尾不用 <code>;</code></li>
+<li>每个字段定义后用 <code>,</code> 分隔</li>
+</ol>
+<ul>
+<li>创建实例</li>
+</ul>
+<pre><code class="language-rust">fn main() {
+    let domain = String::from(&quot;paradoxskin.github.io&quot;);
+    let paradox = Site {
+        domain,
+        nation: String::from(&quot;China&quot;),
+        name: String::from(&quot;paradoxless&quot;)
+    };
+}
+</code></pre>
+<p>实例化的过程类似创建 json，不需要按照定义的顺序输入，而且如果有字段名称和现存变量同名，就可以像上面的 domain 那样简写</p>
+<ul>
+<li>复制修改实例</li>
+</ul>
+<pre><code class="language-rust">let bing = Site {
+    name: String::from(&quot;bing&quot;),
+    domain: String::from(&quot;cn.bing.com&quot;),
+    ..paradox
+};
+</code></pre>
+<p>在两个实例属性差不多的时候就可以只修改有区别的字段，之后使用 <code>..实例</code> 即可，这句之后不能加 <code>,</code></p>
+<p>虽然书上说 不允许一成不变地复制另一个结构体实例，要至少修改一个字段的值，但是我全部复制还是可以通过编译</p>
+<h3>结构体所有权</h3>
+<p>上面第一段实例化代码中的 <code>domain</code> 变量的所有权在实例化的时候发生了转移，之后无法直接使用 <code>domain</code> 这一变量了</p>
+<p>关于结构体还有一个知识点</p>
+<pre><code class="language-rust">struct Temp {
+    some: &amp;str,
+    strr: &amp;str
+}
+</code></pre>
+<p>上面一段代码是无法通过编译的，编译器会提示需要命名的生命周期符号，正确写法就是加上生命周期符号：</p>
+<pre><code class="language-rust">struct Temp&lt;'c&gt; {
+    some: &amp;'c str,
+    strr: &amp;'c str
+}
+</code></pre>
+<p>这个符号的含义是让被打上标记的点生命周期一样长，下面有一个会出现 不可预测生命周期 的函数例子</p>
+<pre><code class="language-rust">fn longer(s1: &amp;str, s2:&amp;str) -&gt; &amp;str {
+    if s2.len() &gt; s1.len() {
+        return s2;
+    }
+    else {
+        return s1;
+    }
+}
+</code></pre>
+<p>上面这段函数也是无法通过编译的，因为如果 s1比较长，那么函数的返回值的生命周期会和 s1 一样长，反之则会和 s2 一样长，编译器无法做出谁更长的判断，因此，函数必须声明 s1 和 s2 的生命周期</p>
+<pre><code class="language-rust">fn longer&lt;'a&gt;(s1: &amp;'a str, s2:&amp;'a str) -&gt; &amp;'a str {
+    if s2.len() &gt; s1.len() {
+        return s2;
+    }
+    else {
+        return s1;
+    }
+}
+</code></pre>
+<p>这样函数的两个参数的生命周期就一样长了</p>
+<p>在结构体里也是一样的道理，要举出例子还是有点困难的，如果搞不清楚可以直接认为只要在结构体里使用引用类型，就一定要在 <code>&amp;</code> 类型后面加个 <code>'a</code> 即可</p>
+<h3>结构体方法</h3>
+<p>相当于类中函数</p>
+<pre><code class="language-rust">struct Rect {
+    width: u32,
+    height: u32,
+}
+
+impl Rect {
+    fn area(&amp;self) -&gt; u32 {
+        self.width * self.height
+    }
+    fn wider(&amp;self, rect: &amp;Rect) -&gt; bool {
+        self.width &gt; rect.width
+    }
+}
+impl Rect {
+    fn circum(&amp;self) -&gt; u32 {
+        (self.width + self.height) * 2
+    }
+    fn xx() -&gt; u32 {
+        233
+    }
+}
+fn main() {
+    let rect1 = Rect { width: 30, height: 50 };
+    let rect2 = Rect { width: 10, height: 50 };
+    println!(&quot;rect1's area is {}&quot;, rect1.area());
+    println!(&quot;rect2's circum is {}&quot;, rect2.circum());
+    println!(&quot;Is rect1 wider than rect2: {}&quot;, rect1.wider(&amp;rect2));
+    println!(&quot;{}&quot;, Rect::xx());
+}
+</code></pre>
+<p>结构体方法写在 <code>impl</code> 语句块里，语句块需要指定结构体，同一个语句块里可以写多个结构体方法，代码中也可以有有多个 <code>impl</code> 语句块，<code>&amp;self</code> 代表结构体对象自己，如果没有 <code>&amp;self</code> 参数就相当一个静态函数，不能基于对象被调用</p>
+<blockquote>
+<p>注意，impl 不是接口的意思</p>
+</blockquote>
+<h3>元组结构体</h3>
+<pre><code class="language-rust">fn main() {
+    struct Color(u8, u8, u8);
+    struct Point(f64, f64);
+
+    let black = Color(0, 0, 0);
+    let origin = Point(1.0, 0.0);
+
+    println!(&quot;black = {} {} {}&quot;, black.0, black.1, black.2);
+    println!(&quot;origin = {} {}&quot;, origin.0, origin.1);
+}
+</code></pre>
+<p>元组结构体和元组类似，区别就是它有名字和固定的类型格式，这个数据存在的意义就是处理那些需要定义类型又不想太复杂的简单数据，简单的说，就是为了牺牲了点结构体的可读性获取便捷性（ 颜色、坐标 ）</p>
+<h3>单元结构体</h3>
+<p>这种结构体无须任何成员，我现在还不知道它存在的意义是什么（</p>
+<pre><code class="language-rust">struct UnitStruct;
+</code></pre>
+<h3>枚举类</h3>
+<p>和 C++ 中的枚举类有所不同，rust 中的枚举类不是默认为 0, 1, 2...</p>
+<p>但我也不知到 Rust 中的枚举类有什么用，就先简单抄一下就好了</p>
+<pre><code class="language-rust">#[derive(Debug)]
+enum Color {
+    Red,
+    Green,
+    Blue
+}
+fn main() {
+    let color = Color::Red;
+    println!(&quot;{:?}&quot;, color);
+}
+</code></pre>
+<p>输出 <code>Red</code></p>
+<p>枚举类可以包含属性，并实例化</p>
+<pre><code class="language-rust">enum Book {
+    Papery(u32),
+    Electronic(String),
+}
+fn main() {
+    let book = Book::Papery(1001);
+    let ebook = Book::Electronic(String::from(&quot;https://xxx.xxx&quot;));
+}
+</code></pre>
+<p>如有必要，可以用结构体的键值命名枚举类的属性</p>
+<pre><code class="language-rust">enum Book {
+    Papery {
+        index: u32
+    },
+    Electronic {
+        url: String
+    }
+}
+fn main() {
+    let book = Book::Papery { index: (1001) };
+    let ebook = Book::Electronic { url: String::from(&quot;https://xxx.xxx&quot;) };
+}
+</code></pre>
+<ul>
+<li>使用 match 语法</li>
+</ul>
+<blockquote>
+<p>”switch 语法就是为了枚举类而设计的“</p>
+</blockquote>
+<pre><code class="language-rust">enum Book {
+    Papery(u32),
+    Electronic {
+        url: String
+    }
+}
+fn main() {
+    let book = Book::Papery(1001);
+    match book {
+        Book::Papery(index) =&gt; {
+            println!(&quot;Papery book {}&quot;, index);
+        },
+        Book::Electronic { url } =&gt; {
+            println!(&quot;E-book {}&quot;, url);
+        }
+    }
+}
+</code></pre>
+<p>如果实例是哪个枚举项就执行哪个，如果是用结构体申明的，就用 <code>Electronic</code> 这样的格式，用元组语法定义就用 <code>Papery</code> 那种格式</p>
+<ul>
+<li><code>if-let</code> 语法</li>
+</ul>
+<p>如果只是想要写一个简单的判断值为某个枚举项的话，就可以不费那么大劲去写 <code>match</code>，可以直接用 <code>if-let</code> 语法</p>
+<pre><code class="language-rust">if let Book::Electronic { url } = &amp;book {
+    println!(&quot;eeeee&quot;);
+}
+if let Book::Papery(index) = &amp;book {
+    println!(&quot;{}&quot;, index)
+}
+</code></pre>
+<p>等价于</p>
+<pre><code class="language-rust">match book {
+    匹配项 =&gt; {
+        something
+    },
+    _ =&gt; {}
+}
+</code></pre>
+<h3>枚举类的方法</h3>
+<p>枚举类和结构体同样可以使用 impl 语句块编写方法</p>
+<p>写面展示一个例子</p>
+<pre><code class="language-rust">#[derive(Debug)]
+enum Signal {
+    Red,
+    Yellow,
+    Green
+}
+
+impl Signal {
+    fn red(&amp;mut self) {
+        *self = Signal::Red;
+    }
+
+    fn yellow(&amp;mut self) {
+        *self = Signal::Yellow;
+    }
+
+    fn green(&amp;mut self) {
+        *self = Signal::Green;
+    }
+}
+
+fn main() {
+    let mut signal = Signal::Red;
+    println!(&quot;{:?}&quot;, signal);
+    signal.yellow();
+    println!(&quot;{:?}&quot;, signal);
+    signal.green();
+    println!(&quot;{:?}&quot;, signal);
+}
+</code></pre>
+<h2>泛型</h2>
+<p>和其他语言的泛型类似</p>
+<p>Rust 中函数、结构体和枚举项都可以使用泛型</p>
+<h3>泛型函数</h3>
+<p>下面的泛型是用来返回数组最后一个元素的</p>
+<pre><code class="language-rust">fn get_last&lt;T&gt;(array: &amp;[T]) -&gt; &amp;T {
+    &amp;array[array.len() - 1]
+}
+fn main() {
+    let la = [&quot;hwllo&quot;, &quot;two&quot;, &quot;one&quot;];
+    let lb = [1, 2, 3, 4, 233];
+    println!(&quot;{}&quot;, get_last(&amp;la));
+    println!(&quot;{}&quot;, get_last(&amp;lb));
+}
+</code></pre>
+<p>这里的泛型函数的使用方式被简化了，完整的使用方法是 <code>函数名::&lt;泛型&gt;(参数...)</code></p>
+<h3>泛型结构体</h3>
+<pre><code class="language-rust">struct Point&lt;T&gt; {
+    x: T,
+    y: T
+}
+
+fn main() {
+    let point = Point::&lt;i32&gt; {
+        x: 1,
+        y: 233,
+    };
+    let point2 = Point {
+        x: 1.3,
+        y: 2.333
+    };
+}
+</code></pre>
+<p>这里和上面类似，支持自动类型判断，当然，如果自动类型判断冲突的时候，编译器是不会让你通过的</p>
+<pre><code class="language-rust">// 错误代码
+let point3 = Point {
+    x: 1,
+    y: 2.33
+};
+</code></pre>
+<p>下面是多泛型的示范：</p>
+<pre><code class="language-rust">struct Point&lt;T, X&gt; {
+    x: T,
+    y: X
+}
+
+fn main() {
+    let point = Point::&lt;i32, i32&gt; {
+        x: 1,
+        y: 233,
+    };
+}
+</code></pre>
+<h3>泛型枚举类</h3>
+<p>枚举类和结构体类似</p>
+<pre><code class="language-rust">enum Shape&lt;T&gt; {
+    Rectangle(T, T),
+    Cube(T, T, T)
+}
+
+fn main() {
+    let s1 = Shape::Rectangle(23, 32);
+    let s2: Shape&lt;i32&gt; = Shape::Cube(1,2,3);
+}
+</code></pre>
+<h3>impl 泛型</h3>
+<p>用来为泛型复合类型编写方法，主要方法有两种，一种是对泛型类直接实现方法，另一种是对具体类实现方法</p>
+<pre><code class="language-rust">struct Rect&lt;T&gt; {
+    x: T,
+    y: T
+}
+// 对泛型直接实现方法
+impl&lt;A&gt; Rect&lt;A&gt; { //可以不是T, 是A
+    fn get_x(&amp;self) -&gt; &amp;A {
+        &amp;self.x
+    }
+    fn get_y(&amp;self) -&gt; &amp;A {
+        &amp;self.y
+    }
+}
+// 对具体类实现方法
+impl Rect&lt;i32&gt; {
+    fn area(&amp;self) -&gt; i32 {
+        self.x * self.y
+    }
+}
+
+fn main() {
+    let rect = Rect{y: 45, x: 24};
+    println!(&quot;{} * {} = {}&quot;, rect.get_x(), rect.get_y(), rect.area());
+}
+</code></pre>
+<p>在对泛型直接实现方法那里包含两个泛型声明，这两处的泛型声明是必要的，而且是有从属关系的，<code>impl</code> 后面的泛型从属于 <code>Rect</code> 的</p>
+<h3>泛型方法</h3>
+<p>既然函数有泛型，那么方法有泛型也不是奇怪的事情，以下是对一个非泛型类实现的一个泛型方法：</p>
+<pre><code class="language-rust">struct Rect {
+    x: i32,
+    y: i32
+}
+
+impl Rect {
+    fn ffxx&lt;T&gt;(&amp;self, a: T) -&gt; T{
+        a
+    }
+}
+fn main() {
+    let rect = Rect{ x: 32, y: 23};
+    println!(&quot;{}&quot;, rect.ffxx(&quot;hello&quot;));
+}
+</code></pre>
+<p>以下是对泛型类的泛型方法：</p>
+<pre><code class="language-rust">#[derive(Debug)]
+struct Data&lt;A, B&gt; {
+    x: A,
+    y: B
+}
+
+impl&lt;A, B&gt; Data&lt;A, B&gt; {
+    fn mix&lt;C, D&gt;(self, other: Data&lt;C, D&gt;) -&gt; Data&lt;A, D&gt; {
+        Data { x: self.x, y: other.y }
+    }
+}
+
+fn main() {
+    let a = Data {
+        x: 123.45,
+        y: &quot;hello&quot;
+    };
+    let b = Data {
+        x: 666,
+        y: 2333
+    };
+    let c = a.mix(b);
+    println!(&quot;{:?}&quot;, c);
+}
+</code></pre>
+<p>对这个所有权的分析真是困难啊，上面经过 <code>a.mix(b)</code> 之后，<code>a</code> 和 <code>b</code> 的所有权都给了 <code>c</code> ，确实是这个道理，但是要怎么写才能让 <code>a</code> 和 <code>b</code> 不失去所有权呢？现在不是很熟练 :(</p>
+<blockquote>
+<p>一脸懵逼地写出来了，不止所以然</p>
+<pre><code class="language-rust">#[derive(Debug)]
+struct Data&lt;A, B&gt; {
+  x: A,
+  y: B
+}
+
+impl&lt;A, B&gt; Data&lt;A, B&gt; {
+  fn mix2&lt;'a, C, D&gt;(&amp;'a self, other: &amp;'a Data&lt;C, D&gt;) -&gt; Data&lt;&amp;A, &amp;D&gt; {
+      let x = &amp;self.x;
+      let y = &amp;other.y;
+      Data { x, y }
+  }
+}
+
+fn main() {
+  let a = Data {
+      x: 123.45,
+      y: &quot;hello&quot;
+  };
+  let b = Data {
+      x: 666,
+      y: 2333
+  };
+  println!(&quot;{:?}&quot;, a.mix2(&amp;b));
+  println!(&quot;{:?}&quot;, a);
+}
+</code></pre>
+<p>这章就先到这里吧，这周的计划还有三章，应该是来的及的（半场开香槟</p>
+<p>感觉一年后的我会骂现在学 rust 的我，我学这东西单纯是拿准备实习面试的时间去学自己的爱好啊，不是面向市场的，保护保护保护</p>
+</blockquote>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>python exec在局部域中失效的问题</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+
+<h2>问题</h2>
+<p>exec是python的内置函数，功能是输入一个字符串参数，然后<!--more-->执行字符串的命令，返回值永远是None</p>
+<p>例如</p>
+<pre><code class="language-python">exec(&quot;a=233&quot;)
+print(a)
+</code></pre>
+<p>就会输出233</p>
+<p>但是使用过程中会出现问题，在一个函数中，如果没有事先申明a的值，程序就会抛出错误<code>a is not defined</code>，如果事先申明了，他也只会打印申明的值，不会被exec改变</p>
+<p>上网查了原因</p>
+<blockquote>
+<p>在函数里面， 传递给 <code>exec()</code> 的局部范围是拷贝实际局部变量组成的一个字典。 因此，如果 <code>exec()</code> 如果执行了修改操作，这种修改后的结果对实际局部变量值是没有影响的</p>
+</blockquote>
+<h2>解决方案</h2>
+<pre><code class="language-python">def f():
+    exec(&quot;a=233&quot;)
+    print(locals()['a'])
+</code></pre>
+<p>当你调用 <code>locals()</code> 获取局部变量时，你获得的是传递给 <code>exec()</code> 的局部变量的一个拷贝</p>
+<p>当然作为<code>locals()</code>的替代方案，你也可以使用你自己的字典传递给exec()</p>
+<pre><code class="language-python">def f():
+    a=1
+    loc={'a':a}
+    glb={}
+    exec('b=a+1',glb,loc)
+    b=loc['b']
+    print(b)
+</code></pre>
+<p>总的来说还是挺麻烦的，也没太搞懂原理，尽量少用吧</p>
+
+<script src="/res/js/scripts.js" defer></script>
+</body>
+</html>
