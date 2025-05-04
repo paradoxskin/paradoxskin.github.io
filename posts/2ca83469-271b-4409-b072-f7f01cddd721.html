@@ -6,7 +6,13 @@
     <link rel="stylesheet" href="/res/css/style.css">
 </head>
 <body>
-
+<nav class="main-nav">
+  <ul>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</nav>
 <h2>错误处理</h2>
 <p>rust 中的错误处理不同与其他语言中的 try 机制</p>
 <p>先来<!--more-->了解一下程序运行中的主要会遇到的错误，主要分为可恢复和不可恢复两种错误，可恢复比较常见的是访问文件失败，这类错误一般都是开发者能考虑到的，程序应该具备遇到这种错误的应对方法，防止程序停止运行，不可恢复比如访问数组的时候下标越界的，一旦发生就是能停止执行了（我寻思 python 中是可以被 try 的）</p>

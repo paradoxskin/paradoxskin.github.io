@@ -6,7 +6,13 @@
     <link rel="stylesheet" href="/res/css/style.css">
 </head>
 <body>
-
+<nav class="main-nav">
+  <ul>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</nav>
 <h2>并发</h2>
 <p>rust 中奇怪的规定很多，当然都是为了程序的安全考虑，比如说避免数据竞争，正因如此，rust 中的并发会很容易变得安全<!--more--></p>
 <p>并发的英文是 Concurrent, 是指同时有多个任务处于执行状态的现象，是很重要的东西，由于多个任务之间可能需要联系，互相影响，并发的实现需要解决很多问题</p>

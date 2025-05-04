@@ -6,7 +6,13 @@
     <link rel="stylesheet" href="/res/css/style.css">
 </head>
 <body>
-
+<nav class="main-nav">
+  <ul>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</nav>
 <h2>SHA-1 的计算方法</h2>
 <p>SHA-1 (Secure Hash Algorithm 1) 是一种杂凑<!--more-->算法（哈希算法），计算结果会用40个十六进制数字呈现，该算法的特点是输入相同的输入就会有一样的输出结果</p>
 <p>因为是哈希的输出固定为40的十六进制数字，所以理论上不同的两个输入其实是有完全相同输出的可能的，这种情况就被称为是碰撞（Collision），但是碰撞的概率非常低，再加上 git 再额外加了点 salt，所以碰撞的概率会更低，所以一般相同的 SHA-1 就是说明输入是相同的</p>

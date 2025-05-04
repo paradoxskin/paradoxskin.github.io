@@ -1,0 +1,153 @@
+html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    max-width: 65em;
+    margin: auto;
+}
+
+blockquote {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+blockquote p {
+    color: #3f3a3a7a;
+    font-style: italic;
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+img {
+    height: auto;
+    max-width: 63em;
+    width: calc(100% - 2em);
+    display: block;
+    margin: auto;
+    border-style: solid;
+    border-color: #b9b9b99c;
+    border-width: 1em;
+    border-radius: 1em;
+}
+
+pre {
+    overflow-x: auto;
+    background-color: #ddd;
+    padding: 6px;
+    border-style: none;
+    border-radius: 6px;
+}
+
+h1 {
+    text-align: center;
+}
+
+h2 {
+    padding-left: 1em;
+}
+
+h3 {
+    padding-left: 1em;
+}
+
+h4 {
+    padding-left: 1em;
+}
+
+h5 {
+    padding-left: 1em;
+}
+
+h6 {
+    padding-left: 1em;
+}
+
+div.archive-item {
+}
+
+div.archive-item a {
+    padding-right: 1em;
+    padding-left: 1em;
+    text-decoration: none;
+    color: #000;
+}
+
+div.archive-item a:visited {
+    color: #888;
+}
+
+div.archive-item a:hover {
+    color: #412;
+    background-color: #c1c1c1;
+}
+
+div.blog-item {
+    padding: 1em;
+    margin-top: 1em;
+    margin-left: auto;
+    margin-right: auto;
+    border-style: solid;
+    border-width: 1px;
+    width: 80%;
+}
+
+div.blog-item h3 {
+    margin-bottom: 5px;
+    margin-top: 0;
+}
+
+div.blog-item h3 a {
+    text-decoration: none;
+    color: #000;
+}
+
+div.blog-item a:visited {
+    color: #888;
+}
+
+div.blog-item-desc {
+    color: #3f3a3a7a;
+    font-style: italic;
+}
+
+div.blog-item-date {
+    color: #b0743e;
+    font-style: italic;
+}
+
+table td {
+    border-style: solid;
+    border-width: 2px;
+    overflow-x: auto;
+    background-color: #fffbe6;
+    border-color: #fdcdb0;
+}
+
+nav.main-nav {
+}
+
+nav.main-nav ul {
+    display: flex;
+    margin: auto;
+    justify-content: flex-end;
+    border-bottom-style: solid;
+    border-color: #bbb;
+    flex-wrap: wrap;
+}
+
+nav.main-nav li a {
+    text-decoration: none;
+    padding-right: 0.5em;
+    padding-left: 0.5em;
+    color: #827c20;
+}
