@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>SVG 学习笔记</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+<nav class="main-nav">
+  <ul>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</nav>
+<h1>SVG 学习笔记</h1>
+<p>设计博客主题，想摆脱二进制的限制，拥抱矢量图的怀抱</p>
+<blockquote>
+<p>SVG 支持渐变、旋转、动画、滤镜效果、与 JavaScript 交互等等功能，但是所有这些额外的语言特性，都需要在一个定义好的图形区域内实现。</p>
+</blockquote>
+<p><a href="https://caniuse.com/?search=svg">浏览器支持不同</a></p>
+<p>这里有几个重点一定要记住：</p>
+<ul>
+<li>SVG 的元素和属性必须按标准格式书写，因为 XML 是区分大小写的（这一点和 HTML 不同）</li>
+<li>SVG 里的属性值必须用引号引起来，就算是数值也必须这样做。</li>
+</ul>
+<p>90dpi: 1cm ~ 35.43px</p>
+<p>和大多数坐标系一样，顶点在左上，右下为正</p>
+<h3>形状：</h3>
+<ul>
+<li>rect | x y width height rx ry</li>
+<li>circle | r cx cy</li>
+<li>ellipse | rx ry cx cy</li>
+<li>line | x1 y1 x2 y2</li>
+<li>polyline | points: &quot;x1 y1, x2 y2, ... xn, yn&quot;</li>
+<li>polygon | points: &quot;x1 y1, x2 y2, ... x1, y1&quot;</li>
+<li>path | d: 什么玩意，搞不懂</li>
+</ul>
+<h3>PATH</h3>
+<p>属性d为 命令 + 参数</p>
+<h4>直线</h4>
+<ul>
+<li>M |只移动，不画<ul>
+<li>M x y</li>
+<li>m dx dy</li>
+</ul>
+</li>
+<li>L |画<ul>
+<li>L x y</li>
+<li>l dx dy</li>
+</ul>
+</li>
+<li>H / V |水平 / 垂直<ul>
+<li>H x</li>
+<li>h dx</li>
+<li>V y</li>
+<li>v dy</li>
+</ul>
+</li>
+<li>Z z |闭合路径，回到起点</li>
+</ul>
+<h4>曲线</h4>
+<ul>
+<li>C |三次贝塞尔曲线<ul>
+<li>C x1 y1 x2 y2 x y</li>
+<li>c dx1 dy1 dx2 dy2 dx dy</li>
+</ul>
+</li>
+<li>S |默认第一个控制点为前一个控制点的中心对称<ul>
+<li>S x2 y2 x y</li>
+<li>s dx2 dy2 dx dy</li>
+</ul>
+</li>
+<li>Q |二次贝塞尔曲线<ul>
+<li>Q x1 y1 x y</li>
+<li>q dx1 dy1 dx dy</li>
+</ul>
+</li>
+<li>T |默认控制点为前一个控制点的中心对称<ul>
+<li>T x y</li>
+<li>t dx dy</li>
+</ul>
+</li>
+<li>A |圆弧 两点和长短半径可以确定四种圆弧 laf大角度 sf顺时针<ul>
+<li>A rx ry x-axis-rotation large-arc-flag sweep-flag x y</li>
+<li>a rx ry x-axis-rotation large-arc-flag sweep-flag dx dy</li>
+</ul>
+</li>
+</ul>
+<h3>属性</h3>
+<p>颜色</p>
+<ul>
+<li>fill 内部颜色</li>
+<li>stroke 描边颜色</li>
+<li>fill-opacity 填充色的不透明度，浮点数</li>
+<li>stroke-linecap 终点边框形状<ul>
+<li>butt</li>
+<li>square</li>
+<li>round</li>
+</ul>
+</li>
+<li>stroke-linejoin 连接处边框形状<ul>
+<li>miter</li>
+<li>round</li>
+<li>bevel</li>
+</ul>
+</li>
+<li>stroke-dasharray=&quot;l1, l2&quot; 虚线 实线长度, 虚线长度</li>
+</ul>
+<p>css可以实现hover伪类的属性</p>
+<pre><code class="language-xml">&lt;?xml version=&quot;1.0&quot; standalone=&quot;no&quot;?&gt;
+&lt;svg width=&quot;200&quot; height=&quot;200&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot; version=&quot;1.1&quot;&gt;
+  &lt;defs&gt;
+    &lt;style&gt;&lt;![CDATA[
+       #MyRect:hover {
+         stroke: black;
+         fill: red;
+       }
+    ]]&gt;&lt;/style&gt;
+  &lt;/defs&gt;
+  &lt;rect x=&quot;10&quot; height=&quot;180&quot; y=&quot;10&quot; width=&quot;180&quot; id=&quot;MyRect&quot;/&gt;
+&lt;/svg&gt;
+</code></pre>
+<p>中间一些 好像用不到，也记不住，以后深入<a href="https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/Gradients">再看</a></p>
+<h3>剪切</h3>
+<p>剪切该部分</p>
+<pre><code class="language-xml">&lt;svg
+  version=&quot;1.1&quot;
+  xmlns=&quot;http://www.w3.org/2000/svg&quot;
+  xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;
+  &lt;defs&gt;
+    &lt;clipPath id=&quot;cut-off-bottom&quot;&gt;
+      &lt;rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;200&quot; height=&quot;100&quot; /&gt;
+    &lt;/clipPath&gt;
+  &lt;/defs&gt;
+
+  &lt;circle cx=&quot;100&quot; cy=&quot;100&quot; r=&quot;100&quot; clip-path=&quot;url(#cut-off-bottom)&quot; /&gt;
+&lt;/svg&gt;
+</code></pre>
+<p>遮罩，覆盖在上面，可实现渐变效果</p>
+<pre><code class="language-xml">&lt;svg
+  version=&quot;1.1&quot;
+  xmlns=&quot;http://www.w3.org/2000/svg&quot;
+  xmlns:xlink=&quot;http://www.w3.org/1999/xlink&quot;&gt;
+  &lt;defs&gt;
+    &lt;linearGradient id=&quot;Gradient&quot;&gt;
+      &lt;stop offset=&quot;0&quot; stop-color=&quot;white&quot; stop-opacity=&quot;0&quot; /&gt;
+      &lt;stop offset=&quot;1&quot; stop-color=&quot;white&quot; stop-opacity=&quot;1&quot; /&gt;
+    &lt;/linearGradient&gt;
+    &lt;mask id=&quot;Mask&quot;&gt;
+      &lt;rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;200&quot; height=&quot;200&quot; fill=&quot;url(#Gradient)&quot; /&gt;
+    &lt;/mask&gt;
+  &lt;/defs&gt;
+
+  &lt;rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;200&quot; height=&quot;200&quot; fill=&quot;green&quot; /&gt;
+  &lt;rect x=&quot;0&quot; y=&quot;0&quot; width=&quot;200&quot; height=&quot;200&quot; fill=&quot;red&quot; mask=&quot;url(#Mask)&quot; /&gt;
+&lt;/svg&gt;
+</code></pre>
+<p>其他内容无关痛痒，留意一下<a href="https://developer.mozilla.org/zh-CN/docs/Web/SVG/Tutorial/SVG_fonts">自定义字体</a>吧</p>
+<hr>
+<p>学了下贝塞尔曲线，有点深奥，有点美丽。</p>
+<p><a href="https://dezeming.top/wp-content/uploads/2022/05/%E8%B4%9D%E5%A1%9E%E5%B0%94%E6%9B%B2%E7%BA%BF.pdf">贝塞尔曲线</a></p>
+
+<script src="/res/js/main.js" defer></script>
+</body>
+</html>

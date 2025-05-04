@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>缺陷显卡折磨人</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+<nav class="main-nav">
+  <ul>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</nav>
+<p>今天本是美好的假日时光，我在安静认真地敲着代码，突然，电脑卡住了，键盘，鼠标全部失灵，过了几秒，黑屏重启。 重启完，打算登录看看怎么回事，突然一个绿屏打的我猝不及防...</p>
+<p>自从用了这台式机之后，我就没少受这种奇葩的苦。起初以为只是linux上amd显卡的驱动问题，大不了后面换个驱动用，直到我在windows里也遇到，我就怀疑是显卡本身的问题，不过在windows里运行高能耗游戏的时候又从来没出现过。想解决，但是我真的无从下手，网上论坛也吐槽amd只是跑分卡，看来从nvida到amd，使用linux的体验不过是从一个火坑跳到了另一个火坑罢了。台式机的使用体验还不如一台二手笔电好。</p>
+<p>来看一下内核日志：</p>
+<pre><code class="language-bash">&gt; journalctl -k --boot=-2
+...
+Apr 04 13:18:16 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: Dumping IP State
+Apr 04 13:18:16 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: Dumping IP State Completed
+Apr 04 13:18:16 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: ring gfx_0.0.0 timeout, signaled seq=1042587, emitted seq=1042589
+Apr 04 13:18:16 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: Process information: process picom pid 754 thread picom:cs0 pid 762
+Apr 04 13:18:16 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: Starting gfx_0.0.0 ring reset
+Apr 04 13:18:18 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: MES failed to respond to msg=RESET
+Apr 04 13:18:18 coolamdguy kernel: [drm:amdgpu_mes_reset_legacy_queue [amdgpu]] *ERROR* failed to reset legacy queue
+Apr 04 13:18:18 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: Ring gfx_0.0.0 reset failure
+Apr 04 13:18:18 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: GPU reset begin!
+Apr 04 13:18:21 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: MES failed to respond to msg=REMOVE_QUEUE
+Apr 04 13:18:21 coolamdguy kernel: [drm:amdgpu_mes_unmap_legacy_queue [amdgpu]] *ERROR* failed to unmap legacy queue
+Apr 04 13:18:21 coolamdguy kernel: [drm:gfx_v11_0_hw_fini [amdgpu]] *ERROR* failed to halt cp gfx
+Apr 04 13:18:21 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: MODE1 reset
+Apr 04 13:18:21 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: GPU mode1 reset
+Apr 04 13:18:21 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: GPU smu mode1 reset
+Apr 04 13:18:21 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: GPU reset succeeded, trying to resume
+Apr 04 13:18:21 coolamdguy kernel: [drm] PCIE GART of 512M enabled (table at 0x0000008000300000).
+Apr 04 13:18:21 coolamdguy kernel: [drm] VRAM is lost due to GPU reset!
+Apr 04 13:18:21 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: PSP is resuming...
+Apr 04 13:18:21 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: reserve 0xa700000 from 0x82e0000000 for PSP TMR
+Apr 04 13:18:22 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: RAP: optional rap ta ucode is not available
+Apr 04 13:18:22 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: SECUREDISPLAY: securedisplay ta ucode is not available
+Apr 04 13:18:22 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: SMU is resuming...
+Apr 04 13:18:22 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: smu driver if version = 0x0000003d, smu fw if version = 0x00000040, smu fw program = 0, smu fw version = 0x00505300 (80.83.0)
+Apr 04 13:18:22 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: SMU driver if version not matched
+Apr 04 13:18:22 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: SMU is resumed successfully!
+Apr 04 13:18:22 coolamdguy kernel: [drm] DMUB hardware initialized: version=0x07002D00
+Apr 04 13:18:22 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: ring gfx_0.0.0 uses VM inv eng 0 on hub 0
+Apr 04 13:18:22 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: ring comp_1.0.0 uses VM inv eng 1 on hub 0
+Apr 04 13:18:22 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: ring comp_1.1.0 uses VM inv eng 4 on hub 0
+Apr 04 13:18:22 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: ring comp_1.2.0 uses VM inv eng 6 on hub 0
+Apr 04 13:18:22 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: ring comp_1.3.0 uses VM inv eng 7 on hub 0
+Apr 04 13:18:22 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: ring comp_1.0.1 uses VM inv eng 8 on hub 0
+Apr 04 13:18:22 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: ring comp_1.1.1 uses VM inv eng 9 on hub 0
+Apr 04 13:18:22 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: ring comp_1.2.1 uses VM inv eng 10 on hub 0
+Apr 04 13:18:22 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: ring comp_1.3.1 uses VM inv eng 11 on hub 0
+Apr 04 13:18:22 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: ring sdma0 uses VM inv eng 12 on hub 0
+Apr 04 13:18:22 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: ring sdma1 uses VM inv eng 13 on hub 0
+Apr 04 13:18:22 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: ring vcn_unified_0 uses VM inv eng 0 on hub 8
+Apr 04 13:18:22 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: ring vcn_unified_1 uses VM inv eng 1 on hub 8
+Apr 04 13:18:22 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: ring jpeg_dec uses VM inv eng 4 on hub 8
+Apr 04 13:18:22 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: ring mes_kiq_3.1.0 uses VM inv eng 14 on hub 0
+Apr 04 13:18:22 coolamdguy kernel: amdgpu 0000:03:00.0: amdgpu: GPU reset(2) succeeded!
+</code></pre>
+<p><code>-b-1</code>的绿屏没什么关键信息，绿屏真的很神秘。</p>
+<p>我的台式机是双系统，使用linux系统时，在登录之后，我会马上打开<code>radeon-profile</code>，设置功率high，模式VIDEO。之所以这样，是因为很早就怀疑auto模式下功率从低到高切换时，某些参数突变会引起异常，现实也一定程度上验证了我的猜测（很久没在开启这两个选项的时候绿屏）。然而今天失效了，但现象不是绿屏，而是黑屏，从日志里也能看到，引起这次崩溃的元凶很可能是<code>picom</code>，具体原因不太看的懂，希望只是低概率事件。</p>
+<p>在之后的测试过程中，我发现即使将显卡功率开到high，打开机箱发现风扇并没有在工作，就算修改风扇运行功率到最高，也不工作。7000系列的A卡无法使用<code>fixed</code>调节风扇，<code>dmesg</code>会无法调节的日志，取而代之的是风扇变化曲线（需要先修改内核启动参数<code>amdgpu.ppfeaturemask</code>）。</p>
+<pre><code>GRUB_CMDLINE_LINUX=&quot;loglevel=3 quiet amdgpu.dcdebugmask=0x10 amdgpu.dc=0 amdgpu.ppfeaturemask=0xffffffff radeon.cik_support=0 amdgpu.cik_support=1&quot;
+</code></pre>
+<p>再确认了下win的风扇是可以正常运行，所以答案显然是有什么机制在影响风扇的运行。我在win的驱动下找到了一个叫做<code>0 RPM</code>的配置项，将这个选项打开后，风扇只会在温度达到某个阀值时启动。具体的表现是调节风扇曲线时，有一段是红的，一段是透明的，透明部分所在的温度就是启动风扇的条件（通常是50摄氏度，但没找到调节的选项）。回linux用<code>gputest</code>测试了下，风扇果然在温度达到某一个值的时候启动，之后我调节风扇策略，风扇确实跟着我调节的功率在改变，这也就表明着曲线的机制是生效的，当前的linux上正开启着<code>0 RPM</code>!</p>
+<blockquote>
+<p>Amd is kinda dumb, it has this thing where if it's 50 or 60c and bellow it turns fans off... It's really annoying when it's 50c and goes 51c and fans go fucking BRRRRRR!!! so I just used morepowertools and disabled 0 rpm completely.</p>
+</blockquote>
+<p>看了下网上的吐槽，因为是单一温度的控制，这是开环的设定，在临界值时反复开关。这个特性肯定是为有额外被动冷却的硬件环境设计的（e.g. 水冷？），好处只是为了让使用者有一个更安静的运行环境，外加省电。</p>
+<p>没法确定导致绿屏的直接原因就是开启了<code>0 RPM</code>，但具体还需要来控制变量来验证一下。但十分遗憾，<code>radeon-profile</code>的项目停留在了2020年，维护者不再更新，而其他工具（corectrl）里也没有修改<code>0 RPM</code>模式的地方。</p>
+<p>好在这个开源社区有太多大佬，我最终找到了一个<a href="https://www.reddit.com/r/linux_gaming/comments/1gma0tl/linux_613_to_allow_controlling_zero_rpm_feature/">关于 6.13 支持修改 0 RPM 的reddit帖子</a>。</p>
+<pre><code>+/**
++ * DOC: fan_zero_rpm
++ *
++ * The amdgpu driver provides a sysfs API for checking and adjusting the
++ * zero RPM feature.
++ *
++ * Reading back the file shows you the current setting and the permitted
++ * ranges if changable.
++ *
++ * Writing an integer to the file, change the setting accordingly.
++ *
++ * When you have finished the editing, write &quot;c&quot; (commit) to the file to commit
++ * your changes.
++ *
++ * If you want to reset to the default value, write &quot;r&quot; (reset) to the file to
++ * reset them.
++ */
+</code></pre>
+<p>这里是禁用<code>0 RPM</code>的命令：</p>
+<pre><code>echo 0|sudo tee /sys/class/drm/card1/device/gpu_od/fan_ctrl/fan_zero_rpm_enable
+echo c|sudo tee /sys/class/drm/card1/device/gpu_od/fan_ctrl/fan_zero_rpm_enable
+cat /sys/class/drm/card1/device/gpu_od/fan_ctrl/fan_zero_rpm_enable
+</code></pre>
+<p>这个叫<code>sysfs</code>的机制，允许通过用户态交互硬件配置（通过软中断？）。</p>
+<blockquote>
+<p>之前学过一点AUPE的开头，跟随UNIX的优秀设计，linux上的驱动是跟内核运行在同一个层级。驱动<code>amdgpu</code>可以直接控制硬件设置，减少性能损耗。这个驱动是开源版本的，还有一个官方驱动名为<code>amdgpu-pro</code>，但看wiki说这个驱动的使用效果和<code>amdgpu</code>差别不大。</p>
+</blockquote>
+<p>但是修改了之后，如果不开<code>high</code>还是会绿屏，而且还有点频繁...</p>
+<p>最终实测下来，还是需要使用<code>radeon-profile</code>开<code>high</code>，之后我也会同时关闭掉<code>0 RPM</code>，这个设置本来我就不喜欢。浪费了一天呢，通过最近学到的知识在定位问题，也算有点收获吧。</p>
+<hr>
+<p>参考链接：</p>
+<p><a href="https://wiki.archlinux.org/title/AMDGPU#Boot_parameter">AMDGPU, archlinux.wiki</a></p>
+<p><a href="https://wiki.archlinux.org/title/Fan_speed_control#AMDGPU_sysfs_fan_control">archlinux.wiki</a></p>
+<p><a href="https://github.com/marazmista/radeon-profile/issues/293#issuecomment-2134977920">fan_control github_issue</a></p>
+
+<script src="/res/js/main.js" defer></script>
+</body>
+</html>

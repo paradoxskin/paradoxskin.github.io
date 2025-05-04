@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>试下tree-sitter</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+<nav class="main-nav">
+  <ul>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</nav>
+<h1>tree-sitter 自定语法|</h1>
+<h1>|neovim闲聊</h1>
+<p>转到 neovim 之后入乡随俗了, 使用了很多插件, 发现 tree-sitter 确实挺好用的, 尤其是对比原先不大好用的自动对齐, 不过这插件倒改变了我的换行手动追加 tab 的习惯, 我试图改变, 但发现如果改了之后自动对齐也会消失, 所以 neovim 里面自动对齐的实现实际上和 <code>indentexpr</code> 是高度绑定的, 所以就妥协了, 虽然这很影响习惯, 但是我也在克服</p>
+<blockquote>
+<p>克服个锤子, 老子现在就去 tree-sitter 源码把 <code>tree-sitter#indent</code> 的自动 tab 给抠掉, 放到我的源码上去!</p>
+<p>AFK</p>
+<p>...</p>
+<p>I am back!</p>
+<p>虽然浪费了成坉的时间, 但是 ok 了, 我只做了如下几件事:</p>
+<ol>
+<li>查看关于 <code>indentexpr</code> 的文档</li>
+<li>在配置文件里写一个函数, 判断当前是新建行还是在格式化, 如果新建行则返回 -1 (保留上一行的缩进), 否则调用 <code>tree-sitter#indent</code></li>
+<li>查看文档, vimscript 如何调用 lua 写的函数, 并绑到 <code>indentexpr</code> 测试功能是否完善</li>
+<li>看过源代码, <code>tree-sitter</code> 会在载入某个语言的语法文件时候覆写 <code>indentexpr</code> 而不是在配置上, 在修改 <code>ft</code> 的时候它也会覆写, 所以导致在配置文件上赋值 <code>indentexpr</code> 是无效的, 经过测试, 结论和预测相同</li>
+<li>加入 <code>autocmd</code>, 在 载入文件 和 改变ft 事件上挂钩, 发现我的 <code>autocmd</code> 执行命令在它的覆写之前, 覆写失败</li>
+<li>推测 <code>autocmd</code> 的执行顺序和定义的顺序有关, 查看载入配置文档顺序, 发现 <code>after/</code> 文件夹, 测试可用性</li>
+<li>把 <code>autocmd</code> 写进 <code>after</code> 里, 成功!</li>
+</ol>
+</blockquote>
+<p>扯远了, 不过我只想告诉大家一点:</p>
+<blockquote>
+<p>能够自己配置的东西自己最好了解清楚, 什么是能不动源码? 什么是要动源码的? 做到期待的程度需要那些付出?</p>
+<p>找到那个力所能及的边界并尝试突破</p>
+<p>开源就做到自己想要的样子!</p>
+<p>&quot;能跑就行&quot; 实在是太 &gt;业余&lt; 了!</p>
+</blockquote>
+<p>冲浪看到如何测试 nvim 启动速度的方法</p>
+<pre><code class="language-shell">nv --startuptime logfilename +q
+</code></pre>
+<p>一般来说最佳是低于50ms, 我没装太多的插件, 所以启动速度维持在 70ms 左右, 而且我的插件管理用的是自带的 <code>pack</code> 插件管理, 插件也全是预加载的没有用懒加载(主要是懒, <code>pack</code> 也是能加的, 但是我要先写个脚本来切换|<del>但其实那不能叫懒加载, 叫不加载</del>), 随着插件数量的增加, 启动速度必然会变慢, 虽然我无所谓, 但是毕竟这作为一个量化的标准, 还是需要关注一下的, 我现在就已经有让某些插件懒加载的念头了</p>
+<p>之前配 vim 时的观点就是尽量少装插件, 自己配置优于插件, 现在虽然愿意接受装一些好用的插件了, 想要的功能可能会直接跳过自己尝试去实现, 但是本能还是很听话的拒绝无脑加, 还在使用 <code>pack</code> 就是证明, 无法做到 suckless, 那就尽量做到极简吧.</p>
+<blockquote>
+<p>配置工具链实在是停不下来, 在 suckless 和 colorful 的两侧反复横跳</p>
+</blockquote>
+<hr>
+<p>嗯哼嗯哼, 话说回来, tree-sitter 是一套非常牛逼的语法解析系统, 我是没学过编译原理的, 但是我折腾了这几天, 没少看什么奇奇怪怪的语法解析知识</p>
+<blockquote>
+<p>这篇文章本来只是为了记载 tree-sitter 的, 但是即兴下激动了就这样加了个 neovim 的标题...</p>
+</blockquote>
+<blockquote>
+<p>现在是11月14日的凌晨00:32, 我终于想起来了我还有篇 tree-sitter 的笔记要写, 我也差不多是上礼拜写完语法, 然后研究到昨天凌晨才搞定了高亮和缩进, 然后今天折腾了下 aerial 的适配, 犯了很低级的错误看了半天... 同时语法还有可以提升的地方, 总之这周末再把这篇笔记写好吧, 每天下班回来写一部分</p>
+<p>要不要做成教程呢...</p>
+<p>呃啊, 还有好多TODO要做啊, 时间不够啊!!!</p>
+<p>好了, 现在是12月2日, 礼拜六, 我来写这篇博客了, 上班真是没时间, 每天都是大约8点开始自由时间, 然后想干点事最后熬到1点上床睡了, 好像有时间, 但却又没时间, 要是财富自由就好了</p>
+</blockquote>
+<p>从目的出发, 写 tree-sitter 是为了在 nvim 里写 pico8, 但是其实之前我一直用的是<a href="https://github.com/paradoxskin/vim-pico8-syntax">vim的语法插件</a>, 原作者不维护了, 我在基础上写了点颜色高亮和新增的函数. 原来那套高亮确实能用, 要这次为 pico8 写的 tree-sitter 说没有意义也不对, 因为借助 tree-sitter 可以自动调整缩进了, 但是意义并没那么大, 不如学点 pico8 来的实在. 事实也证明如此, 我在写完 tree-sitter-pico8 之后并没有继续 pico8 的学习, 必须赶紧开个头才行</p>
+<p>首先, 简单说一下 tree-sitter 的原理. 先框定区域, 再定义规则, 每个区域有不同的规则, 规则会规定长啥样的东西叫什么, 当然区域之间又能分区域, 这样把一个语法正确的源文件给瓜分完成, 组成一套逻辑自恰的系统. 注意是语法正确, 语法错误的时候是行不通的. 这么说可能很抽象, 但是回想一下读代码的过程可能会好理解一点</p>
+<p>安装下 <code>tree-sitter-cli</code></p>
+<pre><code class="language-shell">cargo install tree-sitter-cli
+</code></pre>
+<p>熟悉一下需要使用的指令:</p>
+<ul>
+<li><code>tree-sitter generate</code>: 根据当前目录下的语法文件编译语法</li>
+<li><code>tree-sitter parse filename</code>: 根据语法文件测试指定文件输出语法树, 如果发生错误会报告哪里解析有问题</li>
+</ul>
+<p>因为不喜欢写测试样例, 所以就没有用 <code>tree-sitter test</code>, 就是这么懒</p>
+<p>语法是写在 <code>grammer.js</code> 里的, 一个最简单的语法文件格式为</p>
+<pre><code class="language-javascript">{
+  rules: {
+      xxx: $ =&gt; xxx, // 规则
+      //...
+  }
+}
+</code></pre>
+<p><code>=&gt;</code> 前面的部分填写规则名, <code>_</code> 开头的表示隐藏, 后面的部分写具体规则, 最简单的规则是正则和文本, 复杂点的官方有一堆 <a href="https://tree-sitter.github.io/tree-sitter/creating-parsers#the-grammar-dsl">api</a> 用来处理规则间的逻辑关系, 我要在这里翻译一下吗(不用吧)</p>
+<p>好像这样的命名规则其实是写一个函数, 不清楚为什么js这门语言这么多人爱用它, 出现了很多奇奇怪怪的村规, 虽然我之前写前端的时候也写过, 但现在去写它又感觉好生疏, 可能这就不是一门标准的语言, 后面还有什么 typesctipt 什么的出来, 搞不太懂...</p>
+<p>在 rules 里面添加 rule 即可完成一个语法文件, rules 的第一个 rule 为主基调, 表示整个文件是按这个规则, 万物起源(bushi)</p>
+<p>直接用来分区</p>
+<pre><code class="language-javascript">p8file: $ =&gt; seq(
+    $.title,
+    $.lua,
+    $.gfx,
+    optional($.map),
+    optional($.sfx),
+    optional($.music),
+)
+</code></pre>
+<p>下面来放一张自己整理的 p8 语法思维导图</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/p8file.png" alt="p8file"></p>
+<p>p8 文件的第一部分是一段注释, 有官网和版本号, 因为已经很久没有更新了, 所以直接用文本来识别</p>
+<pre><code class="language-javascript">title: () =&gt; &quot;pico-8 cartridge // http://www.pico-8.com\nversion 41&quot;,
+</code></pre>
+<p>这里说下为什么是 <code>() =&gt;</code> 而不是 <code>$ =&gt;</code>, 按照我的理解, <code>$</code> 表示的是作用域对象, 可以调用其他变量, <code>xxx:</code> 是在声明一个变量, 像上面的 <code>$.title</code> 就是调用到了当前作用域下的 <code>title</code> 函数变量, 而当我们不需要调用其他对象时就可以使用 <code>()</code>, 这里是处理文本, 所以可以直接用字符表示, 还有正则表达式也是, <a href="https://paradoxskin.github.io/blogs/2023/10/25/%E6%9D%82/JSregex/">正则村规传送门</a></p>
+<p>然后是lua部分, 语法的重头, 不过我们先把简单的部分给处理掉, map, sfx, music 这三个部分不一定会出现在p8文件里, 是可有可无的部分, 我们就使用 <code>optinoal($.xxx)</code> 而且我们不用太管这个, 因为没必要给这几堆数字上色</p>
+<pre><code class="language-javascript">map: () =&gt; seq(&quot;__map__&quot;, repeat(/[0-9a-f]/)),
+sfx: () =&gt; seq(&quot;__sfx__&quot;, repeat(/[0-9a-f]/)),
+music: () =&gt; seq(&quot;__music__&quot;, repeat(/[0-9a-f]/)),
+</code></pre>
+<p>gfx是初始化一个 p8 文件时必要的组成部分, 所以在规则里我们也定为必要, gfx 是用来存储 sprite 资源的, 由 16 种颜色组成, 所以就有 <code>0-9a-f</code> 来表示颜色</p>
+<pre><code class="language-javascript">gfx: $ =&gt; seq(
+    &quot;__gfx__&quot;,
+    repeat(choice(
+        $.color0, $.color1, $.color2, $.color3,
+        $.color4, $.color5, $.color6, $.color7,
+        $.color8, $.color9, $.colora, $.colorb,
+        $.colorc, $.colord, $.colore, $.colorf,
+    ))
+),
+color0: () =&gt; '0',
+color1: () =&gt; '1',
+color2: () =&gt; '2',
+color3: () =&gt; '3',
+color4: () =&gt; '4',
+color5: () =&gt; '5',
+color6: () =&gt; '6',
+color7: () =&gt; '7',
+color8: () =&gt; '8',
+color9: () =&gt; '9',
+colora: () =&gt; 'a',
+colorb: () =&gt; 'b',
+colorc: () =&gt; 'c',
+colord: () =&gt; 'd',
+colore: () =&gt; 'e',
+colorf: () =&gt; 'f',
+</code></pre>
+<p>为什么不直接用正则 <code>/[0-9a-f]/</code>? 因为需要给每个颜色单独上色</p>
+<p>然后我们开始 lua 部分, pico8 的 lua 相比与原本的 lua 改动确实有, 但是主要还是增加了点其他语言的习惯或者改了下 api 调用的位置而已, 所以其实可以参考一下 <a href="https://github.com/tjdevries/tree-sitter-lua">tree-sitter-lua</a></p>
+<blockquote>
+<p>20250505：我来给这篇尴尬的日记结下尾。声明一下，现在我已不再使用neovim，回归了vim，也并没有在使用pico-8开发游戏。现在对于tree-sitter我也已经忘的差不多了，但是这个插件我当时已经完成了，下面是仓库链接，欢迎使用<a href="https://github.com/paradoxskin/tree-sitter-pico8">tree-sitter-pico8</a>。发现有人在一月给我这个仓库提issues。</p>
+</blockquote>
+
+<script src="/res/js/main.js" defer></script>
+</body>
+</html>

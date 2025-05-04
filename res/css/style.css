@@ -5,7 +5,8 @@ html {
 }
 
 body {
-    max-width: 65em;
+    max-width: 95vw;
+    width: 65em;
     margin: auto;
 }
 
@@ -17,7 +18,7 @@ blockquote {
 }
 
 blockquote p {
-    color: #3f3a3a7a;
+    color: #6f6a6a;
     font-style: italic;
 }
 
@@ -26,6 +27,10 @@ ul {
     margin: 0;
     padding: 0;
     overflow: hidden;
+}
+
+li {
+    margin-left: 1em;
 }
 
 img {
@@ -38,14 +43,54 @@ img {
     border-color: #b9b9b99c;
     border-width: 1em;
     border-radius: 1em;
+    cursor: pointer;
+}
+
+img.scale {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    border-style: none;
+    border-radius: 0;
+    padding: 100%;
+    background-color: #b9b9b99c;
+    max-width: 95vw;
+    max-height: 95vh;
+    width: auto;
+    height: auto;
 }
 
 pre {
-    overflow-x: auto;
+    position: relative;
     background-color: #ddd;
     padding: 6px;
     border-style: none;
     border-radius: 6px;
+}
+
+div.overflow-block {
+    overflow-x: auto;
+}
+
+button.copy-button {
+    position: absolute;
+    background-color: #ddd;
+    border-style: solid;
+    border-radius: 5px;
+    top: 0;
+    right: 0;
+}
+
+code {
+    background-color: #eee;
+    margin-right: 2px;
+    margin-left: 2px;
+}
+
+pre code {
+    background-color: transparent;
+    margin: 0;
 }
 
 h1 {
@@ -93,11 +138,11 @@ div.archive-item a:hover {
 
 div.blog-item {
     padding: 1em;
-    margin-top: 1em;
     margin-left: auto;
     margin-right: auto;
-    border-style: solid;
-    border-width: 1px;
+    border-bottom-style: dashed;
+    border-width: 3px;
+    border-color: #aaa;
     width: 80%;
 }
 
@@ -112,7 +157,7 @@ div.blog-item h3 a {
 }
 
 div.blog-item a:visited {
-    color: #888;
+    color: #555;
 }
 
 div.blog-item-desc {

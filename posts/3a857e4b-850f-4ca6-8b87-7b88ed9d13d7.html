@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>剪贴板的兔子洞</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+<nav class="main-nav">
+  <ul>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</nav>
+<h2>剪贴板</h2>
+<blockquote>
+<p>听上去是一个很基础的东西嘛，这有什么好记录的，看到这个标题的人一定会这样想吧！</p>
+</blockquote>
+<h3>背景</h3>
+<p>我的工作环境：</p>
+<ul>
+<li>windows terminal 用 git 自带的 openssh 连接到公司的 linux 开发服务器上(docker 环境)</li>
+<li>linux 上的环境为 bash + tmux + vim</li>
+</ul>
+<p>显然，我没有被迫从众或者效率问题 (对于我这个情况，其实不用 vim 才是降低效率 233) 而使用 IDE / vscode！</p>
+<p>能根据开发中发现的毛病，增加实战经验</p>
+<ul>
+<li><p>「更新配置」(更新了不少 vim 配置，因为信息安全问题没办法直接同步 github 个人仓的配置，但回家后也会同步 (背诵) 到个人仓库上)</p>
+</li>
+<li><p>「妥协」(win 的 alt + tab 系统强制绑定，只能更换 tmux 的快捷键)</p>
+</li>
+</ul>
+<p>总之，实际体验还是可以的，毕竟终端环境大差不差，就不用去管垃圾的 win 11 了。</p>
+<p>当然，标题的体验除外。熟悉 windows terminal 的，用右键进行复制粘贴应该算是家常便饭了吧。每次粘贴都需要把一只手从键盘上移开，去按一下鼠标右键，割裂感很强，虽然我现在突然记起了 qmk 其实配的鼠标映射，在日常已经被我忘的一干二净了。</p>
+<p>下面用 mermaid 简述一下实际使用过程中的几种场景，体验等同与 Linux 桌面下体验的评价为 prefect：</p>
+<pre><code class="language-mermaid">flowchart LR
+subgraph Q
+direction LR
+ a1[&quot;场景1：从 vim 里复制代码到 windows 的剪贴板&quot;]
+ a2[&quot;场景2：在 tmux 中的不同 pane 的 vim 间粘贴代码&quot;]
+ a3[&quot;场景3：把 windows 剪贴板的东西粘贴进终端&quot;]
+ a4[&quot;场景4：把终端输出复制到 windows 剪贴板里&quot;]
+ a5[&quot;场景5：vim 里粘贴 tmux 复制的东西&quot;]
+end
+subgraph A
+direction LR
+ b1[&quot;YOU CAN'T! (bad)&quot;]
+ b2[&quot;windows 右键 (NG)&quot;]
+ b3[&quot;tmux 的 copy-mode (prefect)&quot;]
+ b4[&quot;Ctrl + Shift v (prefect)&quot;]
+end
+a1 --&gt; b1
+a2 --&gt; b1
+a3 --&gt; b2
+a4 --&gt; b3
+a5 --&gt; b4
+</code></pre>
+<p>如果只有右键能进行 win 和 ssh 间的复制粘贴我还会直接用网上的答案来配相关工具来同步剪贴板，但是 tmux 的 copy-mode 居然可以完成把 linux 的同步到 windows 这一点就让我觉得匪夷所思，所以决定要研究一番。</p>
+<blockquote>
+<p>我第二天核实了一下，这个 ctrl + shift v 其实是 windows terminal 的快捷键...</p>
+<p>除去这个粘贴快捷键的欺骗，对比了下 wt 和 cmd 的 ssh 复制功能，发现从 tmux 中复制出文本到 windows 剪贴板的特性只有 wt 有，这就又很邪门了。</p>
+</blockquote>
+<h3>情报</h3>
+<p><em>Linux selections</em></p>
+<p>如果管 Linux 的剪贴板叫 clipboard，那了解起来脑子确实会费成一团，因为它还有一个古老的名字叫 selections。</p>
+<p>这东西的演变历史我没能找到，总之可以简单的理解为独立的剪贴板，类似剪贴分区的概念，selections 有三种类型：</p>
+<ul>
+<li>Primary |选中一段文本，然后按鼠标中键会直接粘贴上选中的文字，但实际上好像会被程序给修改行为，比如说我现在使用的 typora 在程序里选中右键反而会把 clipboard 的内容给填充进来。</li>
+<li>Secondary |不知道干嘛用的，看上去像是可以和前面那块进行交换。</li>
+<li>Clipboard |与常识的剪贴板行为一致ctrl xcv。</li>
+</ul>
+<p>这也解释了之前我用 st 的剪贴板功能复制之后需要使用中键粘贴，而不是像 windows 的终端那样默认右键直接复制到剪贴板里。有两个独立的剪贴板也不错，知道有这个东西就好，也不用强行把两个统一起来。</p>
+<blockquote>
+<p>值得一提的是，这个东西实际上是 Xorg 的，也就是需要基于 Xserver 的，在纯 tty 中，这个机制是不存在的，而 tty 要怎么复制粘贴则是另一个兔子洞，不在本次探索范围内 :|</p>
+</blockquote>
+<p><em>vim +clipboard</em></p>
+<p>vim 的复制方式并不特殊，vim 里的复制手段是直接和系统的剪贴板做交互，当 vim 拥有 +clipboard 特性时 (archlinux repo里 vim 没有，gvim 才有) ，可以通过两个寄存器打通与系统剪贴板的交互，分别为：</p>
+<ul>
+<li><code>*</code> |对应 primary selections</li>
+<li><code>+</code> |对应 clipboard selections</li>
+</ul>
+<p>这两个都可以理解为「白纸黑字指名要写进系统的剪贴板」，所以除非额外开个软件作为跳板与 Linux 系统剪贴板进行交互，跨 ssh 肯定是拿不到复制内容的。</p>
+<p>另外还需要弄清楚的则是 tmux 和 windows terminal 为什么可以完成从 Linux 端到 Windows 的复制链。</p>
+<p><em>tmux</em></p>
+<p>参考官方文档，总共有两种方法：</p>
+<ul>
+<li>OSC 52 | Operating System Command 52，第一次听说，感觉有点意思，下面重点写一下</li>
+<li>管道给外部工具 |给 xclip 之类的外部脚本工具</li>
+</ul>
+<p>第一种似乎不是很难配置，而是需要终端能适配 OSC52</p>
+<pre><code class="language-bash"># 设置 clipboard 类型
+set -s set-clipboard [on / external]
+# 设置 tmux 的 Ms 支持
+tmux info |grep Ms # 如果有输出模板形式的string说明已经支持
+# 如果上面是[missing]说明不支持，需要如下配置
+set -as terminal-features ',[${TERM}]:clipboard' # 注意，包括[]在内的字符需要被替换，老版本使用 terminal-overrides
+</code></pre>
+<blockquote>
+<p>Ms 是什么？我不知道全称是什么，但应该是用来匹配目标终端生成 OSC52 的一个组件吧</p>
+</blockquote>
+<p>第二种方法是我之前抄在  <code>.tmux.conf</code> 里的，直接装上对应的工具然后抄一下配置就行了，不过这类工具都是有些前提的，比如说要在 Xorg 环境里</p>
+<pre><code class="language-bash">set -s copy-command 'xsel -i' # 3.2~
+bind-key -T copy-mode-vi y  send-keys -X copy-pipe-and-cancel &quot;xclip -sel clipboard -in&quot; # 2.3 - 3.1 这是我的配置，显然我配错了
+bind -tvi-copy C-j  copy-pipe 'xsel -i'
+</code></pre>
+<p>tmux 的剪贴板内容可以用这个命令获得  <code>tmux save-buffer -</code>，更方便脚本来操作</p>
+<p><em>OSC 52</em></p>
+<p>Operating System Command，非常酷的东西，包括在终端上显示的字都是通过这东西实现的。</p>
+<p>st 本来是支持 OSC52 的，先是找到了<a href="https://git.suckless.org/st/commit/2e54a21b5ae249a6bcedab9db611ea86037a018b.html">相关的 commit</a>，然后拉取最新代码，发现居然不行，然后<code>checkout</code>到了那个 commit，居然是可以的，通过简单的 文本检索 和 debug 后，发现需要在<code>config.h</code>里设置一个<code>allowwindowops</code>才能启用 OSC52。google 了一下就<a href="https://git.suckless.org/st/commit/a2a704492b9f4d2408d180f7aeeacf4c789a1d67.html">找到了原因</a></p>
+<p>请教了一下 gpt ，还真有关于 OSC52</p>
+<ul>
+<li>CVE-2003-0063</li>
+<li>CVE-2014-3121</li>
+</ul>
+<p>假设一个非自然场景，ssh 到一台机器上，然后这个bash自动打印一个 OSC52，而你使用的终端正好支持 OSC52，替换掉了你的剪贴板，把这个作为前提，会发生什么后续呢？有一定的风险，但我感觉风险完全可控，因为如果剪贴板中有回车，并不是直接当作用户输入回车</p>
+<p><em>windows terminal</em></p>
+<p>wt 是支持 OSC52 的，但是需要解决一个问题，当在 tmux 里时，默认是无法正常输出 OSC52 的，这要说到之前设置的 <code>set-clipboard</code>属性了，这个属性总共有三个选项：</p>
+<ul>
+<li>on |为外部终端开启剪贴板功能</li>
+<li>off |不为外部终端开启剪贴板功能</li>
+<li>external |为外部终端开启剪贴板，但是只允许 tmux 去设置</li>
+</ul>
+<h3>目标</h3>
+<p>vim 能通过 OSC52 将选取内容复制到 windows 的剪贴板。</p>
+<h3>方案</h3>
+<p>根据获取的情报，思路已经很清晰了。先获取选取内容，然后将选取内容转换为 OSC52。</p>
+<pre><code class="language-mermaid">flowchart LR
+获取vim选区内容 --调用外部脚本--&gt; 输出OSC52
+</code></pre>
+<p>遵循 UNIX 传统，KISS，简单写一个专门将文本流转化为 OSC52 输出的脚本。</p>
+<pre><code class="language-bash">#!/bin/bash
+
+set -e
+
+if [ ! -t 0 ]; then
+    encode=$(cat |base64)
+    echo -ne &quot;\033]52;c;$encode\a&quot;
+else
+    echo -e &quot;osc52: \033[1;31merror:\033[0m TRY 'stdout |osc52'&quot; &gt;&amp;2
+    exit 1
+fi
+</code></pre>
+<p>然后配置一下 vim，想象下情景：选中一块区域，然后按下 &lt;c-y&gt; 将选取复制到剪贴板上，注意，这里没有配置 &lt;c-p&gt;，只能进插入模式进行 ctrl shift v。</p>
+<pre><code class="language-bash">&quot; use OSC52, only support yank, paste by &lt;ctrl-shift V&gt; in insert mode
+vnoremap &lt;c-y&gt; &quot;my:call OSC52('m')&lt;CR&gt;
+
+function! OSC52(reg)
+    let tmp_fn = system(&quot;mktemp&quot;)[:-2]
+    let ret = writefile(split(getreg(a:reg), &quot;\n&quot;), tmp_fn, &quot;b&quot;)
+    if ret == 0
+        exec &quot;!cat &quot;.tmp_fn.&quot; |osc52 &amp;&amp; rm &quot;.tmp_fn.&quot; || echo &quot;.tmp_fn
+        return
+    endif
+    echo ret
+endfunction
+</code></pre>
+<h3>总结</h3>
+<p>努力的让解决方案看起来不那么 suck，然而中间过程遇到了无数个坑，包括但不限于</p>
+<ul>
+<li>OSC52 只有在 终端下的 stdout 输出才会被外部终端识别处理，vim 里输出没有屁点用</li>
+<li>vim 的 block visual 不得了，复制这个模式下的东西有缺陷，用起来太神奇了，背后肯定有神奇的实现逻辑</li>
+<li>vim 的异步要想用起来不 suck，难度是不低的</li>
+<li>要想把一堆文本作为文本流作为 stdin 输入，最好的方式是把这堆文本用字节流写一个文件，然后用 cat，而不是 echo</li>
+<li>在 exec 后使用 echo 好像需要 redraw（搁置不管），不然会出现烦人的按按键以继续</li>
+<li>我到底要不要升 vim9script</li>
+</ul>
+<blockquote>
+<p>此次兔子洞的探索以疲惫结束。接下去 vim 的折腾点应该就是 针对 quickfix 的个人主义优化了，虽然还有些 bug 放着没管。</p>
+</blockquote>
+<hr>
+<p>参考</p>
+<p>这篇<a href="https://www.jwz.org/doc/x-cut-and-paste.html">文章</a>讲的很详细，但是其实这并不复杂（知道了实际上有两块剪贴板之后）。让我想起了 <a href="https://www.linuxatemyram.com/">linux ate my ram</a> 的教诲，其他参考：</p>
+<ul>
+<li><a href="https://wiki.archlinux.org/title/Clipboard">archwiki</a></li>
+<li><a href="https://github.com/tmux/tmux/wiki/Clipboard">tmux wiki</a></li>
+<li><a href="https://www.vinnie.work/blog/2020-11-24-why-so-hard-tmux-copy-paste">交互clipboard，再使用X forward进行转发</a></li>
+<li><a href="https://www.reddit.com/r/vim/comments/k1ydpn/a_guide_on_how_to_copy_text_from_anywhere/">OSC52介绍</a></li>
+<li><a href="https://opensource.com/article/19/7/xclip">xclip</a></li>
+<li><a href="https://stackoverflow.com/questions/17255031/how-to-copy-from-tmux-running-in-putty-to-the-windows-clipboard">stackoverflow</a></li>
+<li><a href="https://github.com/lujun9972/emacs-document/blob/master/emacs-common/ZSH,%20tmux,%20Emacs%20%E4%BB%A5%E5%8F%8A%20SSH:%20%E4%B8%80%E4%B8%AA%E5%85%B3%E4%BA%8E%E7%B2%98%E5%B8%96%E5%A4%8D%E5%88%B6%E7%9A%84%E6%95%85%E4%BA%8B.org">zsh, tmux, emacs</a></li>
+<li><a href="https://www.reddit.com/r/bashonubuntuonwindows/comments/gntviy/copy_pasting_wsltmuxwindows_how_does_it_work/">tmux and windows, reddit</a></li>
+<li><a href="https://sspai.com/post/71018">SSH 下跨系统连通剪贴板 - 少数派</a></li>
+</ul>
+<blockquote>
+<p>对于某些被认定为常识之物，浅意识里总会遵循着一套能用就行的行为准则不求甚解，但实际上这些东西往里探确确实实是一个兔子洞。</p>
+<p>GO DOWN THE RABBIT HOLE.</p>
+</blockquote>
+
+<script src="/res/js/main.js" defer></script>
+</body>
+</html>

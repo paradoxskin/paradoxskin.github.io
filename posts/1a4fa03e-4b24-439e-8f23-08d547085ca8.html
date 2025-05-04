@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>shift-tab与字符Z</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+<nav class="main-nav">
+  <ul>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</nav>
+<p>起因是写代码的时候发现 tmux 里按 shift-tab 会窗口向前移动，再在新开的窗口上面加一个 Z，发现是以下配置搞的鬼：</p>
+<pre><code class="language-bash">bind M-[ prev
+</code></pre>
+<p>细究发现，<code>cat</code>键入<code>shift-tab</code>回显的是<code>^[[z</code>，而<code>M-[</code>对应的是<code>^[[</code></p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/image-20240627152927283.png" alt="测试输入"></p>
+<p>这就解释通了。但方向键的上，对应的是<code>^[[A</code>，却没触发这个，实在奇怪。</p>
+<p>解决方案</p>
+<ol>
+<li>改键，但是我不太想改，因为用<code>[]</code>来左右跳是我习惯的配置；</li>
+<li>另一个解决方案是解决<code>shift-tab</code>的行为，<a href="https://vim.fandom.com/wiki/Make_Shift-Tab_work">vim wiki 链接</a>。</li>
+</ol>
+<p>使用 kitty 终端试了一下，问题消失了，怀疑是st的问题，让我仔细看看代码哪写错的...</p>
+<p>尴尬的事情发生了，我在xfce4里的st是正常的，但是ssh到raspberry pi上又是不正常的，找到一篇<a href="https://stackoverflow.com/questions/3518846/shift-tab-produces-cryptic-error-in-emacs">相关的贴</a></p>
+<p>然而我重启了dwm后，又正常了，但是ssh还是不可以，这是一个兔子洞。工具问题，没必要花时间，还是修改快捷键吧...</p>
+<p>最后决定使用 <code>M-;</code>, <code>M-'</code> 替代。</p>
+
+<script src="/res/js/main.js" defer></script>
+</body>
+</html>

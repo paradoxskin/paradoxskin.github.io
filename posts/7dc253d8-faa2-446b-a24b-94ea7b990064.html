@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>回归VIM</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+<nav class="main-nav">
+  <ul>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</nav>
+<blockquote>
+<p>某次滚动更新后，neovim的配色突然变丑了，我就觉得我应该回归vim了，重构下 vim 配置。</p>
+</blockquote>
+<p>向来喜欢从简，所以打算放弃原来庞杂的 vim 配置，回归朴素。本次配置主要以实用性和少量外观进行入手，精简插件也是目的之一，不使用vim9script，因为需要兼容其他版本的 vim，但以后可以考虑弄一个 vim9script 的 branch</p>
+<ul>
+<li>实用性：<ul>
+<li>lsp</li>
+<li>snippet</li>
+</ul>
+</li>
+<li>外观：<ul>
+<li>主题色 (snazzy-like)</li>
+<li>bottom-line</li>
+<li>fold</li>
+</ul>
+</li>
+</ul>
+<h2>lsp</h2>
+<blockquote>
+<p>开始打算试试 YCM，但找了下资料，2024年已经几乎没有人用 YCM 了，只能找到 lsp 刚出来时用 YCM 的人对 lsp 的讨论，令人感叹</p>
+</blockquote>
+<p>这次决定不用 coc，实在太庞大了，有点不适</p>
+<p><a href="https://github.com/prabirshrestha/vim-lsp">vim-lsp</a>: 提供前端，后端配置自己写在 vimrc 里</p>
+<p><a href="https://github.com/yegappan/lsp">lsp</a>: 本来想要用这个的，很轻量，但是只有能用 vim9script 才行，这就意味着只能在新版vim才行(大多数包管理器的vim版本大多数还在8)，所以不考虑了</p>
+<h2>snippet</h2>
+<p>原来用的<a href="https://github.com/SirVer/ultisnips">ultisnips</a></p>
+<p>这东西很好用，只可惜需要 python 依赖，而且本身不太好用，换个更轻的<a href="https://github.com/Jorengarenar/miniSnip">miniSnip</a></p>
+<p>使用 <code>&lt;{}&gt;</code> 进行标记填充部分，里面可以设置默认内容，其中<code>&lt;{!xx}&gt;</code>可以使用 vim 的表达式进行计算，<code>&lt;{+}&gt;</code> 可以表示最后位置，好像还能自定义填充标记符。</p>
+<p>但要注意，这个插件好像不能自定义顺序或者回退到刚刚输入的填充位置，也许只是我目前没发现，不知道怎么写可以看一下作者<a href="https://github.com/Jorengarenar/dotfiles/tree/master/config/vim/miniSnip">本人写的几个模板</a></p>
+<h2>snazzylike</h2>
+<p>对比度太高，太刺眼了，决定换品味了</p>
+<pre><code class="language-bash">set t_Co=256
+set background=dark
+nnoremap wtf :echo synIDattr(synID(line('.'), col('.'), 1), &quot;name&quot;)&lt;CR&gt;
+
+&quot;main color
+let s:a=234
+let s:b=181
+let s:c=65
+let s:d=100
+let s:e=166
+let s:f=131
+let s:g=178
+let s:h=180
+let s:i=241
+
+let s:red=166
+let s:blue=98
+let s:cyan=79
+let s:green=34
+
+hi clear
+
+&quot;ui
+hi CursorLine cterm=None
+exec 'hi Folded ctermfg='.s:e.' ctermbg='.s:a
+exec 'hi LineNr ctermfg='.s:b
+exec 'hi CursorLineNR cterm=None ctermfg='.s:g
+exec 'hi SignColumn ctermbg='.s:a
+exec 'hi CursorLineSign ctermbg='.s:i
+exec 'hi Edflag cterm=bold ctermfg='.s:i
+exec 'hi StatusLine cterm=bold ctermfg='.s:i
+exec 'hi StatusLineNC ctermfg='.s:a
+exec 'hi VertSplit ctermfg='.s:a.' ctermbg='.s:i
+hi Search cterm=bold,reverse ctermfg=None ctermbg=None
+hi IncSearch cterm=bold,underline,reverse
+hi CurSearch cterm=bold,underline
+hi Visual ctermbg=None ctermfg=None cterm=reverse
+exec 'hi EndOfBuffer ctermfg='.s:i
+exec 'hi Pmenu cterm=bold ctermfg='.s:i.' ctermbg='.s:a
+exec 'hi PmenuSbar ctermbg='.s:a
+exec 'hi PmenuSel cterm=bold ctermfg='.s:c
+exec 'hi PmenuThumb ctermbg='.s:i
+
+&quot;lang
+hi clear Statement
+exec 'hi Normal ctermbg='.s:a.' ctermfg='.s:b
+exec 'hi Constant ctermfg='.s:g
+exec 'hi Keyword cterm=bold ctermfg='.s:c
+exec 'hi Number ctermfg='.s:e
+exec 'hi Type cterm=bold ctermfg='.s:f
+exec 'hi Identifier cterm=bold ctermfg='.s:d
+exec 'hi Comment cterm=italic ctermfg='.s:h
+exec 'hi PreProc ctermfg='.s:e
+exec 'hi Special ctermfg='.s:f
+hi link Statement Keyword
+hi link Operator Keyword
+
+&quot;event
+au ModeChanged * call ChangeEdflagColor()
+let s:palette = {
+    \'n':s:i,
+    \'i':s:cyan,
+    \'R':s:red,
+    \'v':s:blue,
+    \'':s:blue, &quot;^V
+    \'V':s:blue
+\}
+
+&quot;func
+function! ChangeEdflagColor()
+    exec 'hi Edflag ctermfg='.get(s:palette, mode(), s:i)
+endfunction
+</code></pre>
+<h2>bottom-line</h2>
+<p>去插件化了，这里直接使用 vim 自带的 statusline</p>
+<pre><code class="language-bash">set statusline=%!Cleanline()
+function! Cleanline()
+    if g:statusline_winid != win_getid()
+        let l:hl=''
+    else
+        let l:hl='%#Edflag#'
+    endif
+    if &amp;modified
+        let l:editflag='*'
+    else
+        let l:editflag='●'
+    endif
+    let l:otherstatus='%#StatusLine# %f%r %P %Y%= '.&amp;encoding.' %l,%c'
+    return l:hl.' '.l:editflag.l:otherstatus
+endfunction
+</code></pre>
+<p>不仅能显示信息，自带的功能就能完成色彩变换，搭配上面色彩中的几行 autocmd 就能完成lightline模式显示的功能，以后就不用插件了</p>
+<h2>fold</h2>
+<p>这个 fold 指的是折叠的效果</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/image-20240712111120903.png" alt="image-20240712111120903"></p>
+<p>实现起来不难，写个函数即可</p>
+<pre><code class="language-bash">&quot;\的后面是空格
+set fillchars=fold:\ 
+set foldtext=Blackbox()
+function! Blackbox()
+    let len = 55
+    let text = getline(v:foldstart)
+    if len &lt;= strlen(text)
+        let text = strpart(text, 0, len - 5) . &quot;..&quot;
+    endif
+    let cur = line('.')
+    if v:foldstart &lt;= cur &amp;&amp; cur &lt;= v:foldend
+        let text = '▶ ' . text . repeat(' ', max([1, len - strlen(text)]) - 2) . '█ 󰏖 ' . (v:foldend - v:foldstart + 1) . ' '
+    else
+        let text = text . repeat(' ', max([1, len - strlen(text)])) . '│  ' . (v:foldend - v:foldstart + 1) . ' '
+    endif
+    return text
+endfunction
+</code></pre>
+<blockquote>
+<p>看了一堆视频，发现 vim 的好多功能我都没遇到过，比如说 <code>:set paste</code> ，<code>C-X</code> 模式，tags 等，定制自己的工具是真浪费时间啊</p>
+</blockquote>
+
+<script src="/res/js/main.js" defer></script>
+</body>
+</html>
