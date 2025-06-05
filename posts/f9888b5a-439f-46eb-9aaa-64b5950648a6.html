@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>尝试给kernel提代码</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+<nav class="main-nav">
+  <ul>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</nav>
+<h1>复现</h1>
+<p>公司L0自检，要求开发侧要使用众多款检查工具，进行基础问题自检，作为KASAN模块负责人，被分配到了“把UBSAN也在内部实现”的任务。</p>
+<p>UBSAN即undefined behavior sanitizer，用来检测程序运行过程中触发的未定义事件，其中未定义事件的定义在C标准里有写，各编译器根据标准也都有一套自己的实现。我们用的编译器是内源的llvm，看过内源的代码，估计实际上就是拉开源仓打点适配内部的patch上去，所以直接看外部文档就好了，后面的交谈也证明他们对llvm的掌握程度也不是100%了解。</p>
+<p>要适配这个东西不难，编译器有一套自己的实现，用户态开个编译选项就可以直接用，但是作为内核态，没法直接printf这种，所以需要自己实现一套。听从同事先前的探索经验，我直接打开了kernel的代码，根据<code>lib/ubsan.c</code>也实现一套handler符号。其实kernel的代码也是从编译器实现那抄来的，我后面在llvm仓库里找到了最根源的定义。</p>
+<p>适配途中有一个handler是除法溢出的场景，其中有一种溢出的场景是：有符号的最小值被-1整除。这种情况就相当于是最小值取反了，必然会溢出（最小值取反是用另一个handler，<code>__ubsan_handle_negate_overflow</code>处理的，乱糟糟的）。根据kernel的源码，该场景错误日志中输出的是右操作数：</p>
+<pre><code>void __ubsan_handle_divrem_overflow(void *_data, void *lhs, void *rhs)
+{
+    struct overflow_data *data = _data;
+    char rhs_val_str[VALUE_LENGTH];
+
+    if (suppress_report(&amp;data-&gt;location))
+        return;
+
+    ubsan_prologue(&amp;data-&gt;location, &quot;division-overflow&quot;);
+
+    val_to_string(rhs_val_str, sizeof(rhs_val_str), data-&gt;type, rhs);
+
+    if (type_is_signed(data-&gt;type) &amp;&amp; get_signed_val(data-&gt;type, rhs) == -1)
+        pr_err(&quot;division of %s by -1 cannot be represented in type %s\n&quot;,
+            rhs_val_str, data-&gt;type-&gt;type_name);
+    else
+        pr_err(&quot;division by zero\n&quot;);
+
+    ubsan_epilogue();
+}
+</code></pre>
+<p>当时就觉得很奇怪，右操作数必然是-1，输出没什么意义，用用户态的gcc做了下实验，发现gcc输出的是左操作数，llvm也一样：</p>
+<pre><code> gcc❱ cat tmp.c
+#include &lt;limits.h&gt;
+
+int main()
+{
+    int z = INT_MIN / -1;
+    return z;
+}
+ gcc❱ gcc tmp.c -fsanitize=undefined
+ gcc❱ ./a.out
+tmp.c:5:21: runtime error: division of -2147483648 by -1 cannot be represented in type 'int'
+ llvm❱ clang tmp.c -fsanitize=undefined
+ llvm❱ ./a.out
+tmp.c:5:21: runtime error: division of -2147483648 by -1 cannot be represented in type 'int'
+SUMMARY: UndefinedBehaviorSanitizer: undefined-behavior tmp.c:5:21
+</code></pre>
+<p>显而易见是kernel的代码错了，不过实际结果还是要试一下才行。之前还没有调试kernel的经验，这次正好学习一下。笔记本的性能实在是不太行，编译kernel对它来说是一项艰巨的任务。笔记本修改出patch，编译让台式机来。</p>
+<pre><code># 编译kernel 输出件bzImage
+git clone https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+cd linux
+make menuconfig
+make -j`nproc`
+
+# 编译busybox
+（可选，也可以直接用包管理器的）
+
+# 创建文件系统归档
+mkdir rootfs
+cd rootfs
+mkdir -p {bin,sbin,dev,etc,proc,sys,usr/bin,usr/sbin}
+cp `which busybox` bin/
+ln -s busybox bin/sh
+cat &lt;&lt; EOF &gt; init
+#!/bin/sh
+busybox mount -t proc none /proc
+busybox mount -t sysfs none /sys
+busybox echo &quot;init done&quot;
+busybox sh
+EOF
+chmod +x init
+find .|cpio -o --format=newc|gzip &gt; ../initramfs.cpio.gz
+
+# qemu启动
+qemu-system-x86_64 -kernel bzImage -initrd initramfs.cpio.gz -append &quot;rdinit=/init console=ttyS0&quot; -nographic
+</code></pre>
+<p>要触发ubsan告警，理论上是要编一个ko，再insmod进去。这个就是最简单的ko骨架。</p>
+<pre><code>diff -ruN ../empty/Makefile ./Makefile
+--- ../empty/Makefile	1970-01-01 08:00:00.000000000 +0800
++++ ./Makefile	2025-06-01 12:40:43.437773786 +0800
+@@ -0,0 +1,10 @@
++obj-m := test.o
++
++KDIR := ~/workspace/artifact/linux/
++PWD := $(shell pwd)
++
++all:
++	$(MAKE) -C $(KDIR) M=$(PWD) modules
++
++clean:
++	$(MAKE) -C $(KDIR) M=$(PWD) clean
+diff -ruN ../empty/test.c ./test.c
+--- ../empty/test.c	1970-01-01 08:00:00.000000000 +0800
++++ ./test.c	2025-06-01 12:41:22.044629495 +0800
+@@ -0,0 +1,20 @@
++#include &lt;linux/module.h&gt;
++#include &lt;linux/init.h&gt;
++
++static int __init test_init(void)
++{
++    pr_info(&quot;hello, world\n&quot;);
++    return 0;
++}
++
++static void __exit test_exit(void)
++{
++    pr_info(&quot;bye\n&quot;);
++}
++
++module_init(test_init);
++module_exit(test_exit);
++
++MODULE_LICENSE(&quot;&quot;);
++MODULE_AUTHOR(&quot;&quot;);
++MODULE_DESCRIPTION(&quot;&quot;);
+</code></pre>
+<p>将编译出来的<code>.ko</code>再放到rootfs下，重新打包就能测试了。</p>
+<pre><code>busybox insmod test.ko
+busybox rmmod test.ko
+</code></pre>
+<p>构造溢出场景用例：</p>
+<pre><code>{
+    int int_min = INT_MIN;
+    pr_info(&quot;int_min / (-1) = %d\n&quot;, (int_min / -1));
+    return 0;
+}
+</code></pre>
+<p>但是默认的<code>menuconfig</code>中没有找到整数溢出的UBSAN，只有除0的检查项，在<code>lib/Kconfig.ubsan</code>里有关于除0的记载：</p>
+<pre><code>config UBSAN_DIV_ZERO
+    bool &quot;Perform checking for integer divide-by-zero&quot;
+    depends on $(cc-option,-fsanitize=integer-divide-by-zero)
+    # https://github.com/ClangBuiltLinux/linux/issues/1657
+    # https://github.com/llvm/llvm-project/issues/56289
+    depends on !CC_IS_CLANG
+    help
+      This option enables -fsanitize=integer-divide-by-zero which checks
+      for integer division by zero. This is effectively redundant with the
+      kernel's existing exception handling, though it can provide greater
+      debugging information under CONFIG_UBSAN_REPORT_FULL.
+</code></pre>
+<p>可以猜到，只有非clang的编译器才会显示这一项，所以我们现在用的应该是gcc，使用<code>make menuconfig LLVM=1</code>可以让他知道你用的是llvm。在这个文件里也记述着整数溢出的选项条件：</p>
+<pre><code>config UBSAN_INTEGER_WRAP
+    bool &quot;Perform checking for integer arithmetic wrap-around&quot;
+    depends on !COMPILE_TEST
+    depends on $(cc-option,-fsanitize-undefined-ignore-overflow-pattern=all)
+    depends on $(cc-option,-fsanitize=signed-integer-overflow)
+    depends on $(cc-option,-fsanitize=unsigned-integer-overflow)
+    depends on $(cc-option,-fsanitize=implicit-signed-integer-truncation)
+    depends on $(cc-option,-fsanitize=implicit-unsigned-integer-truncation)
+    depends on $(cc-option,-fsanitize-ignorelist=/dev/null)
+    help
+      This option enables all of the sanitizers involved in integer overflow
+      (wrap-around) mitigation: signed-integer-overflow, unsigned-integer-overflow,
+      implicit-signed-integer-truncation, and implicit-unsigned-integer-truncation.
+      This is currently limited only to the size_t type while testing and
+      compiler development continues.
+</code></pre>
+<p>这个选项要求编译器要支持很多条编译选项，用本地的clang试了一下，第一个编译选项就直接不支持，原来arch源的clang版本为<code>19.1.7</code>，而这个选项在<code>20.0</code>才支持。下载一个最新代码编译一下即可。</p>
+<pre><code>make menuconfig LLVM=1
+make LLVM
+</code></pre>
+<p>在编译好之后还需要对之前使用的ko重新编译一次，因为编译选项不一致，编译时需要指定llvm，<code>make LLVM=1</code>，还要防止编译器内联优化。</p>
+<pre><code>#include &lt;linux/module.h&gt;
+#include &lt;linux/init.h&gt;
+
+__attribute__((__noinline__)) static int div(int a, int b)
+{
+    return (a/b);
+}
+
+static int __init test_init(void)
+{
+    pr_info(&quot;int_main / (-1) = %d\n&quot;, div(INT_MIN, (-1)));
+    return 0;
+}
+
+static void __exit test_exit(void)
+{
+    pr_info(&quot;bye&quot;);
+}
+
+module_init(test_init);
+module_exit(test_exit);
+
+MODULE_LICENSE(&quot;&quot;);
+MODULE_AUTHOR(&quot;&quot;);
+MODULE_DESCRIPTION(&quot;&quot;);
+</code></pre>
+<p>最终触发日志</p>
+<pre><code> /mod # insmod test.ko
+[    7.451441] test: loading out-of-tree module taints kernel.
+[    7.451823] test: module license '' taints kernel.
+[    7.451935] Disabling lock debugging due to kernel taint
+[    7.452185] test: module license taints kernel.
+[    7.456271] ------------[ cut here ]------------
+[    7.456410] UBSAN: division-overflow in test.c:11:14
+[    7.456630] division of -1 by -1 cannot be represented in type 'int'
+[    7.457192] CPU: 0 UID: 0 PID: 58 Comm: insmod Tainted: P           O        6.15.0-g0f70f5b08a47 #1 PREEMPT(voluntary)
+[    7.457324] Tainted: [P]=PROPRIETARY_MODULE, [O]=OOT_MODULE
+[    7.457334] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux 1.16.3-1-1 04/01/2014
+</code></pre>
+<p>可以看到，日志确实有问题，看来这个patch可以提的了。</p>
+<h1>解决</h1>
+<pre><code>diff --git a/lib/ubsan.c b/lib/ubsan.c
+index a6ca235dd714..456e3dd8f4ea 100644
+--- a/lib/ubsan.c
++++ b/lib/ubsan.c
+@@ -333,18 +333,18 @@ EXPORT_SYMBOL(__ubsan_handle_implicit_conversion);
+ void __ubsan_handle_divrem_overflow(void *_data, void *lhs, void *rhs)
+ {
+    struct overflow_data *data = _data;
+-	char rhs_val_str[VALUE_LENGTH];
++	char lhs_val_str[VALUE_LENGTH];
+
+    if (suppress_report(&amp;data-&gt;location))
+        return;
+
+    ubsan_prologue(&amp;data-&gt;location, &quot;division-overflow&quot;);
+
+-	val_to_string(rhs_val_str, sizeof(rhs_val_str), data-&gt;type, rhs);
++	val_to_string(lhs_val_str, sizeof(lhs_val_str), data-&gt;type, lhs);
+
+    if (type_is_signed(data-&gt;type) &amp;&amp; get_signed_val(data-&gt;type, rhs) == -1)
+        pr_err(&quot;division of %s by -1 cannot be represented in type %s\n&quot;,
+-			rhs_val_str, data-&gt;type-&gt;type_name);
++			lhs_val_str, data-&gt;type-&gt;type_name);
+    else
+        pr_err(&quot;division by zero\n&quot;);
+</code></pre>
+<h1>提交</h1>
+<p>在正式提交之前，需要进行一些配置，主要是配置邮箱和<code>send-email</code>依赖。</p>
+<ul>
+<li>安装依赖</li>
+</ul>
+<p><code>git send-mail</code>是一个perl程序，需要安装一些发送邮件会用到的协议模组。</p>
+<pre><code>sudo pacman -S perl-authen-sasl perl-mime-base64 perl-io-socket-ssl
+git config add sendemail.smtpserver=smtp.gmail.com
+</code></pre>
+<ul>
+<li>配置邮箱</li>
+</ul>
+<p>git配的都是我的qq邮箱，往kernel交代码还用这个的话不太合适。这次就用gmail吧，设置一下local下的<code>user.email</code>即可，本以为要点gpg身份验证什么的，但偶尔提交的开发者似乎这一项并不是强制要求项。gmail的smtp需要创建一个应用凭证，位置在<code>账户》安全性》您的Google账号登录选项》两步验证》应用专用密码</code>。</p>
+<blockquote>
+<p>之前打算自己用vps搭一个邮箱服务，结果一直没下功夫研究（已经鸽到我的域名都失效了）。</p>
+</blockquote>
+<pre><code>sendemail.smtpserverport=587
+sendemail.smtpencryption=tls
+sendemail.smtpuser=paradoxskin233@gmail.com
+sendemail.smtppass=****************
+</code></pre>
+<ul>
+<li>提交代码</li>
+</ul>
+<p>下面就是正式提交了，提交需要开发者签名(<code>git commit -s</code>)，按照DCO (Developer Certificate of Origin)，要使用真名，不能使用假名和匿名。写ommit时，记得每行不能超过50/72(主题/描述)个字符。</p>
+<pre><code>git add .
+git commit -s
+git format-patch -1
+./scripts/checkpatch.pl 0001-xxxx.patch
+./scripts/get_maintainer.pl lib/ubsan.c
+
+# 先试发一下，dry-run不会真的发送
+proxychains git send-email --dry-run --to=&quot;&lt;maintainer's email&gt;&quot; --cc=&quot;&lt;other email&gt;&quot; --cc=&quot;&lt;other email&gt;&quot; ...
+
+# 正式发，to maintainer，其他列出来的邮箱都抄送一下
+proxychains git send-email --to=&quot;&lt;maintainer's email&gt;&quot; --cc=&quot;&lt;other email&gt;&quot; --cc=&quot;&lt;other email&gt;&quot; ...
+</code></pre>
+<p>邮件会抄送给自己，下载到本地(<code>.eml</code>格式)，使用<code>git am</code>打这个patch。与<code>git apply</code>相比，前者会生成一笔完整的commit。</p>
+<p>仔细观察，可以发现<code>git format-patch</code>的输出其实就是一封纯文本格式的邮件，相当的优雅简洁。</p>
+<ul>
+<li>等待后续</li>
+</ul>
+<p>如果不出意外的话，维护者/检视者在看到后会回信了，可能会有一些检视意见。我的改动比较简单，维护者很快就回复了：</p>
+<pre><code>Subject: Re: [PATCH] ubsan: Fix incorrect hand-side used in handle
+Date: Mon,  2 Jun 2025 11:06:27 -0700
+
+On Mon, 02 Jun 2025 23:38:41 +0800, Junhui Pei wrote:
+&gt; __ubsan_handle_divrem_overflow() incorrectly uses the RHS to report.
+&gt; It always reports the same log: division of -1 by -1. But it should
+&gt; report division of LHS by -1.
+
+Oops, this has been wrong for a long time! :) I've added the appropriate
+Fixes tag.
+
+Applied to for-linus/hardening, thanks!
+
+[1/1] ubsan: Fix incorrect hand-side used in handle
+      https://git.kernel.org/kees/c/c50b612bef51
+
+Take care,
+
+--
+Kees Cook
+</code></pre>
+<p>之后等待即可，这笔pr还要给linus过目，顺利的话会在下个版本(6.16-rc2)合入。</p>
+
+<script src="/res/js/main.js" defer></script>
+</body>
+</html>
