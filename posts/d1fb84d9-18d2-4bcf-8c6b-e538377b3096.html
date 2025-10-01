@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>linux suspend拉slock的折腾</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+<nav class="main-nav">
+  <ul>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</nav>
+<p>最近几次滚动更新后，我发现笔记本的开盖唤醒需要手动按一下开机按键。同时，我还需要调整一下原有的锁屏逻辑：dwm快捷键 -&gt; script，script如下，</p>
+<pre><code>#!/bin/bash
+slock &amp;
+sleep 5
+if test &quot;$1&quot; = &quot;deep&quot;; then
+    systemctl hibernate
+else
+    systemctl suspend
+fi
+</code></pre>
+<p>很蠢，这个快捷键我从来不用，平时都是合盖休眠，唤醒没有任何校验，slock形同虚设。显然，这个动作应该放在hibernate和suspend上去做，而不是作为一个额外动作附加上去。</p>
+<p>关于休眠行为，<a href="https://wiki.archlinux.org/title/Power_management/Suspend_and_hibernate">archlinux wiki</a>有详细的描述。常规意义上的休眠有S3和S4，也就是<code>suspend</code>和<code>hibernate</code>，前者会切断内存以外的设备供电（适用于合盖场景），后者会将内存放到swap分区后完全断电（完全不耗电）。开启S4需要额外配置一下kernel启动参数。可以通过sys接口直接休眠<a href="https://docs.kernel.org/admin-guide/pm/sleep-states.html#basic-sysfs-interfaces-for-system-suspend-and-hibernation"><code>/sys/power/state</code></a>。</p>
+<p>systemd支持用户在睡眠事件上挂钩子，其中一种就是Unit，<a href="https://wiki.archlinux.org/title/Slock#Lock_on_suspend">这一方案也是wiki中推荐的</a>，写完之后enable就能解决问题。</p>
+<pre><code>/etc/systemd/system/slock@.service
+
+[Unit]
+Description=Lock X session using slock for user %i
+Before=sleep.target
+
+[Service]
+User=%i
+Environment=DISPLAY=:0
+ExecStart=/usr/local/bin/slock
+
+[Install]
+WantedBy=sleep.target
+</code></pre>
+<p>但我当时选择了第二种方式，<code>Hooks in /usr/lib/systemd/system-sleep</code>，systemd会在休眠/恢复事件时自动执行这个文件夹的脚本，输出可以通过<code>journalctl -b -u systemd-suspend.service</code>查看，这是无效脚本：</p>
+<pre><code> focus❱ cat /usr/lib/systemd/system-sleep/slock
+#!/bin/bash
+
+logger &quot;DEBUG: sleep script ran, $1/$2&quot;
+
+case $1/$2 in
+    pre/suspend|pre/hibernate)
+        DISPLAY=:0 XAUTHORITY=/home/paradoxd/.Xauthority /usr/local/bin/slock &amp;
+        sleep 5
+        logger &quot;DEBUG: did it works?&quot;
+        ;;
+esac
+</code></pre>
+<p>打了维测日志，发现slock确实在运行，但屏幕就是没有被锁上。考虑上一些hack手段了，新开一个tty，开个监听端口</p>
+<pre><code>nc -lvp 9999
+</code></pre>
+<p>改一下脚本</p>
+<pre><code>...
+        DISPLAY=:0 XAUTHORITY=/home/paradoxd/.Xauthority /usr/local/bin/slock &amp;
+        bash &amp;&gt; /dev/tcp/127.0.0.1/9999 0&gt;&amp;1
+        sleep 5
+...
+</code></pre>
+<p>但这样没法拿到bash，而且现象很奇怪，脚本明显是阻塞住了，但是host端没有显示有连接，交互也是死的，我按下ctrl+c系统就会直接休眠。再次尝试不按ctrl+c，新开一个tty看htop，看到这样的进程情况：</p>
+<pre><code>|_/usr/lib/systemd/systemd-sleep suspend
+    |_(sd-exec-strv)
+        |_/bin/bash /usr/lib/systemd/system-sleep/slock pre suspend
+            |_bash
+</code></pre>
+<p>再次尝试...</p>
+<pre><code>...
+    pre/suspend|pre/hibernate)
+        while true; do
+            line=`cat /tmp/1.fifo`
+            bash -c &quot;$line&quot; &amp;&gt; /tmp/2.fifo
+        done
+        DISPLAY=:0 XAUTHORITY=/home/paradoxd/.Xauthority /usr/local/bin/slock &amp;
+...
+</code></pre>
+<p>尝试无果，一直卡在<code>cat /tmp/1.fifo</code>上，systemd-sleep的环境很奇怪，没法进行任何一点的交互。</p>
+<p>最后，我在<a href="https://man.archlinux.org/man/systemd-sleep.8">手册</a>里发现了真相。</p>
+<blockquote>
+<p>Immediately before entering system suspend and/or hibernation systemd-suspend.service (and the other mentioned units, respectively) will run all executables in /usr/lib/systemd/system-sleep/ and pass two arguments to them. The first argument will be &quot;pre&quot;, the second either &quot;suspend&quot;, &quot;hibernate&quot;, &quot;hybrid-sleep&quot;, or &quot;suspend-then-hibernate&quot; depending on the chosen action. An environment variable called &quot;SYSTEMD_SLEEP_ACTION&quot; will be set and contain the sleep action that is processing. This is primarily helpful for &quot;suspend-then-hibernate&quot; where the value of the variable will be &quot;suspend&quot;, &quot;hibernate&quot;, or &quot;suspend-after-failed-hibernate&quot; in cases where hibernation has failed. Immediately after leaving system suspend and/or hibernation the same executables are run, but the first argument is now &quot;post&quot;. All executables in this directory are executed in parallel, and execution of the action is not continued until all executables have finished. <strong>Note that user.slice will be frozen while the executables are running, so they should not attempt to communicate with any user services expecting a reply.</strong></p>
+</blockquote>
+<p>隔壁elogind用的好好的，到systemd这就不行了，这坑踩的，又浪费了一天。。。</p>
+<h2>systemctl unit</h2>
+<pre><code>[Unit]
+Description=Lock X session using slock for user %i
+Before=suspend.target
+
+[Service]
+User=%i
+Environment=DISPLAY=:0
+ExecStart=/usr/bin/slock
+
+[Install]
+WantedBy=suspend.target
+</code></pre>
+<p>采用了wiki上的unit方案后，发现效果不符合预期，当<code>suspend</code>后恢复，slock会打开，但时机有问题。按照预期，在传入<code>suspend</code>的信号后，应该在<code>sleep</code>之前打开slock，在下次恢复时，开屏就是锁住的状态。但实际情况，是在恢复之后再锁住，当我在唤醒的同时疯狂按a，解锁屏幕之后我在终端里发现了在锁住屏幕之前输入的a。</p>
+<pre><code> ~❱ systemctl status suspend.target
+○ suspend.target - Suspend
+     Loaded: loaded (/usr/lib/systemd/system/suspend.target; static)
+     Active: inactive (dead)
+       Docs: man:systemd.special(7)
+
+Sep 25 01:13:29 va11o systemd[1]: Reached target Suspend.
+Sep 25 01:13:29 va11o systemd[1]: Stopped target Suspend.
+
+
+ ~❱ systemctl status slock@paradoxd.service
+○ slock@paradoxd.service - Lock X session using slock for user paradoxd
+     Loaded: loaded (/etc/systemd/system/slock@.service; enabled; preset: disabled)
+     Active: inactive (dead)
+
+Sep 25 01:11:45 va11o systemd[1]: Started Lock X session using slock for user paradoxd.
+Sep 25 01:13:33 va11o systemd[1]: slock@paradoxd.service: Deactivated successfully.
+
+
+ ~❱ systemctl status sleep.target
+○ sleep.target - Sleep
+     Loaded: loaded (/usr/lib/systemd/system/sleep.target; static)
+     Active: inactive (dead)
+       Docs: man:systemd.special(7)
+
+Sep 25 01:11:45 va11o systemd[1]: Reached target Sleep.
+Sep 25 01:13:29 va11o systemd[1]: Stopped target Sleep.
+</code></pre>
+<p>为了让差别更明显一点，我没有在主动休眠后立刻唤醒，11分进行<code>suspend</code>，在13分进行唤醒。根据日志，可以发现打印的时序是<code>slock</code> -&gt; <code>sleep</code> -&gt; <code>suspend</code>，对<code>suspend</code>的时序是否正确我保留意见，这个要去读源码了。简单猜测，唤醒后启动的现象应该是因为systemd只保证了启动时间，没法保证在<code>slock</code>执行完之后再<code>sleep</code>，更何况，是unit依赖target，unit无法让target依赖，一旦<code>sleep</code>了，就只剩内存工作了。</p>
+<p>尝试在<code>system-sleep</code>里增加脚本，在<code>pre</code>的时候<code>sleep 10</code>，让slock有充分的时间运行。但经实践，<code>sleep 10</code>会让整个系统<code>sleep 10</code>，确实是pre action。但是在<code>post</code>里干这事有点用，会让唤醒的时候卡几秒，输入不会漏过去，但还是让屏幕曝光了很久，不符合预期。</p>
+<p>只能阅读源码了，<code>systemd</code>是用<code>ninja</code>构建的，可以根据README来生成编译数据库，不用编译全量代码。</p>
+<pre><code>mkdir build
+meson setup build/
+</code></pre>
+<p>相关代码在<code>src/sleep/sleep.c</code>，对应的二进制在<code>/usr/lib/systemd/systemd-sleep</code>，从终端里直接执行它会卡住，像是环境变量没配好，应该只能由systemctl调用。</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/17592853336_vimupload.png" alt="流程图"></p>
+<p>其中的执行休眠动作在<code>execute</code>函数里，</p>
+<pre><code>...
+        (void) execute_directories(
+                        &quot;system-sleep&quot;,
+                        dirs,
+                        DEFAULT_TIMEOUT_USEC,
+                        /* callbacks= */ NULL,
+                        /* callback_args= */ NULL,
+                        (char **) arguments,
+                        /* envp= */ NULL,
+                        EXEC_DIR_PARALLEL | EXEC_DIR_IGNORE_ERRORS);
+        (void) lock_all_homes();
+
+        log_struct(LOG_INFO, ...);
+
+        r = write_state(state_fd, sleep_config-&gt;states[operation]);
+/*****************************************************************************/
+        if (r &lt; 0)
+                log_struct_errno(LOG_ERR, r, ...);
+        else
+                log_struct(LOG_INFO, ...);
+
+        arguments[1] = &quot;post&quot;;
+        (void) execute_directories(
+                        &quot;system-sleep&quot;,
+                        dirs,
+                        DEFAULT_TIMEOUT_USEC,
+                        /* callbacks= */ NULL,
+                        /* callback_args= */ NULL,
+                        (char **) arguments,
+                        /* envp= */ NULL,
+                        EXEC_DIR_PARALLEL | EXEC_DIR_IGNORE_ERRORS);
+...
+</code></pre>
+<p>执行pre脚本，锁住home目录，再向sys接口发送休眠指令，真正的休眠动作是<code>write_state()</code>，后面那些操作就是唤醒再执行的动作了。</p>
+<p>现在把视线投回<code>slock@.service</code>。根据现有结论，我给出一个猜测，slock或者相关的交互程序刚好被冻住了，只能在下一次唤醒的时候才能继续运行。</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/17592929767_vimupload.png" alt="状态图"></p>
+<p>通过命令，可以查看到systemd的cgroup信息。我们可以在pre脚本中一直<code>sleep</code>，然后在其他tty里读取到该信息，但<code>systemd-sleep</code>有一个timeout机制，过了90秒后，就会强行休眠，需要抓紧时间操作。</p>
+<pre><code>&gt; systemd-cgls
+
+CGroup /:
+-.slice
+├─user.slice
+│ └─user-1000.slice
+│   ├─user@1000.service …
+│   │ ├─session.slice
+│   │ │ ├─dbus-broker.service
+│   │ │ │ ├─984 /usr/bin/dbus-broker-launch --scope user
+│   │ │ │ └─985 dbus-broker --log 11 --controller 10 --machine-id 69319fda8c644…
+│   │ │ ├─dunst.service
+│   │ │ │ └─16511 /usr/bin/dunst
+│   │ │ └─at-spi-dbus-bus.service
+│   │ │   └─1271 /usr/lib/at-spi-bus-launcher
+│   │ ├─app.slice
+│   │ │ ├─dconf.service
+│   │ │ │ └─5866 /usr/lib/dconf-service
+│   │ │ └─app-dbus\x2d:1.2\x2dorg.flameshot.Flameshot.slice
+│   │ │   └─dbus-:1.2-org.flameshot.Flameshot@0.service
+│   │ │     └─16525 /usr/local/bin/flameshot
+│   │ └─init.scope
+│   │   ├─957 /usr/lib/systemd/systemd --user
+│   │   └─962 (sd-pam)
+│   ├─session-2.scope
+│   │ ├─  926 lightdm --session-child 15 22
+│   │ ├─  969 dwm
+│   │ ├─  989 picom --config /home/paradoxd/.config/picom.conf
+│   │ ├─  996 fcitx5 -d
+│   │ ├─ 1008 cstatusbar
+│   │ ├─ 1035 st -A 0.7 -e /home/paradoxd/.scripts/tmux.sh
+│   │ ├─ 1036 /bin/bash /home/paradoxd/.scripts/tmux.sh
+│   │ ├─ 1040 tmux new-session -s main
+│   │ ├─ 1042 tmux new-session -s main
+│   │ ├─ 1043 -bash
+│   │ ├─ 1162 st -e /home/paradoxd/.scripts/startvpn.sh
+│   │ ├─ 1163 /bin/bash /home/paradoxd/.scripts/startvpn.sh
+│   │ ├─ 1164 clash -f /home/paradoxd/.clash/clash.yaml
+│   │ ├─18720 /usr/lib/firefox/firefox
+│   │ ├─18725 /usr/lib/firefox/crashhelper 18720 9 /tmp/ 10 12
+│   │ ├─18777 /usr/lib/firefox/firefox -contentproc -ipcHandle 0 -signalPipe 1 …
+│   │ ├─18801 /usr/lib/firefox/firefox -contentproc -parentBuildID 202509300118…
+│   │ ├─18821 /usr/lib/firefox/firefox -contentproc -isForBrowser -prefsHandle …
+│   │ ├─18831 /usr/lib/firefox/firefox -contentproc -parentBuildID 202509300118…
+│   │ ├─18875 /usr/lib/firefox/firefox -contentproc -isForBrowser -prefsHandle …
+│   │ ├─18949 /usr/lib/firefox/firefox -contentproc -parentBuildID 202509300118…
+│   │ ├─18958 /usr/lib/firefox/firefox -contentproc -isForBrowser -prefsHandle …
+│   │ ├─18960 /usr/lib/firefox/firefox -contentproc -isForBrowser -prefsHandle …
+│   │ ├─19057 /usr/lib/firefox/firefox -contentproc -isForBrowser -prefsHandle …
+│   │ ├─21751 -bash
+│   │ ├─23091 -bash
+│   │ ├─23186 vim slock.c
+│   │ ├─23187 clangd --header-insertion=never --enable-config --background-inde…
+│   │ ├─25291 -bash
+│   │ ├─25333 vim about_suspend.md
+│   │ ├─25807 /usr/lib/firefox/firefox -contentproc -isForBrowser -prefsHandle …
+│   │ ├─26028 /usr/lib/firefox/firefox -contentproc -isForBrowser -prefsHandle …
+│   │ ├─26035 /usr/lib/firefox/firefox -contentproc -isForBrowser -prefsHandle …
+│   │ ├─26102 /usr/lib/firefox/firefox -contentproc -isForBrowser -prefsHandle …
+│   │ ├─26109 /usr/lib/firefox/firefox -contentproc -isForBrowser -prefsHandle …
+│   │ └─26525 -bash
+│   └─session-4.scope
+│     ├─21871 login -- paradoxd
+│     └─21889 -bash
+├─init.scope
+│ └─1 /sbin/init
+└─system.slice
+  ├─systemd-udevd.service …
+  │ └─udev
+  │   └─318 /usr/lib/systemd/systemd-udevd
+  ├─dbus-broker.service
+  │ ├─573 /usr/bin/dbus-broker-launch --scope system --audit
+  │ └─574 dbus-broker --log 10 --controller 9 --machine-id 69319fda8c644bc8b47b…
+  ├─systemd-suspend.service
+  │ ├─26876 /usr/lib/systemd/systemd-sleep suspend
+  │ ├─26877 (sd-exec-strv)
+  │ ├─26878 /bin/sh /usr/lib/systemd/system-sleep/slock pre suspend
+  │ └─26880 sleep 10000
+  ├─polkit.service
+  │ └─4058 /usr/lib/polkit-1/polkitd --no-debug --log-level=notice
+  ├─wpa_supplicant.service
+  │ └─799 /usr/bin/wpa_supplicant -u -s -O /run/wpa_supplicant
+  ├─lightdm.service
+  │ ├─607 /usr/bin/lightdm
+  │ └─642 /usr/lib/Xorg :0 -seat seat0 -auth /run/lightdm/root/:0 -nolisten tcp…
+  ├─systemd-journald.service
+  │ └─282 /usr/lib/systemd/systemd-journald
+  ├─system-slock.slice
+  │ └─slock@paradoxd.service
+  │   └─26875 /usr/local/bin/slock
+  ├─NetworkManager.service
+  │ └─575 /usr/bin/NetworkManager --no-daemon
+  ├─system-dirmngr.slice
+  │ └─dirmngr@etc-pacman.d-gnupg.service
+  │   └─24317 /usr/bin/dirmngr --homedir /etc/pacman.d/gnupg --supervised
+  ├─systemd-timesyncd.service
+  │ └─312 /usr/lib/systemd/systemd-timesyncd
+  ├─system-getty.slice
+  │ ├─getty@tty3.service
+  │ │ ├─22273 login -- paradoxd
+  │ │ ├─26965 -bash
+  │ │ └─27050 systemd-cgls --no-pager
+  │ ├─getty@tty5.service
+  │ │ ├─22275 login -- paradoxd
+  │ │ └─22293 -bash
+  │ └─getty@tty4.service
+  │   └─22277 /sbin/agetty --noreset --noclear --issue-file=/etc/issue:/etc/iss…
+  └─systemd-logind.service
+    └─576 /usr/lib/systemd/systemd-logind
+</code></pre>
+<p>所以<code>slock</code>并不属于用户空间，理论上不会被冻结。通过在slock源码上加维测打印，发现在正式休眠前，slock已经进入了等待密码的阶段。</p>
+<pre><code>...
+    LOG_HERE;
+
+/***************************************************************************/
+    /* everything is now blank. Wait for the correct password */
+    readpw(dpy, &amp;rr, locks, nscreens, hash); // &lt;--
+/***************************************************************************/
+    LOG_HERE;
+
+    return 0;
+}
+</code></pre>
+<p>最终还是重新编译了<code>system-sleep</code>的源码，发现注释掉了锁用户空间的代码，或者sleep几秒，确实进了锁屏界面。</p>
+<pre><code>diff --git a/src/sleep/sleep.c b/src/sleep/sleep.c
+index 3bfe479..d1e1b25 100644
+--- a/src/sleep/sleep.c
++++ b/src/sleep/sleep.c
+@@ -653,6 +653,8 @@ static int run(int argc, char *argv[]) {
+                                        &quot;Sleep operation \&quot;%s\&quot; is disabled by configuration, refusing.&quot;,
+                                        sleep_operation_to_string(arg_operation));
+
++        sleep(10);
++
+         /* Freeze the user sessions */
+         r = getenv_bool(&quot;SYSTEMD_SLEEP_FREEZE_USER_SESSIONS&quot;);
+         if (r &lt; 0 &amp;&amp; r != -ENXIO)
+</code></pre>
+<p>显然，slock的X11相关的调用，依赖于<code>user.slice</code>下的某个进程，我猜是<code>lightdm --session-child 15 22</code>，但也不太能实锤。</p>
+<p>给出最终的解决方案：</p>
+<pre><code> system❱ realpath systemd-suspend.service
+/usr/lib/systemd/system/systemd-suspend.service
+ system❱ diff -u systemd-suspend.service.bak systemd-suspend.service --color
+--- systemd-suspend.service.bak	2025-10-02 01:54:18.100279850 +0800
++++ systemd-suspend.service	2025-10-02 01:57:58.235271576 +0800
+@@ -16,4 +16,5 @@
+
+ [Service]
+ Type=oneshot
++ExecStartPre=/bin/sleep 1
+ ExecStart=/usr/lib/systemd/systemd-sleep suspend
+ system❱ sudo systemctl daemon-reexec
+ system❱ systemctl suspend
+</code></pre>
+<p>PS: 不止suspend一种休眠入口，如<code>hibernate.service</code>，使用同样的操作即可。最后，秀一下我的<code>slock</code>~</p>
+<center><video width="720" height="1280" controls>
+  <source src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/17593435097_68dd7349.mp4" type="video/mp4">
+</video></center>
+<hr>
+<p>参考链接：</p>
+<ul>
+<li><a href="https://gist.github.com/ryukinix/bd0c1ddcbbafdb4149ae70e41b7c822b">https://gist.github.com/ryukinix/bd0c1ddcbbafdb4149ae70e41b7c822b</a></li>
+<li><a href="https://wiki.archlinux.org/title/Power_management/Suspend_and_hibernate#Combined_sleep/resume_unit">https://unix.stackexchange.com/questions/81692/suspend-and-lock-screen-on-closing-lid-in-arch-systemd</a></li>
+<li><a href="https://bbs.archlinux.org/viewtopic.php?id=281661">https://bbs.archlinux.org/viewtopic.php?id=281661</a></li>
+<li><a href="https://wiki.archlinux.org/title/Power_management/Suspend_and_hibernate#Combined_sleep/resume_unit">https://bbs.archlinux.org/viewtopic.php?id=302882</a></li>
+<li><a href="https://wiki.archlinux.org/title/Slock#Lock_on_suspend">https://wiki.archlinux.org/title/Slock#Lock_on_suspend</a></li>
+<li><a href="https://bbs.archlinux.org/viewtopic.php?id=148241">https://bbs.archlinux.org/viewtopic.php?id=148241</a></li>
+<li><a href="https://unix.stackexchange.com/questions/337853/how-can-i-trigger-a-systemd-unit-on-suspend-before-networking-is-shut-down">https://unix.stackexchange.com/questions/337853/how-can-i-trigger-a-systemd-unit-on-suspend-before-networking-is-shut-down</a></li>
+<li><a href="https://earthly.dev/blog/systemd/">https://earthly.dev/blog/systemd/</a></li>
+</ul>
+
+<script src="/res/js/main.js" defer></script>
+</body>
+</html>

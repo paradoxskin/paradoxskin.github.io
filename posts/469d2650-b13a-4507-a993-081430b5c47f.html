@@ -82,7 +82,7 @@
 <p>显然，符合上图中的中断场景。</p>
 <p>那么问题来了，在这个场景中，TD键为shift，但是期望键码改变的，却是触发TD中断的空格。在TD的几个处理函数里，可以使用接口模拟按键事件：持续按住<code>register_code16(keycode)</code>，松开<code>unregister_code16(keycode)</code>，按一下<code>tap_code16(keycode)</code>等。预期一般的TD实现都会在fin决定reg的按键，在reset时unreg，然而我们无法将状态传递给空格键，除非。。。使用两枚TD。</p>
 <p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/17503535117_vimupload.png" alt="两枚TD"></p>
-<p>如图，这两枚TD，通过一个全局变量<code>g_flag</code>进行通信，只有在fin函数里识别到shift键被按下并且松开时置1，在space对应的TD按下时，tab函数检测状态位，若为1，则将当前按键变为shift，否则按原样运行。</p>
+<p>如图，这两枚TD，通过一个全局变量<code>g_flag</code>进行通信，只有在fin函数里识别到shift键被按下并且松开时置1，在space对应的TD按下时，tap函数检测状态位，若为1，则将当前按键变为shift，否则按原样运行。</p>
 <pre><code>typedef struct {
     char idx;
     uint16_t first;
