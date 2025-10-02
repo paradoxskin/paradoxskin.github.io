@@ -13,7 +13,8 @@
     <li><a href="/rss">rss</a></li>
   </ul>
 </nav>
-<p>最近几次滚动更新后，我发现笔记本的开盖唤醒需要手动按一下开机按键。同时，我还需要调整一下原有的锁屏逻辑：dwm快捷键 -&gt; script，script如下，</p>
+<h2>bg</h2>
+<p>最近几次滚动更新后，我发现笔记本的开盖唤醒需要手动按一下开机按键。同时，我还需要调整一下原有的锁屏逻辑：dwm快捷键 -&gt; script，script如下。</p>
 <pre><code>#!/bin/bash
 slock &amp;
 sleep 5
@@ -24,6 +25,7 @@ else
 fi
 </code></pre>
 <p>很蠢，这个快捷键我从来不用，平时都是合盖休眠，唤醒没有任何校验，slock形同虚设。显然，这个动作应该放在hibernate和suspend上去做，而不是作为一个额外动作附加上去。</p>
+<h2>尝试</h2>
 <p>关于休眠行为，<a href="https://wiki.archlinux.org/title/Power_management/Suspend_and_hibernate">archlinux wiki</a>有详细的描述。常规意义上的休眠有S3和S4，也就是<code>suspend</code>和<code>hibernate</code>，前者会切断内存以外的设备供电（适用于合盖场景），后者会将内存放到swap分区后完全断电（完全不耗电）。开启S4需要额外配置一下kernel启动参数。可以通过sys接口直接休眠<a href="https://docs.kernel.org/admin-guide/pm/sleep-states.html#basic-sysfs-interfaces-for-system-suspend-and-hibernation"><code>/sys/power/state</code></a>。</p>
 <p>systemd支持用户在睡眠事件上挂钩子，其中一种就是Unit，<a href="https://wiki.archlinux.org/title/Slock#Lock_on_suspend">这一方案也是wiki中推荐的</a>，写完之后enable就能解决问题。</p>
 <pre><code>/etc/systemd/system/slock@.service
@@ -86,7 +88,7 @@ esac
 <p>Immediately before entering system suspend and/or hibernation systemd-suspend.service (and the other mentioned units, respectively) will run all executables in /usr/lib/systemd/system-sleep/ and pass two arguments to them. The first argument will be &quot;pre&quot;, the second either &quot;suspend&quot;, &quot;hibernate&quot;, &quot;hybrid-sleep&quot;, or &quot;suspend-then-hibernate&quot; depending on the chosen action. An environment variable called &quot;SYSTEMD_SLEEP_ACTION&quot; will be set and contain the sleep action that is processing. This is primarily helpful for &quot;suspend-then-hibernate&quot; where the value of the variable will be &quot;suspend&quot;, &quot;hibernate&quot;, or &quot;suspend-after-failed-hibernate&quot; in cases where hibernation has failed. Immediately after leaving system suspend and/or hibernation the same executables are run, but the first argument is now &quot;post&quot;. All executables in this directory are executed in parallel, and execution of the action is not continued until all executables have finished. <strong>Note that user.slice will be frozen while the executables are running, so they should not attempt to communicate with any user services expecting a reply.</strong></p>
 </blockquote>
 <p>隔壁elogind用的好好的，到systemd这就不行了，这坑踩的，又浪费了一天。。。</p>
-<h2>systemctl unit</h2>
+<p>尝试走unit了。</p>
 <pre><code>[Unit]
 Description=Lock X session using slock for user %i
 Before=suspend.target
@@ -109,7 +111,6 @@ WantedBy=suspend.target
 Sep 25 01:13:29 va11o systemd[1]: Reached target Suspend.
 Sep 25 01:13:29 va11o systemd[1]: Stopped target Suspend.
 
-
  ~❱ systemctl status slock@paradoxd.service
 ○ slock@paradoxd.service - Lock X session using slock for user paradoxd
      Loaded: loaded (/etc/systemd/system/slock@.service; enabled; preset: disabled)
@@ -117,7 +118,6 @@ Sep 25 01:13:29 va11o systemd[1]: Stopped target Suspend.
 
 Sep 25 01:11:45 va11o systemd[1]: Started Lock X session using slock for user paradoxd.
 Sep 25 01:13:33 va11o systemd[1]: slock@paradoxd.service: Deactivated successfully.
-
 
  ~❱ systemctl status sleep.target
 ○ sleep.target - Sleep
@@ -135,7 +135,7 @@ Sep 25 01:13:29 va11o systemd[1]: Stopped target Sleep.
 meson setup build/
 </code></pre>
 <p>相关代码在<code>src/sleep/sleep.c</code>，对应的二进制在<code>/usr/lib/systemd/systemd-sleep</code>，从终端里直接执行它会卡住，像是环境变量没配好，应该只能由systemctl调用。</p>
-<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/17592853336_vimupload.png" alt="流程图"></p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/17592853336_vimupload.png" alt="gpt根据代码画的大致流程图"></p>
 <p>其中的执行休眠动作在<code>execute</code>函数里，</p>
 <pre><code>...
         (void) execute_directories(
@@ -172,7 +172,7 @@ meson setup build/
 </code></pre>
 <p>执行pre脚本，锁住home目录，再向sys接口发送休眠指令，真正的休眠动作是<code>write_state()</code>，后面那些操作就是唤醒再执行的动作了。</p>
 <p>现在把视线投回<code>slock@.service</code>。根据现有结论，我给出一个猜测，slock或者相关的交互程序刚好被冻住了，只能在下一次唤醒的时候才能继续运行。</p>
-<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/17592929767_vimupload.png" alt="状态图"></p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/17592929767_vimupload.png" alt="自己猜测的状态图"></p>
 <p>通过命令，可以查看到systemd的cgroup信息。我们可以在pre脚本中一直<code>sleep</code>，然后在其他tty里读取到该信息，但<code>systemd-sleep</code>有一个timeout机制，过了90秒后，就会强行休眠，需要抓紧时间操作。</p>
 <pre><code>&gt; systemd-cgls
 
@@ -312,7 +312,8 @@ index 3bfe479..d1e1b25 100644
          r = getenv_bool(&quot;SYSTEMD_SLEEP_FREEZE_USER_SESSIONS&quot;);
          if (r &lt; 0 &amp;&amp; r != -ENXIO)
 </code></pre>
-<p>显然，slock的X11相关的调用，依赖于<code>user.slice</code>下的某个进程，我猜是<code>lightdm --session-child 15 22</code>，但也不太能实锤。</p>
+<p>显然，slock的X11相关的调用，依赖于<code>user.slice</code>下的某个进程，我猜是<code>lightdm --session-child 15 22</code>，但也不能实锤。</p>
+<h2>solution</h2>
 <p>给出最终的解决方案：</p>
 <pre><code> system❱ realpath systemd-suspend.service
 /usr/lib/systemd/system/systemd-suspend.service

@@ -303,6 +303,81 @@ Take care,
 Kees Cook
 </code></pre>
 <p>之后等待即可，这笔pr还要给linus过目，顺利的话会在下个版本(6.16-rc2)合入。</p>
+<hr>
+<blockquote>
+<p>增加：
+感谢Kees大佬催了Linus一下，不然这笔MR可能就要石沉大海了。</p>
+</blockquote>
+<pre><code>Subject: [GIT PULL] hardening fixes for v6.17-rc4
+Date: Sat, 30 Aug 2025 19:13:40 -0700
+From: Kees Cook &lt;kees@kernel.org&gt;
+To: Linus Torvalds &lt;torvalds@linux-foundation.org&gt;
+
+Hi Linus,
+
+Please pull these small hardening fixes for v6.17-rc4.
+
+Thanks!
+
+-Kees
+
+The following changes since commit c17b750b3ad9f45f2b6f7e6f7f4679844244f0b9:
+
+  Linux 6.17-rc2 (2025-08-17 15:22:10 -0700)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/hardening-v6.17-rc4
+
+for you to fetch changes up to 86a9b1250602d877a393dcbab5f42472f77ac0f7:
+
+  hardening: Require clang 20.1.0 for __counted_by (2025-08-29 12:04:53 -0700)
+
+----------------------------------------------------------------
+hardening fixes for v6.17-rc4
+
+- ARM: stacktrace: include asm/sections.h in asm/stacktrace.h (Arnd Bergmann)
+
+- ubsan: Fix incorrect hand-side used in handle (Junhui Pei)
+
+- hardening: Require clang 20.1.0 for __counted_by (Nathan Chancellor)
+
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      ARM: stacktrace: include asm/sections.h in asm/stacktrace.h
+
+Junhui Pei (1):
+      ubsan: Fix incorrect hand-side used in handle
+
+Nathan Chancellor (1):
+      hardening: Require clang 20.1.0 for __counted_by
+
+ init/Kconfig                      | 9 +++++----
+ arch/arm/include/asm/stacktrace.h | 3 ++-
+ lib/ubsan.c                       | 6 +++---
+ 3 files changed, 10 insertions(+), 8 deletions(-)
+
+--
+Kees Cook
+</code></pre>
+<pre><code>Subject: Re: [GIT PULL] hardening fixes for v6.17-rc4
+Date: Sun, 31 Aug 2025 16:51:16 +0000
+From: pr-tracker-bot@kernel.org
+To: Kees Cook &lt;kees@kernel.org&gt;
+
+The pull request you sent on Sat, 30 Aug 2025 19:13:40 -0700:
+
+&gt; https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/hardening-v6.17-rc4
+
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/9acd5b8bebea619d414cc6cccc7d13a4e6f02ec2
+
+Thank you!
+
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
+</code></pre>
 
 <script src="/res/js/main.js" defer></script>
 </body>

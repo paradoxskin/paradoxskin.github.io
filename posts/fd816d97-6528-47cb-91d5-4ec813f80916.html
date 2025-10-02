@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>lid事件与sony sysfs接口</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+<nav class="main-nav">
+  <ul>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</nav>
+<blockquote>
+<p>前一篇讲slock的博客里提到，笔记本开盖无法唤醒suspend的系统了，现在已经搞清楚怎么解决了。</p>
+</blockquote>
+<p>笔记本的合盖/开盖都是同一个输入设备触发的。</p>
+<pre><code> onwork❱ cat /proc/bus/input/devices |grep Lid -A 8
+N: Name=&quot;Lid Switch&quot;
+P: Phys=PNP0C0D/button/input0
+S: Sysfs=/devices/LNXSYSTM:00/LNXSYBUS:00/PNP0C0D:00/input/input0
+U: Uniq=
+H: Handlers=event0
+B: PROP=0
+B: EV=21
+B: SW=1
+</code></pre>
+<p>这个设备应该某种传感设备。屏幕快合上时，感应到了，屏幕自动熄灭，过了一会，就会向系统发送硬件信号，触发休眠事件。使用evtest可以监听对应的input事件。</p>
+<pre><code> onwork❱ sudo evtest
+No device specified, trying to scan all of /dev/input/event*
+Available devices:
+/dev/input/event0:	Lid Switch
+/dev/input/event1:	Power Button
+...
+
+Select the device event number [0-18]: 0
+Input driver version is 1.0.1
+Input device ID: bus 0x19 vendor 0x0 product 0x5 version 0x0
+Input device name: &quot;Lid Switch&quot;
+Supported events:
+  Event type 0 (EV_SYN)
+  Event type 5 (EV_SW)
+    Event code 0 (SW_LID) state 0
+Properties:
+Testing ... (interrupt to exit)
+Event: time 1759380773.194246, type 5 (EV_SW), code 0 (SW_LID), value 1 # &lt;-- 合盖
+Event: time 1759380773.194246, -------------- SYN_REPORT ------------
+Event: time 1759380773.578906, type 5 (EV_SW), code 0 (SW_LID), value 0 # &lt;-- 开盖
+Event: time 1759380773.578906, -------------- SYN_REPORT ------------
+</code></pre>
+<p><code>value=1</code>表示合盖，<code>value=0</code>表示开盖。在开盖无法自动唤醒的场景下，需要手动按下电源键，<code>value=0</code>的日志时间和亮屏时间在同一个时间点。可能是开盖事件失灵了，但这个时间也可能只是evtest打的时间，开盖事件还是会在开盖动作时触发，只是系统没对此作任何响应。</p>
+<p>起初，我更倾向前者，因为之前这项功能是正常的，更像是某次滚动更新之后的软件行为变更。最好的验证方法是系统回退，但这对于一个滚动更新的系统来说，太费功夫了。我测试了下老版本的manjaro安装live系统，又打开了尘封很久的安装了manjaro的<code>Sony VAIO pro 13</code>，发现他们都就没有这个功能，硬件的可能性更大了一点。</p>
+<p>内存睡眠有两种，我选择的是deep(s3)，更省电。</p>
+<pre><code> onwork❱ cat /sys/power/mem_sleep
+s2idle [deep]
+</code></pre>
+<p>在s3 suspend时，电脑只维持少部分硬件设备的供电。对于哪些硬件会继续运行，似乎是BIOS侧的电源管理策略，里面有<code>Wake on Lid</code> / <code>Open Lid Wake</code>的选项。可惜，sony本子的BIOS里没有这个选项卡...</p>
+<p>网上找了一圈，发现在windows上可以通过一个叫<code>VAIO Control Center</code>的驱动软件来调节这个策略。自然的就想到了sysfs接口，就去那看了看。</p>
+<pre><code> sony-laptop❱ pwd
+/sys/devices/platform/sony-laptop
+ sony-laptop❱ ls
+battery_care_health   driver_override  kbd_backlight          lowbatt_hibernate  power          thermal_control   uevent
+battery_care_limiter  fan_forced       kbd_backlight_timeout  modalias           smart_connect  thermal_profiles  usb_charge
+driver                fanspeed         lid_resume_S5          panel_id           subsystem      touchpad
+</code></pre>
+<p>这里有很多接口都可以调，sysfs是让用户通过文件系统来与硬件交互的接口，但它的注册原理我不是很懂，不知道是kernel单独写了sony本子的驱动，还是sony的工程师实现了kernel的接口，反正它就是有这个路径<code>/sys/devices/platform/sony-laptop</code>，很神奇。</p>
+<p>显然，<code>lid_resume_S5</code>就是我们要找的东西，问题解决，功能恢复，重启后这个值也不会变。</p>
+<pre><code> sony-laptop❱ echo 1 |sudo tee lid_resume_S5
+1
+</code></pre>
+<p>至于这个接口为什么会变，我也没什么头绪，可能是之前在调sysfs的时候不小心碰了下这个吧。另外还有一些有用的接口。</p>
+<pre><code># 关闭触摸板
+echo 0 |sudo tee /sys/devices/platform/sony-laptop/touchpad
+
+# 关闭键盘背光
+echo 0 |sudo tee /sys/devices/platform/sony-laptop/kbd_backlight
+
+# 充电限额（只有三档）
+echo 0/50/80 |sudo tee /sys/devices/platform/sony-laptop/battery_care_limiter
+</code></pre>
+<hr>
+<p>参考链接</p>
+<ul>
+<li><a href="https://github.com/linrunner/TLP/issues/594">充电限额</a></li>
+</ul>
+
+<script src="/res/js/main.js" defer></script>
+</body>
+</html>
