@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>archlinux启动纯文本模式矮人要塞</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+<nav class="main-nav">
+  <ul>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</nav>
+<blockquote>
+<p>矮人要塞在发售steam版之后不再支持纯文本模式，能玩到该模式的最高版本为<code>DF 0.47.05 (January 28, 2021)</code>。</p>
+</blockquote>
+<p>解压。</p>
+<pre><code>tar -xjf df_47_05_linux.tar.bz2
+</code></pre>
+<p>直接运行会报缺少依赖库。</p>
+<pre><code>./libs/Dwarf_Fortress: error while loading shared libraries: libSDL-1.2.so.0: cannot open shared object file: No such file or directory
+</code></pre>
+<p>可以使用<code>pacman -F</code>进行查找哪个包有这个库。下面是需要安装的依赖：</p>
+<pre><code>sudo pacman -S sdl12-compat gtk2 sdl_image sdl_ttf
+</code></pre>
+<p>接着就会报<code>glibc</code>太老的问题。</p>
+<pre><code>./libs/Dwarf_Fortress: /home/paradoxd/playground/df/df_linux/libs/libstdc++.so.6: version `CXXABI_1.3.8' not found (required by /usr/lib/libGLU.so.1)
+./libs/Dwarf_Fortress: /home/paradoxd/playground/df/df_linux/libs/libstdc++.so.6: version `CXXABI_1.3.9' not found (required by /usr/lib/libGLU.so.1)
+</code></pre>
+<p>这是因为被依赖的外部系统库依赖glic，优先使用同级目录下的<code>libstdc++.so</code>，但这个glibc版本太老了。解决方案是强制让他选择使用系统侧的glic。</p>
+<pre><code>mv libs/libstdc++.so.6 libs/libstdc++.so.6.bak
+</code></pre>
+<p>现在就能启动正常模式游玩了。游戏目录下有配置文件，要启动文本模式，需要进行一些配置。</p>
+<pre><code># data/init/init.txt
+
+[SOUND:YES] -&gt; [SOUND:NO]
+
+[PRINT_MODE:2D] -&gt; [PRINT_MODE:TEXT]
+</code></pre>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/17602375528_vimupload.png" alt="have fun"></p>
+<blockquote>
+<p>新版本的矮人要塞更依赖鼠标，操作方式和原始版本完全不同，那本著名的游戏教程中引以为傲的全键盘操作，也成为了过去式。尽管官方有在steam讨论区里表态未来会适配，但优先级不是太高。所以还是先用老版本入门吧，在steam版支持全键盘操作之前，我是不会启动的。</p>
+</blockquote>
+
+<script src="/res/js/main.js" defer></script>
+</body>
+</html>
