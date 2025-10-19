@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>dwarf fortress菜单显示问题研究</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+<nav class="main-nav">
+  <ul>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</nav>
+<h1>Q</h1>
+<p>经过测试（我的环境上），矮人要塞的菜单界面在不同模式/环境下的显示情况有所不同：</p>
+<table>
+<thead>
+<tr>
+<th>环境</th>
+<th>模式</th>
+<th>效果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>st</td>
+<td>TEXT</td>
+<td>NG</td>
+</tr>
+<tr>
+<td>st &amp; tmux</td>
+<td>TEXT</td>
+<td>NG</td>
+</tr>
+<tr>
+<td>kitty</td>
+<td>TEXT</td>
+<td>NG</td>
+</tr>
+<tr>
+<td>kitty &amp; tmux</td>
+<td>TEXT</td>
+<td>NG</td>
+</tr>
+<tr>
+<td>xterm</td>
+<td>TEXT</td>
+<td>GOOD</td>
+</tr>
+<tr>
+<td>xterm &amp; tmux</td>
+<td>TEXT</td>
+<td>GOOD</td>
+</tr>
+<tr>
+<td>tty</td>
+<td>TEXT</td>
+<td>GOOD</td>
+</tr>
+<tr>
+<td>tty &amp; tmux</td>
+<td>TEXT</td>
+<td>GOOD</td>
+</tr>
+<tr>
+<td>/</td>
+<td>2D</td>
+<td>GOOD</td>
+</tr>
+</tbody>
+</table>
+<p>对比一下效果：</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/17608431373_vimupload.png" alt="GOOD"></p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/17608432534_vimupload.png" alt="NG"></p>
+<h1>~</h1>
+<p>df的TEXT模式目测是用<code>ncurses</code>库的，我将问题定位分为软件、配色、终端三个方向。当我在<code>tty</code>和<code>st</code>使用同一个tmux session时，<code>tty</code>显示了GOOD的效果，但是在st下还是NG，这一现象很关键，基本可以排除软件问题。配色方向经过重新编译st验证也被排除了。</p>
+<ul>
+<li><del>软件问题</del></li>
+<li><del>配色问题</del></li>
+<li>终端问题</li>
+</ul>
+<p>只剩一个方向，既然是显示在终端上，那程序必须要输出字符，这里有两种方式可以捕获到这些字符。</p>
+<pre><code># tmux
+tmux capture-pane -peJ -t {pane_id} &gt; xxx.log
+
+# 通用
+script xxx.log
+...
+&lt;Ctrl-D&gt;
+</code></pre>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/17608450162_vimupload.png" alt="tmux dump终端字符"></p>
+<p>根据日志，可以发现基本都是使用esc控制字符来实现各种颜色的。下面给出问题的最小重现样例。</p>
+<pre><code>echo &quot;^[[1m^[[30m^[[40mcontinue&quot;
+
+# PS: ^[需要使用&lt;c-v&gt; + &lt;esc&gt;键入
+</code></pre>
+<p>在公司摸鱼的时候就往这个方向去探索，最后发现了根因。这类<code>^[</code>格式的字符是<a href="https://en.wikipedia.org/wiki/ANSI_escape_code">ANSI的转义字符</a>，官方标准中，样例中的各字符功能如下：</p>
+<table>
+<thead>
+<tr>
+<th>字符</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[1m</td>
+<td>加粗<strong>或</strong>增加前景强度</td>
+</tr>
+<tr>
+<td>[30m</td>
+<td>设置前景色为黑色(0号颜色)</td>
+</tr>
+<tr>
+<td>[40m</td>
+<td>设置背景色为黑色(0号颜色)</td>
+</tr>
+</tbody>
+</table>
+<p>背景和前景色都用黑色，那当然应该是NG的效果，只有将前景色的颜色加深了，才能看到文本内容。所以<code>st</code>和<code>kitty</code>处理转义字符<code>^[[1m</code>时是进行了加粗处理，其他使用了后者的处理。</p>
+<h1>A</h1>
+<p>下面给出patch。</p>
+<pre><code>diff --git a/st.c b/st.c
+index 6fbf4e2..e53de0c 100644
+--- a/st.c
++++ b/st.c
+@@ -1413,7 +1413,7 @@ tsetattr(const int *attr, int l)
+ {
+    int i;
+    int32_t idx;
+-
++        static char enhance = 0;
+    for (i = 0; i &lt; l; i++) {
+        switch (attr[i]) {
+        case 0:
+@@ -1428,9 +1428,14 @@ tsetattr(const int *attr, int l)
+                ATTR_STRUCK     );
+            term.c.attr.fg = defaultfg;
+            term.c.attr.bg = defaultbg;
++			enhance = 0;
+            break;
+        case 1:
+            term.c.attr.mode |= ATTR_BOLD;
++			enhance = 1;
++			if (term.c.attr.fg &lt; 8) {
++				term.c.attr.fg |= 8;
++			}
+            break;
+        case 2:
+            term.c.attr.mode |= ATTR_FAINT;
+@@ -1492,7 +1497,7 @@ tsetattr(const int *attr, int l)
+            break;
+        default:
+            if (BETWEEN(attr[i], 30, 37)) {
+-				term.c.attr.fg = attr[i] - 30;
++				term.c.attr.fg = (attr[i] - 30) + (enhance * 8);
+            } else if (BETWEEN(attr[i], 40, 47)) {
+                term.c.attr.bg = attr[i] - 40;
+            } else if (BETWEEN(attr[i], 90, 97)) {
+</code></pre>
+
+<script src="/res/js/main.js" defer></script>
+</body>
+</html>
