@@ -196,3 +196,24 @@ nav.main-nav li a {
     padding-left: 0.5em;
     color: #827c20;
 }
+
+footer ul {
+    display: flex;
+    margin-top: 0.5em;
+    justify-content: flex-end;
+    border-top-style: solid;
+    border-color: #bbb;
+    flex-wrap: wrap;
+}
+
+footer li a {
+    text-decoration: none;
+    padding-right: 0.5em;
+    padding-left: 0.5em;
+    color: #827c20;
+}
+footer li.left {
+    text-decoration: none;
+    margin-right: auto;
+    color: #000000;
+}

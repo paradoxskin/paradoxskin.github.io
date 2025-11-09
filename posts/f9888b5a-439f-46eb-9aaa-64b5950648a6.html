@@ -10,10 +10,11 @@
   <ul>
     <li><a href="/blog">blog</a></li>
     <li><a href="/archive">archive</a></li>
+    <li><a href="/design">design</a></li>
     <li><a href="/rss">rss</a></li>
   </ul>
 </nav>
-<h1>复现</h1>
+<h2>复现</h2>
 <p>公司L0自检，要求开发侧要使用众多款检查工具，进行基础问题自检，作为KASAN模块负责人，被分配到了“把UBSAN也在内部实现”的任务。</p>
 <p>UBSAN即undefined behavior sanitizer，用来检测程序运行过程中触发的未定义事件，其中未定义事件的定义在C标准里有写，各编译器根据标准也都有一套自己的实现。我们用的编译器是内源的llvm，看过内源的代码，估计实际上就是拉开源仓打点适配内部的patch上去，所以直接看外部文档就好了，后面的交谈也证明他们对llvm的掌握程度也不是100%了解。</p>
 <p>要适配这个东西不难，编译器有一套自己的实现，用户态开个编译选项就可以直接用，但是作为内核态，没法直接printf这种，所以需要自己实现一套。听从同事先前的探索经验，我直接打开了kernel的代码，根据<code>lib/ubsan.c</code>也实现一套handler符号。其实kernel的代码也是从编译器实现那抄来的，我后面在llvm仓库里找到了最根源的定义。</p>
@@ -211,7 +212,7 @@ MODULE_DESCRIPTION(&quot;&quot;);
 [    7.457334] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux 1.16.3-1-1 04/01/2014
 </code></pre>
 <p>可以看到，日志确实有问题，看来这个patch可以提的了。</p>
-<h1>解决</h1>
+<h2>解决</h2>
 <pre><code>diff --git a/lib/ubsan.c b/lib/ubsan.c
 index a6ca235dd714..456e3dd8f4ea 100644
 --- a/lib/ubsan.c
@@ -238,7 +239,7 @@ index a6ca235dd714..456e3dd8f4ea 100644
     else
         pr_err(&quot;division by zero\n&quot;);
 </code></pre>
-<h1>提交</h1>
+<h2>提交</h2>
 <p>在正式提交之前，需要进行一些配置，主要是配置邮箱和<code>send-email</code>依赖。</p>
 <ul>
 <li>安装依赖</li>
@@ -379,6 +380,15 @@ Deet-doot-dot, I am a bot.
 https://korg.docs.kernel.org/prtracker.html
 </code></pre>
 
+<footer>
+  <ul>
+    <li class="left">&copy; 2025 paradoxskin.</li>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/design">design</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</footer>
 <script src="/res/js/main.js" defer></script>
 </body>
 </html>

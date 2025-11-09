@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>df键位设置</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+<nav class="main-nav">
+  <ul>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/design">design</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</nav>
+<h2>Q</h2>
+<p>df适合拥有小键盘的全键键盘游玩，作为一个60%键盘+vim使用者，重新设置键位是不可避免的。</p>
+<h2>~</h2>
+<p>ESC菜单中的<code>Key Bindings</code>可以对某个动作的键位绑定进行增删、设置重复机制。</p>
+<pre><code>Select      Add binding
+...
+            Don't repeat
+            Delayed repeat
+            Immediate repeat
+
+            By position: Enter
+            By position: Numpad Enter
+</code></pre>
+<p>除此之外，还可以通过<a href="https://dwarffortresswiki.org/index.php/DF2014:Interface.txt">交互配置文件</a>修改，路径在<code>data/init/interface.txt</code>，不建议手动修改。</p>
+<p>需要修改的按键主要为小键盘按键，以及修改后对应的冲突按键。</p>
+<pre><code>789+  =&gt;  uki=    
+456   =&gt;  h l
+123   =&gt;  njm
+</code></pre>
+<blockquote>
+<p>所有按键都是有冲突的:(<br>
+调整后的按键不一定是最优解，因为我还没有开始正式游玩，无法考虑到操作频次。所以后续可能会进行调整。<br>
+<img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/17626613852_vimupload.png" alt="冲突按键"></p>
+</blockquote>
+<h2>A</h2>
+<p>下面给出改键方案。本来想贴diff的，但是通过菜单设置键位之后，文件末会多出一堆奇怪的配置，导致diff很大。所以还是给一个完整的<code>interface.txt</code>直接替换吧。</p>
+<p><a href="/res/annex/f9d401fd/interface.txt">interface.txt</a></p>
+<hr>
+<ul>
+<li>20251109</li>
+</ul>
+
+<footer>
+  <ul>
+    <li class="left">&copy; 2025 paradoxskin.</li>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/design">design</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</footer>
+<script src="/res/js/main.js" defer></script>
+</body>
+</html>

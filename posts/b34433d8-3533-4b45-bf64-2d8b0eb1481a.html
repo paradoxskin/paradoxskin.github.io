@@ -10,10 +10,11 @@
   <ul>
     <li><a href="/blog">blog</a></li>
     <li><a href="/archive">archive</a></li>
+    <li><a href="/design">design</a></li>
     <li><a href="/rss">rss</a></li>
   </ul>
 </nav>
-<h1>Q</h1>
+<h2>Q</h2>
 <p>经过测试（我的环境上），矮人要塞的菜单界面在不同模式/环境下的显示情况有所不同：</p>
 <table>
 <thead>
@@ -74,7 +75,7 @@
 <p>对比一下效果：</p>
 <p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/17608431373_vimupload.png" alt="GOOD"></p>
 <p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/17608432534_vimupload.png" alt="NG"></p>
-<h1>~</h1>
+<h2>~</h2>
 <p>df的TEXT模式目测是用<code>ncurses</code>库的，我将问题定位分为软件、配色、终端三个方向。当我在<code>tty</code>和<code>st</code>使用同一个tmux session时，<code>tty</code>显示了GOOD的效果，但是在st下还是NG，这一现象很关键，基本可以排除软件问题。配色方向经过重新编译st验证也被排除了。</p>
 <ul>
 <li><del>软件问题</del></li>
@@ -120,7 +121,7 @@ script xxx.log
 </tbody>
 </table>
 <p>背景和前景色都用黑色，那当然应该是NG的效果，只有将前景色的颜色加深了，才能看到文本内容。所以<code>st</code>和<code>kitty</code>处理转义字符<code>^[[1m</code>时是进行了加粗处理，其他使用了后者的处理。</p>
-<h1>A</h1>
+<h2>A</h2>
 <p>下面给出patch。</p>
 <pre><code>diff --git a/st.c b/st.c
 index 6fbf4e2..e53de0c 100644
@@ -161,6 +162,15 @@ index 6fbf4e2..e53de0c 100644
             } else if (BETWEEN(attr[i], 90, 97)) {
 </code></pre>
 
+<footer>
+  <ul>
+    <li class="left">&copy; 2025 paradoxskin.</li>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/design">design</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</footer>
 <script src="/res/js/main.js" defer></script>
 </body>
 </html>

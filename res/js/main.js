@@ -69,6 +69,8 @@ function init()
         blog_init();
     } else if (path.startsWith("/posts")) {
         posts_init();
+    } else if (path.startsWith("/design")) {
+        posts_init();
     }
 }
 
