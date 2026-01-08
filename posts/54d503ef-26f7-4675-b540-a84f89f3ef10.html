@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>git非预期合并案例</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+<nav class="main-nav">
+  <ul>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/design">design</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</nav>
+<h2>Q</h2>
+<p>首先，简单描述一下我们组的工作流。仓库里的分支主要分为三种：release, master, develop。开发通常只往develop分支合入代码，develop通过脚本定期向master同步代码，master定期分叉出release分支，用于编译交付。</p>
+<pre><code>release             *--
+                   /
+master  -----*----*----
+            /    /
+develop ---*----*------
+</code></pre>
+<p>最近，我正在研究改进主干同步（develop -&gt; master）的脚本，这个脚本通过<code>git diff master develop</code>来识别是否需要进行代码合入，检测到有差异时，<code>checkout master</code>后<code>merge develop</code>进行合并。</p>
+<p>事发当时，<code>diff</code>步骤显示有差异，但使用<code>merge</code>后，发现生成的是空的MR。空MR在我们内部<code>repo</code>是禁止的，于是我们的脚本就产生了异常。值得我摸鱼深入研究一番。</p>
+<h2>~</h2>
+<p>以<code>diff</code>的输出为线索，<code>blame</code>到两笔差异对应的两笔commit id。向当事人了解情况，相关commit主要是用来清多处代码告警的，但是有几处改的不合理，最后整笔回退了。develop的回退中，有一处没有生效。master是完全回退了。理论上来说，<code>develop</code>与同步过去的<code>master</code>也应该是相同的（应该都是回退的状态）。标记master的为m状态，develop为d状态。</p>
+<p>使用<code>git bisect</code>在当前节点与回退节点之间进行二分排查，定位到最先的一笔d状态MR，改动是把已经前面被回退那一处，又单独加回去了。这就合理了。</p>
+<p>但还是不能解释，为什么主干同步不会把这个同步到主干里去，主干应该也是d状态，而不是m状态。</p>
+<pre><code>           * merged node (m)
+           |\
+           | * warning fix (d)
+           | |
+revert (m) * * revert (m)
+           |/
+           * warning fix (LCA) (d)
+</code></pre>
+<p>当时他们提交MR的电脑时间被重置了，导致在<code>git log</code>里显示的时间很混乱，必须使用<code>--graph</code>才能看清楚顺序。但对于git来说，时间不重要，合并拓扑关系是不会根据时间顺序而改变的（子commit可能比父commit要早）。</p>
+<p>问题总归还是出在了合并的步骤上，需要重新理解一下git是怎么合并的。（git历史是一棵DAG，输入量为两个分支A B）</p>
+<p><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" data-diagram-type="ACTIVITY" height="445px" preserveAspectRatio="none" style="width:265px;height:445px;background:#FFFFFF;" version="1.1" viewBox="0 0 265 445" width="265px" zoomAndPan="magnify"><defs/><g><ellipse cx="123.5709" cy="20" fill="#222222" rx="10" ry="10" style="stroke:#222222;stroke-width:1;"/><rect fill="#F1F1F1" height="34.4001" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="108.5789" x="69.2815" y="50"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="88.5789" x="79.2815" y="71.1481">找到A与B的LCA</text><rect fill="#F1F1F1" height="34.4001" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="127.0648" x="60.0385" y="104.4001"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="107.0648" x="70.0385" y="125.5482">diff LCA A &gt; patch.a</text><rect fill="#F1F1F1" height="34.4001" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="127.0648" x="60.0385" y="158.8002"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="107.0648" x="70.0385" y="179.9483">diff LCA B &gt; patch.b</text><rect fill="#F1F1F1" height="34.4001" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="81.5382" x="82.8018" y="261.8003"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="61.5382" x="92.8018" y="282.9483">手动解冲突</text><polygon fill="#F1F1F1" points="32,213.2003,215.1419,213.2003,227.1419,225.2003,215.1419,237.2003,32,237.2003,20,225.2003,32,213.2003" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="11.282" x="127.5709" y="247.4192">是</text><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="183.1419" x="32" y="228.8193">patch.a 与 patch.b 是否会发生冲突？</text><polygon fill="#F1F1F1" points="123.5709,316.2004,135.5709,328.2004,123.5709,340.2004,111.5709,328.2004,123.5709,316.2004" style="stroke:#181818;stroke-width:0.5;"/><rect fill="#F1F1F1" height="34.4001" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="44.6153" x="101.2633" y="360.2004"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="24.6153" x="111.2633" y="381.3484">合并</text><ellipse cx="123.5709" cy="424.6005" fill="none" rx="10" ry="10" style="stroke:#222222;stroke-width:1.5;"/><line style="stroke:#222222;stroke-width:2.5;" x1="117.3838" x2="129.7581" y1="418.4133" y2="430.7876"/><line style="stroke:#222222;stroke-width:2.5;" x1="129.7581" x2="117.3838" y1="418.4133" y2="430.7876"/><line style="stroke:#181818;stroke-width:1;" x1="123.5709" x2="123.5709" y1="30" y2="50"/><polygon fill="#181818" points="119.5709,40,123.5709,50,127.5709,40,123.5709,44" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="123.5709" x2="123.5709" y1="84.4001" y2="104.4001"/><polygon fill="#181818" points="119.5709,94.4001,123.5709,104.4001,127.5709,94.4001,123.5709,98.4001" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="123.5709" x2="123.5709" y1="138.8002" y2="158.8002"/><polygon fill="#181818" points="119.5709,148.8002,123.5709,158.8002,127.5709,148.8002,123.5709,152.8002" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="123.5709" x2="123.5709" y1="237.2003" y2="261.8003"/><polygon fill="#181818" points="119.5709,251.8003,123.5709,261.8003,127.5709,251.8003,123.5709,255.8003" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="227.1419" x2="239.1419" y1="225.2003" y2="225.2003"/><polygon fill="#181818" points="235.1419,269.0003,239.1419,279.0003,243.1419,269.0003,239.1419,273.0003" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="239.1419" x2="239.1419" y1="225.2003" y2="328.2004"/><line style="stroke:#181818;stroke-width:1;" x1="239.1419" x2="135.5709" y1="328.2004" y2="328.2004"/><polygon fill="#181818" points="145.5709,324.2004,135.5709,328.2004,145.5709,332.2004,141.5709,328.2004" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="123.5709" x2="123.5709" y1="296.2004" y2="316.2004"/><polygon fill="#181818" points="119.5709,306.2004,123.5709,316.2004,127.5709,306.2004,123.5709,310.2004" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="123.5709" x2="123.5709" y1="193.2003" y2="213.2003"/><polygon fill="#181818" points="119.5709,203.2003,123.5709,213.2003,127.5709,203.2003,123.5709,207.2003" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="123.5709" x2="123.5709" y1="340.2004" y2="360.2004"/><polygon fill="#181818" points="119.5709,350.2004,123.5709,360.2004,127.5709,350.2004,123.5709,354.2004" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="123.5709" x2="123.5709" y1="394.6005" y2="414.6005"/><polygon fill="#181818" points="119.5709,404.6005,123.5709,414.6005,127.5709,404.6005,123.5709,408.6005" style="stroke:#181818;stroke-width:1;"/><!--SRC=[Aov9B2hXidhMkUzfnmR79plwd9xFQl5nThJciah9J4jJ038L71Ni50eIIv8pz1AHXPtWmadMN9bf2XfGDGf0Ks0I2izch7ywOTcJFREUzazyFcN-qxPDprSrljypNrEX92CrJq43AA_9fG04G2TqF-rQyMBvOeWQQwxKFA1LN5PF9tGytRaDp0K0]--></g></svg>
+<br></p>
+<blockquote>
+<p>这个步骤应该是3way，另外还有一种2way，不在本文考虑范围内。</p>
+</blockquote>
+<h2>A</h2>
+<p>如果get到diff的特点，就能解出谜题了。LCA为d状态，master的diff为<code>d -&gt; m</code>，develop的diff为无(<code>d -&gt; d</code>)。所以git当然会选择改变的那一种，而且也不会有任何冲突。</p>
+<blockquote>
+<p>真相就是这样。<a href="https://paradoxskin.github.io/posts/2c30d0b6-f290-4441-aa77-8fb6814baccf.html">学过的东西</a>不用就是容易忘。里面关于ab分别合并的区别，我补充一下，还是有区别的，当<code>HEAD</code>指向合并完的点时，合并顺序决定了<code>HEAD^</code>怎么走。但是，一个分支如果合并完后，不应该继续使用，要直接删除。我们的用法很可能会有坑。</p>
+</blockquote>
+
+<footer>
+  <ul>
+    <li class="left">&copy; 2025 paradoxskin.</li>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/design">design</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</footer>
+<script src="/res/js/main.js" defer></script>
+</body>
+</html>
