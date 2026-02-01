@@ -268,7 +268,7 @@ int main (int argc, char *argv[])
 
     ssize_t n;
 
-    while((n = read(fd, in, isize - ilen)) &gt; 0) {
+    while((n = read(fd, in + ilen, isize - ilen)) &gt; 0) {
         if (ilen + n &gt;= isize) {
             isize *= 2;
             char *tmp = realloc(in, isize);
@@ -313,6 +313,8 @@ int main (int argc, char *argv[])
 <p>写了大概一个下午，用C写字符串处理真是痛苦，感觉写了一天的<code>realloc</code>。缺少对C语言的经验总结，还是要多练多记。</p>
 <p>另外，java真的好慢啊，严重拖慢了sapin的解析速度。</p>
 </blockquote>
+<hr>
+<p>20260201 bugfix main.c 的read入参忘加偏移了</p>
 
 <footer>
   <ul>
