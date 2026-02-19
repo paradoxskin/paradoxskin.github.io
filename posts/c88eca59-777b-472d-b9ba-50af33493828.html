@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>武器收纳指南</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+<nav class="main-nav">
+  <ul>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/design">design</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</nav>
+<h2>Q</h2>
+<p>有的软件更新频繁，有的软件年久失修。一味的追求新特性，往往不是稳定的方案，有时也想修改一部分代码来定制一下特殊功能。</p>
+<p>我的设想是使用某个tag的纯源码包，把自己的patch打上去，再手动编译。</p>
+<h2>~</h2>
+<p>以vim为例，先从<a href="https://github.com/vim/vim">官方仓库</a>下载某个tag源码包。</p>
+<pre><code>curl https://codeload.github.com/vim/vim/tar.gz/refs/tags/v9.1.2127 -o vim-91.2127.tar.gz
+tar xzf vim-91.2127.tar.gz
+</code></pre>
+<p>这个源码包是去除了<code>.git</code>的，在里面的修改不会被记录。理论上我们需要另一份原始的副本用于对比，接着用<code>diff</code>生成patch就行了。</p>
+<blockquote>
+<p>diff - compare files line by line</p>
+</blockquote>
+<p>生成patch的方法如下：</p>
+<pre><code>cp -r vim-9.1.2127 vim-9.1.2127-patch
+... # 在vim-9.1.2127-patch里进行一些修改
+diff -aruN vim-9.1.2127 vim-9.1.2127-patch &gt; 0001-xxx.patch
+
+# 参数说明
+diff -aruN A B  # form A to B
+-a treat all files as text
+-r recursively compare any subdirectories found
+-u output NUM (default 3) lines of unified context #patch格式
+-N treat absent files as empty
+</code></pre>
+<p><code>diff</code>和<code>git</code>识别变更的行为不太一样，开启<code>-N</code>的<code>diff</code>，会把空文件当做无文件，而<code>git</code>的空文件就是一个object，会视作一个变更：</p>
+<pre><code># diff
+copy -r A B
+touch A/new_file
+
+diff -aruN A B # exit 0, no different
+
+# git
+touch git_dir/new_file
+git status # repo has diff
+</code></pre>
+<p>新增空文件理论上不会影响编译，所以影响应该也不大。</p>
+<p><code>diff</code>也没法像<code>git</code>一样快速地管理文件对象，如果源码过与庞大，用<code>diff -r</code>生成patch的过程会很慢（比如kernel的）。如果已经完成构建了，还会在目录下产生很多<code>.o</code>和自动生成的文件影响识别，<code>diff</code>不会自动ignore。</p>
+<p>还是写个脚本好。</p>
+<p><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" data-diagram-type="ACTIVITY" height="670px" preserveAspectRatio="none" style="width:340px;height:670px;background:#FFFFFF;" version="1.1" viewBox="0 0 340 670" width="340px" zoomAndPan="magnify"><defs/><g><rect fill="none" height="265.0002" style="stroke:#000000;stroke-width:1.5;" width="311.7975" x="17.8263" y="11"/><path d="M90.7881,11 L90.7881,20.7999 L80.7881,30.7999 L17.8263,30.7999" fill="none" style="stroke:#000000;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="62.9618" x="20.8263" y="25.0059">生成patch</text><ellipse cx="229.624" cy="50.7999" fill="#222222" rx="10" ry="10" style="stroke:#222222;stroke-width:1;"/><path d="M27.8263,85.2 L27.8263,110.8 A0,0 0 0 0 27.8263,110.8 L119.6243,110.8 A0,0 0 0 0 119.6243,110.8 L119.6243,103.2 L139.6243,98 L119.6243,95.2 L119.6243,95.2 L109.6243,85.2 L27.8263,85.2 A0,0 0 0 0 27.8263,85.2" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><path d="M109.6243,85.2 L109.6243,95.2 L119.6243,95.2 L109.6243,85.2" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="70.798" x="33.8263" y="102.277">diff -rNq A B</text><rect fill="#F1F1F1" height="34.4001" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="179.9994" x="139.6243" y="80.7999"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="159.9994" x="149.6243" y="101.948">识别到有哪些文件发生了变更</text><rect fill="#F1F1F1" height="34.4001" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="171.3922" x="143.9279" y="135.2"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="151.3922" x="153.9279" y="156.3481">用户自行选择需要diff的文件</text><rect fill="#F1F1F1" height="34.4001" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="172.4287" x="143.4097" y="189.6001"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="152.4287" x="153.4097" y="210.7482">将文件列表放到patch的开头</text><ellipse cx="229.624" cy="254.0002" fill="none" rx="10" ry="10" style="stroke:#222222;stroke-width:1.5;"/><line style="stroke:#222222;stroke-width:2.5;" x1="223.4369" x2="235.8112" y1="247.813" y2="260.1874"/><line style="stroke:#222222;stroke-width:2.5;" x1="235.8112" x2="223.4369" y1="247.813" y2="260.1874"/><rect fill="none" height="373.5004" style="stroke:#000000;stroke-width:1.5;" width="308.6846" x="11" y="286.0002"/><path d="M83.9618,286.0002 L83.9618,295.8002 L73.9618,305.8002 L11,305.8002" fill="none" style="stroke:#000000;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="62.9618" x="14" y="300.0062">更新patch</text><ellipse cx="229.624" cy="325.8002" fill="#222222" rx="10" ry="10" style="stroke:#222222;stroke-width:1;"/><rect fill="#F1F1F1" height="34.4001" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="160.121" x="149.5635" y="355.8002"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="140.121" x="159.5635" y="376.9482">读取patch开头的文件列表</text><path d="M21,469.0004 L21,494.6004 A0,0 0 0 0 21,494.6004 L154.697,494.6004 A0,0 0 0 0 154.697,494.6004 L154.697,487.0004 L174.697,481.8004 L154.697,479.0004 L154.697,479.0004 L144.697,469.0004 L21,469.0004 A0,0 0 0 0 21,469.0004" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><path d="M144.697,469.0004 L144.697,479.0004 L154.697,479.0004 L144.697,469.0004" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="112.697" x="27" y="486.0774">diff -uN A/xxx B/xxx</text><rect fill="#F1F1F1" height="34.4001" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="109.854" x="174.697" y="464.6004"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="89.854" x="184.697" y="485.7484">生成该文件的diff</text><rect fill="#F1F1F1" height="34.4001" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="86.2751" x="186.4865" y="529.1005"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="66.2751" x="196.4865" y="550.2486">合并到patch</text><rect fill="#F1F1F1" height="34.4001" rx="12.5" ry="12.5" style="stroke:#181818;stroke-width:0.5;" width="93.8459" x="182.7011" y="410.2003"/><text fill="#000000" font-family="sans-serif" font-size="12" lengthAdjust="spacing" textLength="73.8459" x="192.7011" y="431.3483">遍历文件列表</text><polygon fill="#F1F1F1" points="207.0601,583.5006,252.188,583.5006,264.188,595.5006,252.188,607.5006,207.0601,607.5006,195.0601,595.5006,207.0601,583.5006" style="stroke:#181818;stroke-width:0.5;"/><text fill="#000000" font-family="sans-serif" font-size="11" lengthAdjust="spacing" textLength="45.1279" x="207.0601" y="599.1196">遍历结束</text><ellipse cx="229.624" cy="637.5006" fill="none" rx="10" ry="10" style="stroke:#222222;stroke-width:1.5;"/><line style="stroke:#222222;stroke-width:2.5;" x1="223.4369" x2="235.8112" y1="631.3134" y2="643.6878"/><line style="stroke:#222222;stroke-width:2.5;" x1="235.8112" x2="223.4369" y1="631.3134" y2="643.6878"/><line style="stroke:#181818;stroke-width:1;" x1="229.624" x2="229.624" y1="60.7999" y2="80.7999"/><polygon fill="#181818" points="225.624,70.7999,229.624,80.7999,233.624,70.7999,229.624,74.7999" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="229.624" x2="229.624" y1="115.2" y2="135.2"/><polygon fill="#181818" points="225.624,125.2,229.624,135.2,233.624,125.2,229.624,129.2" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="229.624" x2="229.624" y1="169.6001" y2="189.6001"/><polygon fill="#181818" points="225.624,179.6001,229.624,189.6001,233.624,179.6001,229.624,183.6001" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="229.624" x2="229.624" y1="224.0002" y2="244.0002"/><polygon fill="#181818" points="225.624,234.0002,229.624,244.0002,233.624,234.0002,229.624,238.0002" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="229.624" x2="229.624" y1="335.8002" y2="355.8002"/><polygon fill="#181818" points="225.624,345.8002,229.624,355.8002,233.624,345.8002,229.624,349.8002" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="229.624" x2="229.624" y1="499.0005" y2="529.1005"/><polygon fill="#181818" points="225.624,519.1005,229.624,529.1005,233.624,519.1005,229.624,523.1005" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="229.624" x2="229.624" y1="444.6004" y2="464.6004"/><polygon fill="#181818" points="225.624,454.6004,229.624,464.6004,233.624,454.6004,229.624,458.6004" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="264.188" x2="296.551" y1="595.5006" y2="595.5006"/><polygon fill="#181818" points="292.551,519.0005,296.551,509.0005,300.551,519.0005,296.551,515.0005" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="296.551" x2="296.551" y1="427.4003" y2="595.5006"/><line style="stroke:#181818;stroke-width:1;" x1="296.551" x2="276.547" y1="427.4003" y2="427.4003"/><polygon fill="#181818" points="286.547,423.4003,276.547,427.4003,286.547,431.4003,282.547,427.4003" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="229.624" x2="229.624" y1="563.5006" y2="583.5006"/><polygon fill="#181818" points="225.624,573.5006,229.624,583.5006,233.624,573.5006,229.624,577.5006" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="229.624" x2="229.624" y1="390.2003" y2="410.2003"/><polygon fill="#181818" points="225.624,400.2003,229.624,410.2003,233.624,400.2003,229.624,404.2003" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="229.624" x2="229.624" y1="607.5006" y2="627.5006"/><polygon fill="#181818" points="225.624,617.5006,229.624,627.5006,233.624,617.5006,229.624,621.5006" style="stroke:#181818;stroke-width:1;"/><!--SRC=[Io_ABorGU3vb_hEE2GM99SaP2jLSnIM9HILSLY_MjptjMFsqOyEpEPrF9wzwiclsisdjJtPlUze_4QZ-oQwsf_qpditUOisLbr-IQfMIcPQce5laLwZWgE34PVLyoefd7TjVjAzwiR3dPKFdi-wLB-Sql5ZM25BsV5OBn2HhBgkd6zgWfdPCVx5mnRCf-u0MWXq2LFLqJyFJ9K0BKlDIk6gvkDB1RWLQ-MpQ1WotxdxQFmqi2D44jmDYhZLNKMf1QcA9WjNBnjwdVMseSWf0O0K9WnVhbqBaW0Q0t0gHHF9XgP-2etv5HOM24uY4Q7qweUFfpcqmXyFjAi_8p4bLq83O-7ptv6Tpvsj2_080]--></g></svg>
+<br></p>
+<p>反向操作可以使用<code>patch</code>。</p>
+<blockquote>
+<p>patch - apply a diff file to an original</p>
+</blockquote>
+<pre><code>patch -p1 &lt; ../xxx.patch
+patch -p1 -R &lt; ../xxx.patch
+</code></pre>
+<p><code>-pnum</code>表示忽略diff中的前<code>num</code>级目录路径。如<code>-p1</code>，即是把<code>a/some/path</code>忽略成<code>some/path</code>。</p>
+<blockquote>
+<p>参考资料：</p>
+<p><a href="https://unix.stackexchange.com/questions/162131/is-this-a-good-way-to-create-a-patch">生成patch</a></p>
+<p><a href="https://www.ruanyifeng.com/blog/2012/08/how_to_read_diff.html">一篇老文，讲述diff的三种格式</a></p>
+<p><a href="https://stackoverflow.com/questions/437219/using-the-output-of-diff-to-create-the-patch">using the output of diff to create patch</a></p>
+<p><a href="https://stackoverflow.com/questions/5344710/recursive-diff-is-extremely-slow-checking-contents-of-directories">diff用于文件名对比</a></p>
+<p><a href="https://github.com/xgfone/snippet/blob/master/snippet/docs/tool/diff&amp;patch.md">patch/diff的实用用法</a></p>
+<p>我也是挺落后的，这些文章都很早了，在AI时代，还在补这种老知识。</p>
+</blockquote>
+<h2>A</h2>
+<pre><code>genp() {
+    if [ $# -eq 2 ]; then
+        diff -rNq $1 $2 |awk '{print $2}' |awk '{sub(&quot;^[^/]+/&quot;, &quot;&quot;)}1'
+    elif [ $# -eq 3 ]; then
+        if [ ! -d &quot;$1&quot; ] || [ ! -d &quot;$2&quot; ] || [ ! -f &quot;$3&quot; ]; then
+            return 1
+        fi
+        ori=$(cat $3)
+        echo -n &gt; $3
+        for file in $ori; do
+            if [[ &quot;${file}&quot; == &quot;@@@&quot; ]]; then
+                break
+            fi
+            echo $file &gt;&gt; $3
+        done
+        echo &quot;@@@&quot; &gt;&gt; $3
+        for file in $ori; do
+            if [[ &quot;${file}&quot; == &quot;@@@&quot; ]]; then
+                break
+            fi
+            diff -uN &quot;$1/$file&quot; &quot;$2/$file&quot; &gt;&gt; $3
+        done
+        return 0
+    else
+        return 1
+    fi
+}
+</code></pre>
+<p>使用示范：</p>
+<pre><code># 出patch
+genp A B &gt; tmp.patch
+vim xxx.patch # 删除不需要识别差异的文件
+genp A B tmp.patch
+
+# 打patch
+cp -r A C
+cd C
+patch -p1 &lt; ../tmp.patch
+
+# 反patch
+patch -p1 -R &lt; ../tmp.patch
+</code></pre>
+<hr>
+<blockquote>
+<p>Pray to God you don't have to use it again.</p>
+<p>Pray to God you don't used to not using it again.</p>
+<p>It's on your back, even when it's off your back.</p>
+</blockquote>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/17700461951_6980c2c6_07.jpg" alt="行尸走肉 S5E13"></p>
+
+<footer>
+  <ul>
+    <li class="left">&copy; 2025 paradoxskin.</li>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/design">design</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</footer>
+<script src="/res/js/main.js" defer></script>
+</body>
+</html>
