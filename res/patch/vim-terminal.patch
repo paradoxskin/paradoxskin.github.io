@@ -1,0 +1,15 @@
+src/terminal.c
+@@@
+--- vim-9.2.0068/src/terminal.c	2026-02-27 05:20:59.000000000 +0800
++++ vim-9.2.0068-patch//src/terminal.c	2026-02-27 23:14:24.407459582 +0800
+@@ -4219,8 +4219,8 @@
+ 
+     // The buffer is now like a normal buffer, it cannot be easily
+     // abandoned when changed.
+-    set_string_option_direct((char_u *)"buftype", -1,
+-	    (char_u *)"", OPT_FREE|OPT_LOCAL, 0);
++//    set_string_option_direct((char_u *)"buftype", -1,
++//	    (char_u *)"", OPT_FREE|OPT_LOCAL, 0);
+ }
+ 
+ /*

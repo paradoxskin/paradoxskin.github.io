@@ -1,0 +1,38 @@
+runtime/syntax/html.vim
+runtime/syntax/markdown.vim
+@@@
+--- vim-9.2.0068/runtime/syntax/html.vim	2026-02-27 05:20:59.000000000 +0800
++++ vim-9.2.0068-patch//runtime/syntax/html.vim	2026-02-27 22:11:27.576897864 +0800
+@@ -391,9 +391,9 @@
+ hi def link htmlString		   String
+ hi def link htmlStatement	   Statement
+ hi def link htmlComment		   Comment
+-hi def link htmlCommentNested	   htmlError
+-hi def link htmlCommentError	   htmlError
+-hi def link htmlTagError	   htmlError
++hi def link htmlCommentNested	   Error
++hi def link htmlCommentError	   Error
++hi def link htmlTagError	   Error
+ hi def link htmlEvent		   javaScript
+ hi def link htmlError		   Error
+ 
+--- vim-9.2.0068/runtime/syntax/markdown.vim	2026-02-27 05:20:59.000000000 +0800
++++ vim-9.2.0068-patch//runtime/syntax/markdown.vim	2026-02-27 22:11:28.361887986 +0800
+@@ -20,6 +20,7 @@
+ 
+ runtime! syntax/html.vim
+ unlet! b:current_syntax
++syntax clear htmlError
+ 
+ if !exists('g:markdown_fenced_languages')
+   let g:markdown_fenced_languages = []
+@@ -145,7 +146,8 @@
+ endif
+ 
+ syn match markdownEscape "\\[][\\`*_{}()<>#+.!-]"
+-syn match markdownError "\w\@<=_\w\@="
++" vim有点原教旨主义，现代渲染器不会把a_b_c渲染成a _b_ c
++"syn match markdownError "\w\@<=_\w\@="
+ 
+ hi def link markdownH1                    htmlH1
+ hi def link markdownH2                    htmlH2

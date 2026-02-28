@@ -1,0 +1,41 @@
+runtime/pack/dist/opt/netrw/autoload/netrw.vim
+@@@
+--- vim-9.2.0068/runtime/pack/dist/opt/netrw/autoload/netrw.vim	2026-02-27 05:20:59.000000000 +0800
++++ vim-9.2.0068-patch//runtime/pack/dist/opt/netrw/autoload/netrw.vim	2026-02-27 22:45:50.523664338 +0800
+@@ -5430,11 +5430,8 @@
+         let shell_cmd = printf("%s %s %s %s", copycmd, copycmdopt, args, tgt)
+         call system(shell_cmd)
+         if v:shell_error != 0
+-            if exists("b:netrw_curdir") && b:netrw_curdir != getcwd() && g:netrw_keepdir
+-                call netrw#msg#Notify('ERROR', printf("copy failed; perhaps due to vim's current directory<%s> not matching netrw's (%s) (see :help netrw-cd)", getcwd(), b:netrw_curdir))
+-            else
+-                call netrw#msg#Notify('ERROR', printf("tried using g:netrw_localcopycmd<%s>; it doesn't work!", g:netrw_localcopycmd))
+-            endif
++            " 不如直接打印报错结果
++            call netrw#msg#Notify('ERROR', printf("%s -> %s", shell_cmd, ret))
+             return 0
+         endif
+ 
+@@ -5482,8 +5479,6 @@
+     " -------
+     " cleanup
+     " -------
+-    " remove markings from local buffer
+-    call s:NetrwUnmarkList(curbufnr,curdir)                   " remove markings from local buffer
+     " see s:LocalFastBrowser() for g:netrw_fastbrowse interpretation (refreshing done for both slow and medium)
+     if g:netrw_fastbrowse <= 1
+         NetrwKeepj call s:LocalBrowseRefresh()
+@@ -5889,11 +5884,8 @@
+             let shell_cmd = printf("%s %s %s %s", movecmd, movecmdargs, fname, tgt)
+             let ret= system(shell_cmd)
+             if v:shell_error != 0
+-                if exists("b:netrw_curdir") && b:netrw_curdir != getcwd() && !g:netrw_keepdir
+-                    call netrw#msg#Notify('ERROR', printf("move failed; perhaps due to vim's current directory<%s> not matching netrw's (%s) (see :help netrw-cd)", getcwd(), b:netrw_curdir))
+-                else
+-                    call netrw#msg#Notify('ERROR', printf("tried using g:netrw_localmovecmd<%s>; it doesn't work!", g:netrw_localmovecmd))
+-                endif
++                " 不如直接打印报错结果
++                call netrw#msg#Notify('ERROR', printf("%s -> %s", shell_cmd, ret))
+                 break
+             endif
+         endfor
