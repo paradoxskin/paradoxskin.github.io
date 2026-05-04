@@ -46,7 +46,7 @@ img {
     cursor: pointer;
 }
 
-img.scale {
+.scale {
     position: fixed;
     left: 50%;
     top: 50%;
@@ -54,11 +54,12 @@ img.scale {
     border-style: none;
     border-radius: 0;
     padding: 100%;
-    background-color: #b9b9b99c;
+    background-color: #b9b9b9f0;
     max-width: 95vw;
     max-height: 95vh;
     width: auto;
     height: auto;
+    display: none;
 }
 
 pre {

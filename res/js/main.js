@@ -2,7 +2,7 @@ function blog_init()
 {
     document.querySelectorAll(".blog-item").forEach(div => {
         const link = div.querySelector("a.blog-item-title");
-        let desc = div.querySelector("div.blog-item-desc");
+        const desc = div.querySelector("div.blog-item-desc");
         if (link) {
             desc.addEventListener("click", function () {
                 link.click();
@@ -12,17 +12,29 @@ function blog_init()
     });
 }
 
+function getElementByXPath(path) {
+  return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+}
+
 function posts_init()
 {
+    const body = document.getElementsByTagName('body')[0];
+    const bigimg = document.getElementById('bigimg');
+
+    bigimg.addEventListener("click", function () {
+        bigimg.style.display = 'none';
+        document.body.style.overflow = '';
+    });
+
     document.querySelectorAll("img").forEach(img => {
+        if (img.id == "bigimg") {
+            return;
+        }
         /* 点击放大 */
-        const new_img = img.cloneNode(true);
-        new_img.className = "scale";
-        new_img.addEventListener("click", function () {
-            document.body.removeChild(new_img);
-        });
         img.addEventListener("click", function () {
-            document.body.appendChild(new_img);
+            bigimg.src = img.src;
+            bigimg.style.display = 'block';
+            document.body.style.overflow = 'hidden';
         });
 
         /* 图片注记 */
@@ -43,12 +55,12 @@ function posts_init()
         copy_button.textContent = "copy";
         copy_button.addEventListener("click", function () {
             navigator.clipboard.writeText(code_content).then(() => {
-            copy_button.textContent = "done";
-            copy_button.style.backgroundColor = "#888";
-            setTimeout(() => {
-            copy_button.textContent = "copy";
-            copy_button.style.backgroundColor = "#ddd";
-            }, 1500);
+                copy_button.textContent = "done";
+                copy_button.style.backgroundColor = "#888";
+                setTimeout(() => {
+                    copy_button.textContent = "copy";
+                    copy_button.style.backgroundColor = "#ddd";
+                }, 1500);
             });
         });
         const ob_div = document.createElement('div');
@@ -57,6 +69,16 @@ function posts_init()
         ob_div.appendChild(code);
         pre.appendChild(copy_button);
     });
+
+    const params = new URLSearchParams(location.search);
+    const xpath = params.get('xpath');
+    console.log(xpath)
+    if (xpath != null ) {
+        const target = getElementByXPath(xpath);
+        if (target != null) {
+            target.scrollIntoView();
+        }
+    }
 }
 
 function init()

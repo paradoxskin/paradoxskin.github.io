@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>函数调用、任务切换、中断嵌套</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+<nav class="main-nav">
+  <ul>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/design">design</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</nav>
+<p>大多数事物都可以分为外层和里层，外层呈现给使用者，里层呈现给设计者。例如，.h与lib，歌曲与工程文件、设备与cad图纸等。<br>
+一个代码开发者，编写代码，编译生成可执行文件，运行可执行文件，达成了预期效果。编写代码是代码开发者的所有工作，至于编译器怎么工作、程序是怎么执行的，代码开发者不是必须知道的。但有些场景，如果开发者知道这些里层原理会十分有用。这篇文章打算整理一下工作到现在学到的里层知识。</p>
+<blockquote>
+<p>文章使用arm架构环境。</p>
+</blockquote>
+<h2>函数调用</h2>
+<p>场景：</p>
+<pre><code>int add(int x, int y)
+{
+    return (x+y);
+}
+
+int b()
+{
+    return 233;
+}
+
+int c()
+{
+    int p = add(1, 1);
+    return add(256, p);
+}
+
+int a()
+{
+    int bb, cc;
+    bb = b();
+    cc = add(c(), 123);
+    return add(bb, cc);
+}
+
+int main()
+{
+    return a();
+}
+</code></pre>
+<p><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" data-diagram-type="SEQUENCE" height="539px" preserveAspectRatio="none" style="width:281px;height:539px;background:#FFFFFF;" version="1.1" viewBox="0 0 281 539" width="281px" zoomAndPan="magnify"><defs/><g><g><title>main</title><rect fill="#000000" fill-opacity="0.00000" height="462.3998" width="8" x="23.6657" y="38.9539"/><line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5,5;" x1="27" x2="27" y1="38.9539" y2="501.3536"/></g><g><title>a</title><rect fill="#000000" fill-opacity="0.00000" height="462.3998" width="8" x="88.7723" y="38.9539"/><line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5,5;" x1="91.9241" x2="91.9241" y1="38.9539" y2="501.3536"/></g><g><title>b</title><rect fill="#000000" fill-opacity="0.00000" height="462.3998" width="8" x="153.8789" y="38.9539"/><line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5,5;" x1="157.6214" x2="157.6214" y1="38.9539" y2="501.3536"/></g><g><title>c</title><rect fill="#000000" fill-opacity="0.00000" height="462.3998" width="8" x="186.3435" y="38.9539"/><line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5,5;" x1="190.1363" x2="190.1363" y1="38.9539" y2="501.3536"/></g><g><title>add</title><rect fill="#000000" fill-opacity="0.00000" height="462.3998" width="8" x="251.4501" y="38.9539"/><line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5,5;" x1="254.5845" x2="254.5845" y1="38.9539" y2="501.3536"/></g><g class="participant participant-head" data-participant="main"><rect fill="#E2E2F0" height="32.9539" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="45.3313" x="5" y="5"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="31.3313" x="12" y="26.3016">main</text></g><g class="participant participant-tail" data-participant="main"><rect fill="#E2E2F0" height="32.9539" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="45.3313" x="5" y="500.3536"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="31.3313" x="12" y="521.6552">main</text></g><g class="participant participant-head" data-participant="a"><rect fill="#E2E2F0" height="32.9539" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="21.6964" x="81.9241" y="5"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="7.6964" x="88.9241" y="26.3016">a</text></g><g class="participant participant-tail" data-participant="a"><rect fill="#E2E2F0" height="32.9539" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="21.6964" x="81.9241" y="500.3536"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="7.6964" x="88.9241" y="521.6552">a</text></g><g class="participant participant-head" data-participant="b"><rect fill="#E2E2F0" height="32.9539" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="22.5149" x="146.6214" y="5"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="8.5149" x="153.6214" y="26.3016">b</text></g><g class="participant participant-tail" data-participant="b"><rect fill="#E2E2F0" height="32.9539" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="22.5149" x="146.6214" y="500.3536"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="8.5149" x="153.6214" y="521.6552">b</text></g><g class="participant participant-head" data-participant="c"><rect fill="#E2E2F0" height="32.9539" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="22.4144" x="179.1363" y="5"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="8.4144" x="186.1363" y="26.3016">c</text></g><g class="participant participant-tail" data-participant="c"><rect fill="#E2E2F0" height="32.9539" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="22.4144" x="179.1363" y="500.3536"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="8.4144" x="186.1363" y="521.6552">c</text></g><g class="participant participant-head" data-participant="add"><rect fill="#E2E2F0" height="32.9539" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="39.7313" x="235.5845" y="5"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="25.7313" x="242.5845" y="26.3016">add</text></g><g class="participant participant-tail" data-participant="add"><rect fill="#E2E2F0" height="32.9539" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="39.7313" x="235.5845" y="500.3536"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="25.7313" x="242.5845" y="521.6552">add</text></g><g class="message" data-participant-1="main" data-participant-2="a"><polygon fill="#181818" points="80.7723,68.5539,90.7723,72.5539,80.7723,76.5539,84.7723,72.5539" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="27.6657" x2="86.7723" y1="72.5539" y2="72.5539"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="21.92" x="34.6657" y="66.2339">call</text></g><g class="message" data-participant-1="a" data-participant-2="b"><polygon fill="#181818" points="145.8789,100.1538,155.8789,104.1538,145.8789,108.1538,149.8789,104.1538" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="92.7723" x2="151.8789" y1="104.1538" y2="104.1538"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="21.92" x="99.7723" y="97.8338">call</text></g><g class="message" data-participant-1="b" data-participant-2="a"><polygon fill="#181818" points="103.7723,131.7538,93.7723,135.7538,103.7723,139.7538,99.7723,135.7538" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;stroke-dasharray:2,2;" x1="97.7723" x2="156.8789" y1="135.7538" y2="135.7538"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="41.1066" x="109.7723" y="129.4338">return</text></g><g class="message" data-participant-1="a" data-participant-2="c"><polygon fill="#181818" points="178.3435,163.3538,188.3435,167.3538,178.3435,171.3538,182.3435,167.3538" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="92.7723" x2="184.3435" y1="167.3538" y2="167.3538"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="21.92" x="99.7723" y="161.0338">call</text></g><g class="message" data-participant-1="c" data-participant-2="add"><polygon fill="#181818" points="243.4501,194.9538,253.4501,198.9538,243.4501,202.9538,247.4501,198.9538" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="190.3435" x2="249.4501" y1="198.9538" y2="198.9538"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="21.92" x="197.3435" y="192.6338">call</text></g><g class="message" data-participant-1="add" data-participant-2="c"><polygon fill="#181818" points="201.3435,226.5538,191.3435,230.5538,201.3435,234.5538,197.3435,230.5538" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;stroke-dasharray:2,2;" x1="195.3435" x2="254.4501" y1="230.5538" y2="230.5538"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="41.1066" x="207.3435" y="224.2338">return</text></g><g class="message" data-participant-1="c" data-participant-2="add"><polygon fill="#181818" points="243.4501,258.1538,253.4501,262.1538,243.4501,266.1538,247.4501,262.1538" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="190.3435" x2="249.4501" y1="262.1538" y2="262.1538"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="21.92" x="197.3435" y="255.8338">call</text></g><g class="message" data-participant-1="add" data-participant-2="c"><polygon fill="#181818" points="201.3435,289.7537,191.3435,293.7537,201.3435,297.7537,197.3435,293.7537" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;stroke-dasharray:2,2;" x1="195.3435" x2="254.4501" y1="293.7537" y2="293.7537"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="41.1066" x="207.3435" y="287.4337">return</text></g><g class="message" data-participant-1="c" data-participant-2="a"><polygon fill="#181818" points="103.7723,321.3537,93.7723,325.3537,103.7723,329.3537,99.7723,325.3537" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;stroke-dasharray:2,2;" x1="97.7723" x2="189.3435" y1="325.3537" y2="325.3537"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="41.1066" x="109.7723" y="319.0337">return</text></g><g class="message" data-participant-1="a" data-participant-2="add"><polygon fill="#181818" points="243.4501,352.9537,253.4501,356.9537,243.4501,360.9537,247.4501,356.9537" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="92.7723" x2="249.4501" y1="356.9537" y2="356.9537"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="21.92" x="99.7723" y="350.6337">call</text></g><g class="message" data-participant-1="add" data-participant-2="a"><polygon fill="#181818" points="103.7723,384.5537,93.7723,388.5537,103.7723,392.5537,99.7723,388.5537" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;stroke-dasharray:2,2;" x1="97.7723" x2="254.4501" y1="388.5537" y2="388.5537"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="41.1066" x="109.7723" y="382.2337">return</text></g><g class="message" data-participant-1="a" data-participant-2="add"><polygon fill="#181818" points="243.4501,416.1537,253.4501,420.1537,243.4501,424.1537,247.4501,420.1537" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;" x1="92.7723" x2="249.4501" y1="420.1537" y2="420.1537"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="21.92" x="99.7723" y="413.8337">call</text></g><g class="message" data-participant-1="add" data-participant-2="a"><polygon fill="#181818" points="103.7723,447.7537,93.7723,451.7537,103.7723,455.7537,99.7723,451.7537" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;stroke-dasharray:2,2;" x1="97.7723" x2="254.4501" y1="451.7537" y2="451.7537"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="41.1066" x="109.7723" y="445.4337">return</text></g><g class="message" data-participant-1="a" data-participant-2="main"><polygon fill="#181818" points="38.6657,479.3536,28.6657,483.3536,38.6657,487.3536,34.6657,483.3536" style="stroke:#181818;stroke-width:1;"/><line style="stroke:#181818;stroke-width:1;stroke-dasharray:2,2;" x1="32.6657" x2="91.7723" y1="483.3536" y2="483.3536"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="41.1066" x="44.6657" y="477.0336">return</text></g><!--SRC=[oqtCp5FGjLD8LB1II4xCoU5A1F6IOBma1LseP55gIMbH7aGw6IQT3DQQaWBN36JgGXL0DH2d18ibMFIGh0Gea0lo84mC0000]--></g></svg>
+<br></p>
+<p>假设编译器没有开启优化，那么它就不会对同文件中的函数调用进行激进地指令优化，严格按照代码逻辑编译。此时函数调用基于栈实现。<br>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" data-diagram-type="CLASS" height="164px" preserveAspectRatio="none" style="width:172px;height:164px;background:#FFFFFF;" version="1.1" viewBox="0 0 172 164" width="172px" zoomAndPan="magnify"><title>Stack
+| stack bottom, high |
+| main |
+| a |
+| c |
+| add &lt;- sp|
+| ... |</title><defs/><g><g class="title" data-source-line="1"><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="41.5742" x="61.2627" y="24.3016">Stack</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="135.714" x="14.1928" y="45.2554">stack bottom, high</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="33.0813" x="14.1928" y="64.2093">main</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="8.1339" x="14.1928" y="83.1632">a</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="8.8519" x="14.1928" y="102.1171">c</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="63.5713" x="14.1928" y="121.0709">add &lt;- sp</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="13.891" x="14.1928" y="140.0248">...</text><line style="stroke:#000000;stroke-width:1;" x1="10" x2="154.0997" y1="30.9539" y2="30.9539"/><line style="stroke:#000000;stroke-width:1;" x1="10" x2="154.0997" y1="49.9078" y2="49.9078"/><line style="stroke:#000000;stroke-width:1;" x1="10" x2="154.0997" y1="68.8616" y2="68.8616"/><line style="stroke:#000000;stroke-width:1;" x1="10" x2="154.0997" y1="87.8155" y2="87.8155"/><line style="stroke:#000000;stroke-width:1;" x1="10" x2="154.0997" y1="106.7694" y2="106.7694"/><line style="stroke:#000000;stroke-width:1;" x1="10" x2="154.0997" y1="125.7233" y2="125.7233"/><line style="stroke:#000000;stroke-width:1;" x1="10" x2="154.0997" y1="144.6771" y2="144.6771"/><line style="stroke:#000000;stroke-width:1;" x1="10" x2="10" y1="30.9539" y2="144.6771"/><line style="stroke:#000000;stroke-width:1;" x1="154.0997" x2="154.0997" y1="30.9539" y2="144.6771"/></g><!--SRC=[AyaioKdbKW22u9B4v6mmgqQX6CHMICelASdFrL78o4pFKAY1IkKcPkR1EObmLZ92B2L5mKPNeRW09g2dfmUKJCrBKIW1MGO0]--></g></svg>
+<br></p>
+<p>栈，是一块内存区域，用于保存代码块中使用的数据（局部变量/保存寄存器）。和数据结构的栈类似，当代码块运行结束时，会出栈，丢弃掉相关数据。通常内存布局都是栈底在高地址，栈顶在低地址，比较反直觉。画草图的时候老是犹豫，应该怎么画内存方向。统一一下，上高下低，和上表一样。sp，stack pointer，栈指针，用于保存栈正在使用的最顶端内存地址。</p>
+<p>开栈是减</p>
+<pre><code>sub sp, sp, #16
+</code></pre>
+<p>退栈是加</p>
+<pre><code>add sp, sp, #16
+</code></pre>
+<p>当发生函数调用时，cpu会将当前pc保存到lr或ra，把pc指向目标函数text段的起始位置，压栈，然后pc就会依条执行跳转函数的命令了，执行完毕后推栈，将pc=lr，返回到函数调用前。跳转的函数会操作通用寄存器，破坏跳转前函数的上下文，所以需要在函数跳转前将相关寄存器保存，栈就负责做这件事。反汇编一下上面的代码。</p>
+<pre><code>00000550 &lt;add&gt;:
+ 550:	e52db004 	push	{fp}		@ (str fp, [sp, #-4]!)
+ 554:	e28db000 	add	fp, sp, #0
+ 558:	e24dd00c 	sub	sp, sp, #12
+ 55c:	e50b0008 	str	r0, [fp, #-8]
+ 560:	e50b100c 	str	r1, [fp, #-12]
+ 564:	e51b2008 	ldr	r2, [fp, #-8]
+ 568:	e51b300c 	ldr	r3, [fp, #-12]
+ 56c:	e0823003 	add	r3, r2, r3
+ 570:	e1a00003 	mov	r0, r3
+ 574:	e28bd000 	add	sp, fp, #0
+ 578:	e49db004 	pop	{fp}		@ (ldr fp, [sp], #4)
+ 57c:	e12fff1e 	bx	lr
+
+00000580 &lt;b&gt;:
+ 580:	e52db004 	push	{fp}		@ (str fp, [sp, #-4]!)
+ 584:	e28db000 	add	fp, sp, #0
+ 588:	e3a030e9 	mov	r3, #233	@ 0xe9
+ 58c:	e1a00003 	mov	r0, r3
+ 590:	e28bd000 	add	sp, fp, #0
+ 594:	e49db004 	pop	{fp}		@ (ldr fp, [sp], #4)
+ 598:	e12fff1e 	bx	lr
+
+0000059c &lt;c&gt;:
+ 59c:	e92d4800 	push	{fp, lr}
+ 5a0:	e28db004 	add	fp, sp, #4
+ 5a4:	e24dd008 	sub	sp, sp, #8
+ 5a8:	e3a01001 	mov	r1, #1
+ 5ac:	e3a00001 	mov	r0, #1
+ 5b0:	ebffffe6 	bl	550 &lt;add&gt;
+ 5b4:	e50b0008 	str	r0, [fp, #-8]
+ 5b8:	e51b1008 	ldr	r1, [fp, #-8]
+ 5bc:	e3a00c01 	mov	r0, #256	@ 0x100
+ 5c0:	ebffffe2 	bl	550 &lt;add&gt;
+ 5c4:	e1a03000 	mov	r3, r0
+ 5c8:	e1a00003 	mov	r0, r3
+ 5cc:	e24bd004 	sub	sp, fp, #4
+ 5d0:	e8bd8800 	pop	{fp, pc}
+
+000005d4 &lt;a&gt;:
+ 5d4:	e92d4800 	push	{fp, lr}
+ 5d8:	e28db004 	add	fp, sp, #4
+ 5dc:	e24dd008 	sub	sp, sp, #8
+ 5e0:	ebffffe6 	bl	580 &lt;b&gt;
+ 5e4:	e50b000c 	str	r0, [fp, #-12]
+ 5e8:	ebffffeb 	bl	59c &lt;c&gt;
+ 5ec:	e1a03000 	mov	r3, r0
+ 5f0:	e3a0107b 	mov	r1, #123	@ 0x7b
+ 5f4:	e1a00003 	mov	r0, r3
+ 5f8:	ebffffd4 	bl	550 &lt;add&gt;
+ 5fc:	e50b0008 	str	r0, [fp, #-8]
+ 600:	e51b1008 	ldr	r1, [fp, #-8]
+ 604:	e51b000c 	ldr	r0, [fp, #-12]
+ 608:	ebffffd0 	bl	550 &lt;add&gt;
+ 60c:	e1a03000 	mov	r3, r0
+ 610:	e1a00003 	mov	r0, r3
+ 614:	e24bd004 	sub	sp, fp, #4
+ 618:	e8bd8800 	pop	{fp, pc}
+
+0000061c &lt;main&gt;:
+ 61c:	e92d4800 	push	{fp, lr}
+ 620:	e28db004 	add	fp, sp, #4
+ 624:	ebffffea 	bl	5d4 &lt;a&gt;
+ 628:	e1a03000 	mov	r3, r0
+ 62c:	e1a00003 	mov	r0, r3
+ 630:	e8bd8800 	pop	{fp, pc}
+</code></pre>
+<p>所有函数，开头和结尾几乎都长差不多，</p>
+<pre><code>push {fp, lr}
+add fp, sp, #4
+
+...
+
+sub sp, fp, #4
+pop {fp, pc}
+</code></pre>
+<p>分别对应了压栈和推栈的两个部分</p>
+<p><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" data-diagram-type="CLASS" height="145px" preserveAspectRatio="none" style="width:172px;height:145px;background:#FFFFFF;" version="1.1" viewBox="0 0 172 145" width="172px" zoomAndPan="magnify"><title>push 压栈
+| stack bottom, high |
+| ... |
+| fp -&gt; xxx |
+| lr -&gt; xxx &lt;- sp |
+| ... |</title><defs/><g><g class="title" data-source-line="1"><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="68.0159" x="48.0419" y="24.3016">push 压栈</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="135.714" x="14.1928" y="45.2554">stack bottom, high</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="13.891" x="14.1928" y="64.2093">...</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="62.8821" x="14.1928" y="83.1632">fp -&gt; xxx</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="94.2691" x="14.1928" y="102.1171">lr -&gt; xxx &lt;- sp</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="13.891" x="14.1928" y="121.0709">...</text><line style="stroke:#000000;stroke-width:1;" x1="10" x2="154.0997" y1="30.9539" y2="30.9539"/><line style="stroke:#000000;stroke-width:1;" x1="10" x2="154.0997" y1="49.9078" y2="49.9078"/><line style="stroke:#000000;stroke-width:1;" x1="10" x2="154.0997" y1="68.8616" y2="68.8616"/><line style="stroke:#000000;stroke-width:1;" x1="10" x2="154.0997" y1="87.8155" y2="87.8155"/><line style="stroke:#000000;stroke-width:1;" x1="10" x2="154.0997" y1="106.7694" y2="106.7694"/><line style="stroke:#000000;stroke-width:1;" x1="10" x2="154.0997" y1="125.7233" y2="125.7233"/><line style="stroke:#000000;stroke-width:1;" x1="10" x2="10" y1="30.9539" y2="125.7233"/><line style="stroke:#000000;stroke-width:1;" x1="154.0997" x2="154.0997" y1="30.9539" y2="125.7233"/></g><!--SRC=[AyaioKdbKW22WjBY38MdVTtF5dI0-JKAnIM9oTaAIVab9VcvEWePcUaP2ZLGAJqzFJWxhK11rqwXeg82Bf9J11EnqLKeBa3JbPgNeb02iXO0]--></g></svg>
+<br></p>
+<p><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" data-diagram-type="CLASS" height="145px" preserveAspectRatio="none" style="width:172px;height:145px;background:#FFFFFF;" version="1.1" viewBox="0 0 172 145" width="172px" zoomAndPan="magnify"><title>pop 推栈
+| stack bottom, high |
+| ... &lt;- sp |
+| fp &lt;- xxx |
+| pc &lt;- xxx |
+| ... |</title><defs/><g><g class="title" data-source-line="1"><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="60.2553" x="51.9222" y="24.3016">pop 推栈</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="135.714" x="14.1928" y="45.2554">stack bottom, high</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="50.4185" x="14.1928" y="64.2093">... &lt;- sp</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="62.8821" x="14.1928" y="83.1632">fp &lt;- xxx</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="64.4472" x="14.1928" y="102.1171">pc &lt;- xxx</text><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="13.891" x="14.1928" y="121.0709">...</text><line style="stroke:#000000;stroke-width:1;" x1="10" x2="154.0997" y1="30.9539" y2="30.9539"/><line style="stroke:#000000;stroke-width:1;" x1="10" x2="154.0997" y1="49.9078" y2="49.9078"/><line style="stroke:#000000;stroke-width:1;" x1="10" x2="154.0997" y1="68.8616" y2="68.8616"/><line style="stroke:#000000;stroke-width:1;" x1="10" x2="154.0997" y1="87.8155" y2="87.8155"/><line style="stroke:#000000;stroke-width:1;" x1="10" x2="154.0997" y1="106.7694" y2="106.7694"/><line style="stroke:#000000;stroke-width:1;" x1="10" x2="154.0997" y1="125.7233" y2="125.7233"/><line style="stroke:#000000;stroke-width:1;" x1="10" x2="10" y1="30.9539" y2="125.7233"/><line style="stroke:#000000;stroke-width:1;" x1="154.0997" x2="154.0997" y1="30.9539" y2="125.7233"/></g><!--SRC=[AyaioKdbKW22Wlm2XMTzAvujw01pQnIAInAJinMIyajAydDr538oqpCKQg1IUdfw2ZQw2iK5S96q0f10HKK5NAGW6Lq4fAk6ApKlHQ44P2i0]--></g></svg>
+<br></p>
+<p>lr是否保存取决于函数内部是否会发生函数调用，因为函数跳转必然会保存返回地址（覆盖lr），没了lr就无法找到回去的路了。fp，frame pointer，用来保存当前代码块的栈底。保存fp是可选的，因为编译器是可以计算出当前代码块用了多少栈的，保存fp，更多是为了维测功能（栈回溯），因为fp指向上一层的fp，沿着fp一路向前，就能推出整个函数调用链路。是否保存fp取决于编译器的优化策略。</p>
+<p>除了这两个寄存器，其他通用寄存器也需要保存，但保存策略还是取决于架构的abi设计与编译器实现。保存策略主要分为两类，</p>
+<ul>
+<li>caller-saved: 调用方如需使用该寄存器，其在调用函数前负责保存</li>
+<li>callee-saved: 被调方如需使用该寄存器，其在函数入口时负责保存</li>
+</ul>
+<p>一般写代码是不需要感知到这一层的，只有在手写汇编时需要注意，此时编译器已无权管控代码编写者的行为，如果编写者没有在函数入口保存callee-saved寄存器并使用了它，那就有可能破坏上一层函数的上下文，导致各种未知问题发生。</p>
+<p>这种设计的初衷应该是为了优化程序运行效率，把易失的临时数据保存在caller-saved寄存器，需要持久存放的数据放在callee-saved寄存器上，这样理论能减少访存的次数。不知道如果每个函数就在入口保存自己需要使用的所有寄存器会有什么性能损失。</p>
+<p>总之，函数调用就是在栈上不停的进入与退出，最后完成运算，不算复杂。</p>
+<h2>任务切换</h2>
+<p>任务，是一个抽象的词语，一个进程的完整执行流程，就能算是一个任务。如果计算机运算只有函数调用，CPU就同时只能处理一个任务了，相当于多个任务一个个的排队等着执行，如果突然来了一个紧急事项，也只能等待当前执行的任务执行完毕。任务切换，就是指CPU可以不完成某个任务，直接切换到在不同的任务中去。</p>
+<p>任务切换通常基于中断机制来完成。固定频率的时钟中断，可以不管cpu任务状态来打断它，打断后，cpu也许会把pc保存到某些特殊的寄存器上，然后跳到特定的代码位置上执行中断流程代码，当然这些行为要看具体的架构设计。</p>
+<p><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" data-diagram-type="DESCRIPTION" height="61px" preserveAspectRatio="none" style="width:235px;height:61px;background:#FFFFFF;" version="1.1" viewBox="0 0 235 61" width="235px" zoomAndPan="magnify"><defs/><g><!--entity tick--><g class="entity" data-entity="tick" data-source-line="1" data-uid="ent0002" id="entity_tick"><rect fill="#F1F1F1" height="48.9539" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="66.8369" x="7" y="7"/><rect fill="#F1F1F1" height="10" style="stroke:#181818;stroke-width:0.5;" width="15" x="53.8369" y="12"/><rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="51.8369" y="14"/><rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="51.8369" y="18"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="26.8369" x="22" y="41.3016">tick</text></g><!--entity cpu--><g class="entity" data-entity="cpu" data-source-line="2" data-uid="ent0003" id="entity_cpu"><rect fill="#F1F1F1" height="48.9539" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="65.717" x="163.56" y="7"/><rect fill="#F1F1F1" height="10" style="stroke:#181818;stroke-width:0.5;" width="15" x="209.277" y="12"/><rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="207.277" y="14"/><rect fill="#F1F1F1" height="2" style="stroke:#181818;stroke-width:0.5;" width="4" x="207.277" y="18"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="25.717" x="178.56" y="41.3016">cpu</text></g><!--link tick to cpu--><g class="link" data-entity-1="tick" data-entity-2="cpu" data-source-line="3" data-uid="lnk4" id="link_tick_cpu"><path d="M74.27,31.47 C100.61,31.47 130.98,31.47 157.17,31.47" fill="none" id="tick-to-cpu" style="stroke:#181818;stroke-width:1;"/><polygon fill="#181818" points="163.17,31.47,154.17,27.47,158.17,31.47,154.17,35.47,163.17,31.47" style="stroke:#181818;stroke-width:1;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="53.4133" x="92.2" y="23.75">1000次/s</text></g><!--SRC=[Yox9JCwELKWiLW0nkAAJ2qh1F23D1H9HqBK3iHMi50mD30oUhLceNmm0]--></g></svg>
+<br></p>
+<p>在被打断前，任务栈和所有的寄存器，其实就是被打断任务的现场。CPU很直接，只需要把寄存器恢复到被打断前的状态，就能从打断后再回到这个任务上。同理，如果不想再执行这个任务，只需要把寄存器保存起来就行了。之后再把寄存器恢复成另一个任务被打断前的状态，就相当于完成了任务切换。但实际上，情况可能会复杂点，不同的架构，需要保存的东西不一样，如异常等级、各种系统寄存器什么的，这个需要阅读中断恢复相关的章节。各个任务通常都有自己的栈，中断一般都是用一个特殊的栈，差不多就叫系统栈吧，从任务到中断，涉及一个切栈的操作，即把进入中断前的sp保存，进中断时直接把sp赋值为固定的系统栈地址。</p>
+<p>在中断恢复的流程里，对各任务进行一次优先级排序，选择优先级最高的进行恢复，即完成了任务切换。</p>
+<h2>中断嵌套</h2>
+<p>中断嵌套，指高优先级的中断可以打断低优先级中断。大多数架构都支持这种功能。这种场景下，因为被打断前是系统栈，无法进行无脑切栈，在后续处理前需要先判断当前是否使用的系统栈来识别是否需要切栈。</p>
+<p>中断嵌套似乎没什么好说的。也许我得实现一个简单的RTOS放到单板上跑一跑，先学嵌入式吧。</p>
+
+<footer>
+  <ul>
+    <li class="left">&copy; 2025 paradoxskin.</li>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/design">design</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</footer>
+<img class="scale" id="bigimg" src="">
+<script src="/res/js/main.js" defer></script>
+</body>
+</html>
