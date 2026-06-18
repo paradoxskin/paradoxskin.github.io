@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>家酿git repo</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+<nav class="main-nav">
+  <ul>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/design">design</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</nav>
+<h2>Q</h2>
+<p>很多开发者喜欢用github，在线的git平台我也只用过这个，不过不该把它当作git云端仓库的唯一选项。站在个人使用的角度上，我只是把github当作一个存储配置的地方，另外用来研究别人的代码的实现方式，关注一下工具的社区有没有我遇到过的同款issue及解决方式。很多人喜欢用private仓，但这真的是private吗？我不好说。另外，作为一个精神末日准备者，为准备闭关的那一天，应该自己搭一个git服务器。</p>
+<h2>~</h2>
+<p>关于搭建git服务器，官方提供的<a href="https://git-scm.com/book/zh/v2/%e6%9c%8d%e5%8a%a1%e5%99%a8%e4%b8%8a%e7%9a%84-Git-%e5%8d%8f%e8%ae%ae">指导手册</a>有详细的说明。考虑使用其中的<code>ssh</code>协议（开发者）和<code>git</code>协议（任意设备）。</p>
+<hr>
+<ul>
+<li><strong>ssh 协议</strong></li>
+</ul>
+<p>需要创建一个用于管理仓库的git用户，后续的远程仓库基于该用户操作，开发者需要把登录凭证登记到该用户的<code>authorized_keys</code>。这就意味着开发者可以直接ssh到这台服务器的git用户环境上，需要对git用户的操作进行管控，因此git提供了<code>git-shell</code>用于替换高自由度的普通终端工具，限制用户只能使用<code>git-shell-commands</code>下的命令。做到这点只需要让git用户的终端改为<code>git-shell</code>就行了。</p>
+<p>上面管控了用户的行为，但没有对权限进行分层，git本身不包含用于根据公钥区分用户的机制。事实上，在仓库操作期间，只有git一个真正的用户。这一点需要借助sshd的帮助。<code>authorized_keys</code>有一个参数，可以让特定用户在登录时执行指定的命令。</p>
+<pre><code>       command=&quot;command&quot;
+               Specifies  that  the  command  is executed whenever this key is
+               used for authentication.  The command supplied by the user  (if
+               any) is ignored.  The command is run on a pty if the client re‐
+               quests  a  pty; otherwise it is run without a tty.  If an 8-bit
+               clean channel is required, one must not request a pty or should
+               specify no-pty.  A quote may be  included  in  the  command  by
+               quoting it with a backslash.
+
+               This  option might be useful to restrict certain public keys to
+               perform just a specific operation.  An example might be  a  key
+               that  permits  remote  backups but nothing else.  Note that the
+               client may specify TCP and/or X11 forwarding  unless  they  are
+               explicitly prohibited, e.g. using the restrict key option.
+
+               The  command  originally supplied by the client is available in
+               the SSH_ORIGINAL_COMMAND environment variable.  Note that  this
+               option  applies to shell, command or subsystem execution.  Also
+               note that this command may be superseded by  an  sshd_config(5)
+               ForceCommand directive.
+
+               If a command is specified and a forced-command is embedded in a
+               certificate  used for authentication, then the certificate will
+               be accepted only if the two commands are identical.
+</code></pre>
+<p>当然这个命令是在git用户的shell上执行的，即<code>git-shell</code>，所以需要在<code>git-shell-commands</code>目录下创建对应的脚本才行。</p>
+<p>接下来就是分权了。</p>
+<ul>
+<li>全局</li>
+</ul>
+<p>管理员<code>A</code>可以拿到git的shell，进行任意操作。这个不需要特别的实现，直接用linux的用户权限就能做到。<code>D</code>并不会作为linux用户创建在服务器上，<code>D</code>用户的概念只存在于git_shell的环境变量里。</p>
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>说明</th>
+<th>权限</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>admin</td>
+<td>S MG G</td>
+</tr>
+<tr>
+<td>D</td>
+<td>develop</td>
+<td>G</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>S: shell<br>
+MG: modify git<br>
+G: git</p>
+</blockquote>
+<ul>
+<li>仓库</li>
+</ul>
+<p>每个开发者都能创建仓库，创建完之后，创建者为<code>C</code>，其他用户是<code>V</code>，<code>C</code>可以授权push权限给信任的<code>V</code>用户，他们会成为仓库的<code>P</code>，也能<code>push</code>。但只有<code>C</code>能<code>push -f</code>。</p>
+<table>
+<thead>
+<tr>
+<th>角色</th>
+<th>说明</th>
+<th>权限</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C</td>
+<td>create</td>
+<td>MP P V</td>
+</tr>
+<tr>
+<td>P</td>
+<td>push</td>
+<td>P V</td>
+</tr>
+<tr>
+<td>V</td>
+<td>visit</td>
+<td>V</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>MP: modify push<br>
+P: push<br>
+V: visit</p>
+</blockquote>
+<p>需要确定如何限制用户行为。我在校验脚本里记录了git与服务器交互时，变量<code>$SSH_ORIGINAL_COMMAND</code>的值：</p>
+<ol>
+<li><code>clone</code>: <code>git-upload-pack '/repo/test'</code></li>
+<li><code>pull</code>: <code>git-upload-pack '/repo/test'</code></li>
+<li><code>push</code>: <code>git-receive-pack '/repo/test'</code></li>
+<li><code>push -f</code>: <code>git-receive-pack '/repo/test'</code></li>
+</ol>
+<p>所以无法单纯通过<code>$SSH_ORIGINAL_COMMAND</code>命令来判断当前用户使用<code>push</code>还是<code>push -f</code>，我们需要借助<a href="https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks">git-hooks</a>。hook分为客户端与服务端。</p>
+<ul>
+<li>客户端hook<ul>
+<li>pre-commit: commit前检查</li>
+<li>prepare-commit-msg: 动态填充模板用</li>
+<li>commit-msg: 保存提交信息后检查</li>
+<li>post-commit: 成功提交后显示信息</li>
+<li>applypatch-msg: am前校验msg格式</li>
+<li>pre-applypatch: 应用patch前校验</li>
+<li>post-applypatch: 应用patch后通知</li>
+<li>pre-rebase: rebase前检查</li>
+<li>post-rewrite: commit --amend与rebase后调用</li>
+<li>post-checkout: checkout后调用</li>
+<li>post-merge: merge后调用</li>
+<li>pre-push: push前检查</li>
+<li>pre-auto-gc: gc前调用</li>
+</ul>
+</li>
+<li>服务端hook<ul>
+<li><strong>pre-receive: 用户推送检查，参数为<code>oldrev1 newrev1 refname1 ... oldrevN newrevN refnameN</code>，多次推送，一次校验，拦截所有</strong></li>
+<li><strong>update: 用户推送检查，参数为<code>oldrev newrev refname</code>，多次推送，多次校验，只拦截失败</strong></li>
+<li>post-receive: 推送成功后调用</li>
+</ul>
+</li>
+</ul>
+<p><code>pre-receive</code>和<code>update</code>都能用，区别大概可以概括为“前者为原子操作”，我倾向前者。</p>
+<p>再考虑二进制文件的存储。<a href="https://git-scm.com/book/zh/v2/%E8%87%AA%E5%AE%9A%E4%B9%89-Git-Git-%E5%B1%9E%E6%80%A7">git文档有单独的专题介绍</a>，可以通过<code>.gitattributes</code>配置匹配规则，匹配上之后git不再会用常规的对比工具来对比这个二进制文件。git存储二进制文件的真正问题是，每个状态的文件都会存储在git的blob中，这就意味着，<code>git clone</code>仓库时，就算当前的节点不需要用到某个二进制文件，也必须下载到本地，后续可能会替换二进制文件，这就导致了仓库体积变得很大。</p>
+<blockquote>
+<p>我们每次 git add 一个文件，哪怕只修改了一个字，由于计算出来的 SHA-1 的值不同，git 都会为它新建一个 blob 对象，而不是去记录文件的前后变化差异。 --<a href="/posts/f1732685-a2e1-498d-9c1c-78a08f5790e0.html?xpath=//h3%5Bcontains%28text%28%29,%20%22%E7%96%91%E9%97%AE%22%29%5D">git 学习笔记 5</a>。</p>
+</blockquote>
+<p>对于二进制的存储，主流的解决方案有git-lfs，在仓库侧只存储特征值，将文件本身放到其他存储空间中，需要使用时再从存储空间下载到本地。git-lfs是基于git自定义拓展里的关键字展开实现的。考虑用scp实现一个简易版的git-lfs。</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/17848250781_vimupload.png" alt="smudge/clean"></p>
+<p>clean很好实现，用sha256sum计算文件摘要，同时把文件缓存到缓存目录，不然checkout几次后原始内容就会消失。smudge负责文件下载，检测本地是否有目标缓存文件，没有的话就从远端仓库下载。另外需要在<code>pre-push</code>的hook脚本里进行上传，先从远端拉一份存量的文件列表，再从缓存里对比哪些文件需要上传。</p>
+<p>虽然scp是在本地执行的，但查了资料，它实际做的事是ssh到目标服务器上，再执行<code>scp -t</code>/<code>scp -f</code>。我们无法直接在受限的git-shell上执行未规定的命令（包括scp）。</p>
+<ul>
+<li>如果我们要上传，服务器执行<code>scp -t &lt;{path}&gt;</code>指定要接收目标文件存放的地址</li>
+<li>如果我们要下载，服务器执行<code>scp -f &lt;{path}&gt;</code>指定要传输的目标文件</li>
+</ul>
+<p>所以还需要wrap一下scp，我们的文件会存放到对应的仓库目录下，而不是统一一个大目录管理。</p>
+<blockquote>
+<p>新版本的scp不是上面一个机制，它会使用sftp协议，wrap了scp也行不通。如果要维持该行为，需要加一个参数<code>-O</code>，<code>scp -O ./zz git@server:/tmp/</code></p>
+</blockquote>
+<pre><code>     -O      Use  the  legacy  SCP  protocol for file transfers instead of the
+             SFTP protocol.  Forcing the use of the SCP protocol may be neces‐
+             sary for servers that do not implement SFTP,  for  backwards-com‐
+             patibility  for particular filename wildcard patterns and for ex‐
+             panding paths with a ‘~’ prefix for older SFTP servers.
+</code></pre>
+<hr>
+<ul>
+<li><strong>git 协议</strong></li>
+</ul>
+<p>开放且快速的git协议。白名单机制，要在bare仓库里添加一个空白文件<code>git-daemon-export-ok</code>，才可通过git协议下载。<br>
+开放9418端口，跑一个deamon就能用了:</p>
+<pre><code>git daemon
+</code></pre>
+<p>注意一下<code>clone</code>写法:</p>
+<pre><code>git://&lt;server&gt;[:&lt;port&gt;]/path/to/repos.git/
+</code></pre>
+<h2>A</h2>
+<p><a href="/res/annex/39af88ac/basicole.tar.gz">1. basicole.tar.gz</a><br>
+部署一个git服务器需要的最小系统。解压到某用户的home目录下。修改<code>/etc/passwd</code>中对应用户的shell为<code>git-shell</code>。<br>
+增加git人员需要在<code>.ssh/authorized_keys</code>增加：</p>
+<pre><code>command=&quot;auth &lt;{name}&gt;&quot; &lt;{pubkey}&gt;
+</code></pre>
+<p><a href="/res/annex/39af88ac/stone.tar.gz">2. stone.tar.gz</a></p>
+<pre><code>cd /path/to/repo/needs/to/install/lfs
+/path/to/stone/install.sh
+
+echo &quot;*.&lt;{target format}&gt; filter=stone&quot; &gt;&gt; ./gitattributes
+</code></pre>
+<blockquote>
+<p>注意，目前只会将<code>origin</code>作为scp的对象。</p>
+</blockquote>
+<blockquote>
+<p>别在工具上放太多注意力。</p>
+</blockquote>
+
+<footer>
+  <ul>
+    <li class="left">&copy; 2026 paradoxskin.</li>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/design">design</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</footer>
+<img class="scale" id="bigimg" src="">
+<script src="/res/js/main.js" defer></script>
+</body>
+</html>
