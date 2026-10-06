@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>tmux 3.8-rc3 升级</title>
+    <link rel="stylesheet" href="/res/css/style.css">
+</head>
+<body>
+<nav class="main-nav">
+  <ul>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/design">design</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</nav>
+<h2>Q</h2>
+<p>3.8-rc3有几个我之前就很想要实现的特性：</p>
+<ul>
+<li>copy-mode行号显示</li>
+<li>floating pane，可以和其他pane同时存在, 有别于专横的popup pane</li>
+</ul>
+<p>需要基于3.8-rc3修改一下源码，把patch冲突解一下。</p>
+<h2>~</h2>
+<p>进入copy-mode时，行号会把原内容往后顶，我不太喜欢这个特性，我希望相对行号浮动在内容上面，有一个开关用来控制行号显示。该功能主要通过<code>window_copy_line_number_width</code>获取行号位宽，再对现有其他界面进行调整（如选区、高亮等），将调用点打桩为0就ok了。</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/17911780006_vimupload.png" alt="修改后效果图"></p>
+<hr>
+<p>3.8为了搭配新特性floating pane，默认开启了鼠标适配，当然要把它关掉，谁用tmux握个鼠标啊。</p>
+<p>floating pane目前还是实验特性，可能不太稳定。我的popup pane主要用于在tmux里借vim的输入法键入中文。这个floating pane我打算用于移动focus pane到其他window去。</p>
+<p>设想是这样的：</p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/17912023654_vimupload.png" alt="设计草图"></p>
+<p>但我不太确定这个要怎么实现，是要改源码呢，还是单纯通过shell脚本实现。</p>
+<p>通过快捷键<code>&lt;prefix&gt;*</code>，或者使用命令</p>
+<pre><code>tmux new-pane # 在屏幕上打开一个floating pane。
+tmux join-pane # 把floating pane转为tiled pane
+tmux break-pane -W # 把tiled pane转为floating pane
+</code></pre>
+<p>第一步，直接使用<code>break-pane -W</code>即可。</p>
+<p>第二步，根据输入向前或者向后移动，使用<code>new-pane</code>创建一个临时floating pane，<code>swap-pane -t &lt;原pane_id&gt;</code>，再<code>kill-pane -t &lt;新pane_id&gt;</code>即可。</p>
+<p>第三步及后续步骤不太好实现，因为<code>display-pane</code>在3.8被改成了mode，达到定制要求需要新增一种类似的mode，hide掉floating pane之后进入<code>display-pane</code>，再读取用户的一次输入来决定最终摆放位置。没有充足的理由为这一个小场景大改源码。</p>
+<hr>
+<p>3.8的部分模块重写可能引入了什么bug，我发现了两个问题</p>
+<ol>
+<li>显示问题，配置里用于交换pane位置的脚本无法正常显示，但是单独执行<code>display pane</code>是没问题的</li>
+</ol>
+<pre><code>bind b run-shell 'tmux set-environment PANE_ID #{pane_id}' \; display-panes -d 0 \; run-shell 'tmux swap-pane -t #{PANE_ID}'
+</code></pre>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/17912192653_vimupload.png" alt="交换脚本效果"></p>
+<p><img src="http://parad0xpic.oss-cn-hangzhou.aliyuncs.com/image-for-pyup/17912194962_vimupload.png" alt="预期效果"></p>
+<p>不过先不管这个BUG了吧，因为我发现<code>display-pane</code>可以通过参数传入一个shell脚本参数，tmux会负责把参数中的字符<code>%%</code>替换为选中pane的id，默认行为是<code>select-pane -t %%</code>，也就是会跳过去，所以这个问题可以很优雅地解决。</p>
+<pre><code>bind b display-panes -d 0 'swap-pane -t %% -d'
+</code></pre>
+<ol start="2">
+<li>lazybook无法正常工作了，这个影响大</li>
+</ol>
+<p>经过一翻调试，主要问题是<code>tmux display-panes</code>改成了mode，也就是与用户的交互是异步，不是原来的同步模式，举一个简单的例子，</p>
+<pre><code>tmux display-panes &amp;&amp; st
+</code></pre>
+<p>在3.7，这个命令需要等到用户按下按键选择后才会执行<code>st</code>。3.8，在用户按下按键之前，<code>st</code>就会被执行。也就是说，外部不知道用户会在什么时候按下key，也不知道什么时候按下esc，忙等是不合理的。</p>
+<p>有两个解决方案，</p>
+<ol>
+<li>接受异步，把脚本放到回调</li>
+<li>魔改pane_mode，异步-&gt;同步</li>
+</ol>
+<p>想魔改就得先了解mode的运行原理，3.8把很多东西抽象进了<code>choose-tree</code>里，有点像状态机</p>
+<pre><code>    if (cmd_get_entry(self) == &amp;cmd_choose_buffer_entry) {
+        if (paste_is_empty())
+            return (CMD_RETURN_NORMAL);
+        mode = &amp;window_buffer_mode;
+    } else if (cmd_get_entry(self) == &amp;cmd_choose_client_entry) {
+        if (server_client_how_many() == 0)
+            return (CMD_RETURN_NORMAL);
+        mode = &amp;window_client_mode;
+    } else if (cmd_get_entry(self) == &amp;cmd_customize_mode_entry)
+        mode = &amp;window_customize_mode;
+    else if (cmd_get_entry(self) == &amp;cmd_switch_mode_entry)
+        mode = &amp;window_switch_mode;
+    else if (cmd_get_entry(self) == &amp;cmd_display_panes_entry)
+        mode = &amp;window_panes_mode;
+    else
+        mode = &amp;window_tree_mode;
+
+    window_pane_set_mode(wp, NULL, mode, item, target, args);
+    return (CMD_RETURN_NORMAL);
+</code></pre>
+<p>现在有很多mode</p>
+<ul>
+<li>buffer</li>
+<li>client</li>
+<li>customize</li>
+<li>switch</li>
+<li>panes</li>
+<li>tree</li>
+</ul>
+<p>评估了下，不是很看的懂。最终还是选择异步，改改<code>sd</code>，把最终发送按键的逻辑放到<code>display-pane</code>的回调里了。</p>
+<blockquote>
+<p>bash引号问题是真恶心，最终采用了文件作为媒介传输stdin。</p>
+</blockquote>
+<h2>A</h2>
+<p><a href="/res/annex/1dffe7a2/patch.tar.gz"><strong>patch</strong></a></p>
+<p><strong>config changes</strong></p>
+<pre><code>set -g display-panes-order &quot;sdflkjgh&quot;
+
+# 不知道为什么，当前pane默认多了个下划线。不喜欢，去掉
+set -g window-status-current-format &quot;#[fg=color9, bold, nounderscore]▪ #W &quot;
+
+set -g copy-mode-line-numbers relative
+set -g copy-mode-line-number-style fg=color101
+
+bind -T copy-mode-vi z if-shell \
+    'tmux show-options -qv copy-mode-line-number-trigger | grep -q &quot;^off$&quot;' \
+    'set copy-mode-line-number-trigger on' \
+    'set copy-mode-line-number-trigger off'
+
+bind g switch-client -T GEM \; break-pane -W -x 50% -y 50% -X 25% -Y 25%
+bind -T GEM M-\; run-shell 'tmux_gem left #{pane_id}' \; switch-client -T GEM
+bind -T GEM M-\' run-shell 'tmux_gem right #{pane_id}' \; switch-client -T GEM
+bind -T GEM g join-pane
+</code></pre>
+<p><strong>tmux_gem</strong></p>
+<pre><code>#!/bin/bash
+
+if [[ &quot;$2&quot; != &quot;&quot; ]]; then
+    current=$2
+else
+    current=$TMUX_PANE
+fi
+
+if [[ &quot;$1&quot; == &quot;left&quot; ]]; then
+    tmux prev
+elif [[ &quot;$1&quot; == &quot;right&quot; ]]; then
+    tmux next
+else
+    exit 1
+fi
+
+new=$(tmux new-pane -x 50% -y 50% -X 25% -Y 25% -P -F '#{pane_id}')
+
+tmux swap-pane -t $current
+tmux kill-pane -t $new
+</code></pre>
+<p><strong>sd</strong></p>
+<pre><code>#!/bin/bash
+
+if [[ &quot;$1&quot; != &quot;-t&quot; ]]; then
+    read -r content
+    echo &quot;$content&quot; &gt; /tmp/sdcmd
+    tmux display-panes -d 0 &quot;run-shell \&quot;$0 -t %% $@\&quot;&quot;
+    exit 0
+fi
+
+while [ &quot;$#&quot; -gt 0 ]; do
+    case &quot;$1&quot; in
+        -t)
+            shift
+            target=$1
+            shift
+            ;;
+        -N)
+            went=1
+            shift
+            ;;
+        *)
+            echo &quot;unknown arg: $1&quot;
+            shift
+            ;;
+    esac
+done
+
+if [[ &quot;$TMUX_PANE&quot; == &quot;$target&quot; ]]; then
+    exit 1
+fi
+if [[ &quot;$went&quot; == &quot;1&quot; ]]; then
+    tmux select-pane -t $target
+fi
+
+in=$(cat /tmp/sdcmd)
+(sleep 0.1 &amp;&amp; eval &quot;tmux send -t $target $in&quot; &amp;)
+</code></pre>
+
+<footer>
+  <ul>
+    <li class="left">&copy; 2026 paradoxskin.</li>
+    <li><a href="/blog">blog</a></li>
+    <li><a href="/archive">archive</a></li>
+    <li><a href="/design">design</a></li>
+    <li><a href="/rss">rss</a></li>
+  </ul>
+</footer>
+<img class="scale" id="bigimg" src="">
+<script src="/res/js/main.js" defer></script>
+</body>
+</html>
